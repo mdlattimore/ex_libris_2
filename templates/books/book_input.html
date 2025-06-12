@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ block.super }}: New Book
+{% endblock title %}
+
+{% block content %}
+    <h1 class="display-6">{{ view.object.pk|yesno:"Edit Book,Add New Book"}}</h1>
+    <p>Required fields marked with a *</p>
+    <form method="post" class="limited-create-client">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="{{ view.object.pk|yesno:"Update,Create"}}" class="btn btn-success">
+        &emsp;
+        <button onclick="window.history.back()" class="btn btn-danger">Cancel</button>
+    </form>
+    <br>
+
+{% endblock content %}

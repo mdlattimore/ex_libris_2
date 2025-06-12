@@ -1,0 +1,96 @@
+{% extends "_base.html" %}
+
+{% block title %}{{ book.title }}{% endblock title %}
+
+{% block content %}
+<br>
+<h1 class="display-6"><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}
+</i></h1><br>
+<div class="row">
+    <div class="col-sm-6">
+        <p class="book-detail text-muted">
+        Author: {{ book.author }} <br>
+        Publisher: {{ book.publisher }} <br>
+        Published Date: {{ book.publication_date }} <br>
+        Number of Pages: {{ book.number_of_pages }} <br>
+        ISBN 10: {{ book.isbn_10}} <br>
+        ISBN 13: {{ book.isbn_13 }} <br>
+        Genres: {% for genre in book.genres.all %}
+            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}<br>
+
+        {% if book.google_info %}
+            Google Info: <a href="{{ book.google_info }}">{{ book.title }}</a> <br>
+        {% endif %}
+        {% if book.isbn_10 %}
+            Open Library Listing: <a href="https://openlibrary.org/isbn/{{ book.isbn_10 }}">{{ book.title }}</a>
+        {% elif book.isbn_13 %}
+            Open Library Listing: <a href="https://openlibrary.org/isbn/{{ book.isbn_13 }}">{{ book.title }}</a>
+        {% endif %} <br>
+        Owned: {{ book.owned }} <br>
+        Date Acquired: {{ book.date_acquired }} <br>
+        Source: {{ book.source }} <br>
+        Price: {{ book.price }} <br>
+        Binding: {{ book.get_binding_display }} <br>
+        Book Condition: {{ book.get_condition_display }} <br>
+        Dust Jacket: {{ book.dust_jacket }} <br>
+        Dust Jacket Condition: {{ book.get_dust_jacket_condition_display }} <br>
+        Signed by Author: {{ book.signed_by_author }} <br>
+        Collectible: {{ book.is_collectible }} <br>
+        Collectible Notes: {{ book.collectible_notes }} <br>
+        </p>
+    </div>
+    <div class="col-sm-1"></div>
+    <div class="col-sm-4">
+       <!-- <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" src="https://covers.openlibrary.org/b/id/{{ book.cover_id }}-M.jpg" /> -->
+        <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ book.cover_id }}" />
+    </div>
+</div>
+<div class="row">
+    <p class="book-detail text-muted">
+        {% if book.notes %}
+            Description: {{ book.notes }} <br>
+        {% endif %}
+    </p>
+</div>
+<p><a href="{% url 'book_update' book.id %}" class="btn btn-primary">Update Book Info</a> &emsp;&emsp;
+<a href="{% url 'book_delete' book.id %}" class="btn btn-danger">Delete Book Info</a></p>
+<p><a href="{% url 'book_list' %}">Back to List</a></p>
+
+<a
+    href="#"
+    id="json-toggle"
+    data-json-url="{% url 'book_json' object.pk %}"
+    onclick="toggleJson(event)"
+  >
+    Show JSON
+  </a>
+<br><br>
+  <div id="json-container"></div>
+
+  <script>
+    function toggleJson(event) {
+      event.preventDefault();
+      const link = event.target;
+      const container = document.getElementById("json-container");
+      const isVisible = container.innerHTML.trim().length > 0;
+
+      if (isVisible) {
+        container.innerHTML = '';
+        link.textContent = 'Show JSON';
+      } else {
+        fetch(link.dataset.jsonUrl)
+          .then(response => response.text())
+          .then(html => {
+            container.innerHTML = html;
+            link.textContent = 'Hide JSON';
+          })
+          .catch(error => {
+            container.innerHTML = '<pre>Error loading JSON</pre>';
+            console.error(error);
+          });
+      }
+    }
+  </script>
+<br>
+{% endblock content %}

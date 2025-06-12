@@ -1,0 +1,16 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br>
+    <h1 class="display-6">Book List</h1>
+    <p>
+        {% for book in books %}
+            <strong><i><a href="{% url 'book_detail' book.id %}">
+                {{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}</a></i></strong> by
+            {{ book.author }}
+            <br>
+        {% endfor %}
+    </p>
+    <p><a href="{% url 'isbn_search' %}">Add New Book</a></p>
+
+{% endblock content %}

@@ -1,0 +1,13 @@
+{% extends "_base.html" %}
+{% block content %}
+
+<form method="post">{% csrf_token %}
+    <br><br>
+    <p>Are you sure you want to delete "{{ book.title }}"?</p>
+    {{ form }}
+    <input type="submit" class="btn btn-danger" value="Confirm">
+    <a href="{% url 'book_detail' object.pk %}" class="btn btn-primary">Cancel</a>
+
+</form>
+
+{% endblock content %}

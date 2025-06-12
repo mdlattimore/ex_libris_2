@@ -1,0 +1,94 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Search for ISBN{% endblock title %}
+
+{% block content %}
+    <br>
+    <h1 class="display-6">Search for Book by ISBN</h1>
+    <form action="" method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="Search" class="btn btn-primary">
+    </form>
+    <br><br>
+    <button class="btn btn-success"><a href="{% url 'add_book' %}" style="color:white; text-decoration: none;">Add Book
+        Manually</a></button>
+    <br><br>
+
+    {% if result %}
+        <h2>Book Details</h2>
+        {% if result.none_found %}
+            <p>None found</p>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-6">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="isbn_10" value="{{ result.isbn_10.0 }}">
+                        <input type="hidden" name="isbn_13" value="{{ result.isbn_13.0 }}">
+                        <input type="hidden" name="title" value="{{ result.title }}">
+                        <input type="hidden" name="subtitle" value="{{ result.subtitle }}">
+                        <input type="hidden" name="author" value="{{ result.authors.0 }}">
+                        <input type="hidden" name="publisher" value="{{ result.publisher }}">
+                        <input type="hidden" name="publication_date" value="{{ result.publishedDate }}">
+                        <input type="hidden" name="number_of_pages" value="{{ result.pageCount }}">
+                        <input type="hidden" name="cover_id" value="{{ result.imageLinks.thumbnail }}">
+                        <input type="hidden" name="google_info" value="{{ result.infoLink }}">
+                        <input type="hidden" name="book_json" value="{{ result }}">
+
+                        {% if result.industryIdentifiers.0.type == 'ISBN_10' %}
+                            <input type="hidden" name="isbn_10" value="{{ result.industryIdentifiers.0.identifier }}">
+                        {% elif result.industryIdentifiers.1.type == 'ISBN_10' %}
+                            <input type="hidden" name="isbn_10" value="{{ result.industryIdentifiers.1.identifier }}">
+                        {% else %}
+                            <input type="hidden" name="isbn_10" value="">
+                        {% endif %}
+
+                        {% if result.industryIdentifiers.1.type == 'ISBN_13' %}
+                            <input type="hidden" name="isbn_13" value="{{ result.industryIdentifiers.1.identifier }}">
+                        {% elif result.industryIdentifiers.0.type == 'ISBN_13' %}
+                            <input type="hidden" name="isbn_13" value="{{ result.industryIdentifiers.0.identifier }}">
+                        {% else %}
+                            <input type="hidden" name="isbn_13" value="">
+                        {% endif %}
+                        <input type="hidden" name="notes" value="{{ result.description }}">
+
+
+                        <p><strong>Title:</strong> <i>{{ result.title }}{% if result.subtitle %}: {{ result.subtitle }}{% endif %}
+                        </i></p>
+                        <p><strong>Author:</strong> {{ result.authors.0 }}</p>
+                        <p><strong>Publisher:</strong> {{ result.publisher }}</p>
+                        <p><strong>Publication Date:</strong> {{ result.publishedDate }}</p>
+                        <p><strong>Number of Pages:</strong> {{ result.pageCount }}</p>
+                        {% if result.industryIdentifiers.0.type == 'ISBN_10' %}
+                            <p><strong>ISBN 10:</strong> {{ result.industryIdentifiers.0.identifier }}</p>
+                        {% elif result.industryIdentifiers.1.type == "ISBN_10" %}
+                            <p><strong>ISBN 10:</strong> {{ result.industryIdentifiers.1.identifier }}</p>
+                        {% else %}
+                            <p><strong>ISBN 10:</strong></p>
+                        {% endif %}
+
+                        {% if result.industryIdentifiers.1.type == 'ISBN_13' %}
+                            <p><strong>ISBN 13:</strong> {{ result.industryIdentifiers.1.identifier }}</p>
+                        {% elif result.industryIdentifiers.0.type == "ISBN_13" %}
+                            <p><strong>ISBN 13:</strong> {{ result.industryIdentifiers.0.identifier }}</p
+                        {% else %}
+                            <p><strong>ISBN 13:</strong>{{ Search }}</p>
+                        {% endif %}
+
+
+
+
+                        <!-- Add more fields as needed based on the API response -->
+
+                        <button type="submit" name="save">Save</button>
+                    </form>
+                </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-5">
+                <img src="{{ result.imageLinks.thumbnail }}" alt="Book Cover">
+            </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+{% endblock content %}
