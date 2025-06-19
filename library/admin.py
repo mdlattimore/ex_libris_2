@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Genre  # , Author
+from .models import Book, Genre, BookImage  # , Author
 
 
 class BookInline(admin.TabularInline):
@@ -35,7 +35,12 @@ class GenreAdmin(admin.ModelAdmin):
         BookInline]  # ✅ Works because Book.collections.through links to Collection
     ordering = ['name']
 
+class BookImageAdmin(admin.ModelAdmin):
+    model = BookImage
+    list_display = ['book', 'image']
+
 
 admin.site.register(Book, BookAdmin)
 admin.site.register(Genre, GenreAdmin)
+admin.site.register(BookImage, BookImageAdmin)
 # admin.site.register(Author, AuthorAdmin)

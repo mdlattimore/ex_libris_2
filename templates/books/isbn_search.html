@@ -5,10 +5,22 @@
 {% block content %}
     <br>
     <h1 class="display-6">Search for Book by ISBN</h1>
-    <form action="" method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Search" class="btn btn-primary">
-    </form>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="" method="post">{% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" value="Search" class="btn btn-primary">
+            </form>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
+            <p>You may enter either an ISBN 10 or ISBN 13 number to search for your book (this app does not yet support
+                searching by LOC or other identifiers). Please do not enter spaces or dashes. Once you save the book
+                returned by the search, you may edit it from the book's detail page, adding additional information. If
+                the search doesn't return a result (or not the one you're looking for), you may enter the information
+                manually.</p>
+        </div>
+    </div>
     <br><br>
     <button class="btn btn-success"><a href="{% url 'add_book' %}" style="color:white; text-decoration: none;">Add Book
         Manually</a></button>
@@ -53,7 +65,8 @@
                         <input type="hidden" name="notes" value="{{ result.description }}">
 
 
-                        <p><strong>Title:</strong> <i>{{ result.title }}{% if result.subtitle %}: {{ result.subtitle }}{% endif %}
+                        <p><strong>Title:</strong> <i>
+                            {{ result.title }}{% if result.subtitle %}: {{ result.subtitle }}{% endif %}
                         </i></p>
                         <p><strong>Author:</strong> {{ result.authors.0 }}</p>
                         <p><strong>Publisher:</strong> {{ result.publisher }}</p>
@@ -83,10 +96,10 @@
                         <button type="submit" name="save">Save</button>
                     </form>
                 </div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-5">
-                <img src="{{ result.imageLinks.thumbnail }}" alt="Book Cover">
-            </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5">
+                    <img src="{{ result.imageLinks.thumbnail }}" alt="Book Cover">
+                </div>
             </div>
         {% endif %}
     {% endif %}

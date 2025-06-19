@@ -21,6 +21,7 @@ class BookForm(forms.ModelForm):
             'date_acquired',
             'source',
             'price',
+            'est_value',
             'notes',
             'binding',
             'condition',
@@ -35,4 +36,4 @@ class BookForm(forms.ModelForm):
 
 
 class ISBNSearchForm(forms.Form):
-    isbn = forms.CharField(max_length=13)
+    isbn = forms.CharField(max_length=13, label='ISBN')

@@ -12,6 +12,9 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 import json
 import ast
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -103,7 +106,7 @@ class BookDetailView(DetailView):
     template_name = "books/book_detail.html"
 
 
-class BookJsonView(DetailView):
+class BookJsonView(LoginRequiredMixin, DetailView):
     model = Book
     template_name = 'partials/book_json_partial.html'
 
@@ -134,6 +137,14 @@ class BookUpdateView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('book_detail', kwargs={'pk': self.object.pk})
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+
+        if not self.request.user.is_superuser:
+            if 'book_json' in form.fields:
+                del form.fields['book_json']
+
+        return form
 
 class BookDeleteView(DeleteView):
     model = Book

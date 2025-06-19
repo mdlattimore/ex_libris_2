@@ -1,96 +1,256 @@
 {% extends "_base.html" %}
+{% load thumbnail %}
 
 {% block title %}{{ book.title }}{% endblock title %}
 
 {% block content %}
-<br>
-<h1 class="display-6"><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}
-</i></h1><br>
-<div class="row">
-    <div class="col-sm-6">
-        <p class="book-detail text-muted">
-        Author: {{ book.author }} <br>
-        Publisher: {{ book.publisher }} <br>
-        Published Date: {{ book.publication_date }} <br>
-        Number of Pages: {{ book.number_of_pages }} <br>
-        ISBN 10: {{ book.isbn_10}} <br>
-        ISBN 13: {{ book.isbn_13 }} <br>
-        Genres: {% for genre in book.genres.all %}
-            {{ genre.name }}{% if not forloop.last %}, {% endif %}
-        {% endfor %}<br>
+    <br>
+    <h1 class="display-6"><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}
+    </i></h1><br>
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="card shadow">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <colgroup>
+                            <col style="width:0%">
+                            <col style="width:35%;">
+                            <col style="width:65%;">
+                        </colgroup>
+                        <thead>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Author:</b></td>
+                            <td>{{ book.author }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Publisher:</b></td>
+                            <td>{{ book.publisher }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Published Date:</b></td>
+                            <td>{{ book.publication_date }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Number of Pages:</b></td>
+                            <td>{{ book.number_of_pages }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>ISBN 10:</b></td>
+                            <td>{{ book.isbn_10 }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>ISBN 13:</b></td>
+                            <td>{{ book.isbn_13 }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Genres:</b></td>
+                            <td>{% for genre in book.genres.all %}
+                                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}</td>
+                        </tr>
+                        {% if book.google_info %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Google Book Listing:</b></td>
+                                <td><a href="{{ book.google_info }}">{{ book.title }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if book.isbn_10 %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Open Library Listing:</b></td>
+                                <td><a href="https://openlibrary.org/isbn/{{ book.isbn_10 }}">{{ book.title }}</a></td>
+                            </tr>
+                        {% elif book.isbn_13 %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Open Library Listing:</b></td>
+                                <td><a href="https://openlibrary.org/isbn/{{ book.isbn_13 }}">{{ book.title }}</a></td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Owned:</b></td>
+                            <td>{{ book.owned|yesno:"Yes, No" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Date Acquired:</b></td>
+                            <td>{{ book.date_acquired }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Source:</b></td>
+                            <td>{{ book.source }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Date Acquired:</b></td>
+                            <td>{{ book.date_acquired }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Price:</b></td>
+                            {% if book.price %}
+                                <td>${{ book.price }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Estimated Value:</b></td>
+                            {% if book.est_value %}
+                                <td>${{ book.est_value }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Binding:</b></td>
+                            <td>{{ book.get_binding_display }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Book Condition:</b></td>
+                            <td>{{ book.get_condition_display }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Dust Jacket:</b></td>
+                            <td>{{ book.dust_jacket|yesno:"Yes, No" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Dust Jacket Condition:</b></td>
+                            <td>{{ book.get_dust_jacket_condition_display }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Signed By Author:</b></td>
+                            <td>{{ book.signed_by_author|yesno:"Yes, No" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Collectible:</b></td>
+                            <td>{{ book.is_collectible|yesno:"Yes, No" }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Collectible Notes:</b></td>
+                            <td>{{ book.collectible_notes }}</td>
+                        </tr>
+                        {% if book.notes %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td colspan="2"><b>Description:</b>&emsp;{{ book.notes }}</td>
+                            </tr>
+                        {% endif %}
 
-        {% if book.google_info %}
-            Google Info: <a href="{{ book.google_info }}">{{ book.title }}</a> <br>
-        {% endif %}
-        {% if book.isbn_10 %}
-            Open Library Listing: <a href="https://openlibrary.org/isbn/{{ book.isbn_10 }}">{{ book.title }}</a>
-        {% elif book.isbn_13 %}
-            Open Library Listing: <a href="https://openlibrary.org/isbn/{{ book.isbn_13 }}">{{ book.title }}</a>
-        {% endif %} <br>
-        Owned: {{ book.owned }} <br>
-        Date Acquired: {{ book.date_acquired }} <br>
-        Source: {{ book.source }} <br>
-        Price: {{ book.price }} <br>
-        Binding: {{ book.get_binding_display }} <br>
-        Book Condition: {{ book.get_condition_display }} <br>
-        Dust Jacket: {{ book.dust_jacket }} <br>
-        Dust Jacket Condition: {{ book.get_dust_jacket_condition_display }} <br>
-        Signed by Author: {{ book.signed_by_author }} <br>
-        Collectible: {{ book.is_collectible }} <br>
-        Collectible Notes: {{ book.collectible_notes }} <br>
-        </p>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
+            <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ book.cover_id }}"/>
+            <br>
+            {% for image in book.images.all %}
+{#                <a href="{{ image.image.url }}"><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ image.image.url }}"/></a>#}
+                {% thumbnail image.image "200x200" as thumb %}
+                    <img src="{{ thumb.url }}" alt="Thumbnail" class="thumbnail img-fluid shadow rounded p-2"
+    data-full="{{ image.image.url }}">
+                {% endthumbnail %}
+            {% endfor %}
+            <!-- Lightbox overlay -->
+            <div id="lightbox" class="lightbox">
+              <span class="close-btn">&times;</span>
+              <img class="lightbox-content" id="lightbox-img">
+            </div>
+        </div>
     </div>
-    <div class="col-sm-1"></div>
-    <div class="col-sm-4">
-       <!-- <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" src="https://covers.openlibrary.org/b/id/{{ book.cover_id }}-M.jpg" /> -->
-        <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ book.cover_id }}" />
-    </div>
-</div>
-<div class="row">
-    <p class="book-detail text-muted">
-        {% if book.notes %}
-            Description: {{ book.notes }} <br>
-        {% endif %}
-    </p>
-</div>
-<p><a href="{% url 'book_update' book.id %}" class="btn btn-primary">Update Book Info</a> &emsp;&emsp;
-<a href="{% url 'book_delete' book.id %}" class="btn btn-danger">Delete Book Info</a></p>
-<p><a href="{% url 'book_list' %}">Back to List</a></p>
+    <br>
+    <p><a href="{% url 'book_update' book.id %}" class="btn btn-primary">Update Book Info</a> &emsp;&emsp;
+        <a href="{% url 'book_delete' book.id %}" class="btn btn-danger">Delete Book Info</a></p>
+    <p><a href="{% url 'book_list' %}">Back to List</a></p>
 
-<a
-    href="#"
-    id="json-toggle"
-    data-json-url="{% url 'book_json' object.pk %}"
-    onclick="toggleJson(event)"
-  >
-    Show JSON
-  </a>
-<br><br>
-  <div id="json-container"></div>
+    {% if user.is_superuser %}
+        <a
+                href="#"
+                id="json-toggle"
+                data-json-url="{% url 'book_json' object.pk %}"
+                onclick="toggleJson(event)"
+        >
+            Show JSON
+        </a>
+        <br><br>
+        <div id="json-container"></div>
+    {% endif %}
+    <script>
+        function toggleJson(event) {
+            event.preventDefault();
+            const link = event.target;
+            const container = document.getElementById("json-container");
+            const isVisible = container.innerHTML.trim().length > 0;
 
-  <script>
-    function toggleJson(event) {
-      event.preventDefault();
-      const link = event.target;
-      const container = document.getElementById("json-container");
-      const isVisible = container.innerHTML.trim().length > 0;
-
-      if (isVisible) {
-        container.innerHTML = '';
-        link.textContent = 'Show JSON';
-      } else {
-        fetch(link.dataset.jsonUrl)
-          .then(response => response.text())
-          .then(html => {
-            container.innerHTML = html;
-            link.textContent = 'Hide JSON';
-          })
-          .catch(error => {
-            container.innerHTML = '<pre>Error loading JSON</pre>';
-            console.error(error);
-          });
-      }
-    }
-  </script>
-<br>
+            if (isVisible) {
+                container.innerHTML = '';
+                link.textContent = 'Show JSON';
+            } else {
+                fetch(link.dataset.jsonUrl)
+                    .then(response => response.text())
+                    .then(html => {
+                        container.innerHTML = html;
+                        link.textContent = 'Hide JSON';
+                    })
+                    .catch(error => {
+                        container.innerHTML = '<pre>Error loading JSON</pre>';
+                        console.error(error);
+                    });
+            }
+        }
+    </script>
+    <br>
 {% endblock content %}
+{% block javascript %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.querySelector('.close-btn');
+
+    thumbnails.forEach(img => {
+      img.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = img.dataset.full;
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      lightbox.style.display = 'none';
+    });
+
+    // Optional: click outside the image to close
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+      }
+    });
+  });
+</script>
+{% endblock javascript %}

@@ -1,5 +1,10 @@
 from django.db import models
 from simple_name_parser import NameParser
+from PIL import Image
+import sys
+import os
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 parser = NameParser()
 parse_name = parser.parse_name
@@ -67,6 +72,8 @@ class Book(models.Model):
     source = models.CharField(max_length=150, blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
                                 null=True)
+    est_value = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
+                                null=True)
     notes = models.TextField(blank=True, null=True)
     binding = models.CharField(max_length=30, choices=BINDING_CHOICES,
                                blank=True, null=True)
@@ -118,6 +125,51 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+
+class BookImage(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="images/", blank=True, null=True)
+    caption = models.CharField(max_length=200, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Process the image for storage to resize to 200x200
+        if self.image:
+            img = Image.open(self.image)
+
+            # Convert to RGB (prevents errors from PNG/WebP tranparency)
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+
+            # Resize image while maintaning aspect ratio
+            output_size = (1200, 1200)
+            img.thumbnail(output_size, Image.Resampling.LANCZOS)
+
+            # Save as jpeg with 85% quality
+            img_io = BytesIO()
+            img.save(img_io, format="JPEG", quality=85)
+
+            # Get original filename without extension
+            original_name = os.path.splitext(self.image.name)[0]
+
+            # Generate a new filename with .jpg extension
+            new_filename = f"{original_name}.jpg"
+
+            # Replace the uploaded image with the processed image
+            self.image = InMemoryUploadedFile(
+                img_io,
+                'ImageField',
+                new_filename,
+                "image/jpeg",
+                sys.getsizeof(img_io),
+                None,
+            )
+
+        super().save(*args, **kwargs)
+
+
+
+    def __str__(self):
+        return f"Image for {self.book.title}."
 
 class Genre(models.Model):
     name = models.CharField(max_length=100)

@@ -2,15 +2,40 @@
 
 {% block content %}
     <br>
-    <h1 class="display-6">Book List</h1>
-    <p>
-        {% for book in books %}
-            <i><a href="{% url 'book_detail' book.id %}">
-                {{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}</a></i> by
-            {{ book.author }}
-            <br>
-        {% endfor %}
-    </p>
+    <div class="card shadow">
+        <div class="card-body">
+            <h1 class="display-6">Book List</h1>
+            <table class="table table-hover">
+
+                <thead>
+                <th scope="col"></th>
+                <th scope="col">Title</th>
+                <th scope="col">Author</th>
+                <th scope="col">Published</th>
+                <th scope="col">Notes</th>
+                </thead>
+                <tbody>
+                {% for book in books %}
+                    <tr onclick="window.location='{% url 'book_detail' book.id %}'">
+                        <th scope="row"></th>
+                        <td><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle|truncatechars:20 }}{% endif %}</i></td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.publication_date|slice:"0:4" }}</td>
+                        <td class="list-note">{{ book.collectible_notes|default:""|truncatechars:40}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {#    <p>#}
+    {#        {% for book in books %}#}
+    {#            <i><a href="{% url 'book_detail' book.id %}">#}
+    {#                {{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}</a></i> by#}
+    {#            {{ book.author }}#}
+    {#            <br>#}
+    {#        {% endfor %}#}
+    {#    </p>#}
     <p><a href="{% url 'isbn_search' %}">Add New Book</a></p>
 
 {% endblock content %}
