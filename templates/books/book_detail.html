@@ -167,20 +167,24 @@
         </div>
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
-            <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ book.cover_id }}"/>
-            <br>
+            <p>{{ book.collectible_notes }}</p>
+{#            <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ book.cover_id }}"/>#}
+{#            <br>#}
             {% for image in book.images.all %}
-{#                <a href="{{ image.image.url }}"><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ image.image.url }}"/></a>#}
+                {#                <a href="{{ image.image.url }}"><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ image.image.url }}"/></a>#}
                 {% thumbnail image.image "200x200" as thumb %}
                     <img src="{{ thumb.url }}" alt="Thumbnail" class="thumbnail img-fluid shadow rounded p-2"
-    data-full="{{ image.image.url }}">
+                         data-full="{{ image.image.url }}">
                 {% endthumbnail %}
             {% endfor %}
             <!-- Lightbox overlay -->
             <div id="lightbox" class="lightbox">
-              <span class="close-btn">&times;</span>
-              <img class="lightbox-content" id="lightbox-img">
+                <span class="close-btn">&times;</span>
+                <img class="lightbox-content" id="lightbox-img">
+                <a class="lightbox-prev">&#10094;</a>
+                <a class="lightbox-next">&#10095;</a>
             </div>
+
         </div>
     </div>
     <br>
@@ -227,30 +231,70 @@
     <br>
 {% endblock content %}
 {% block javascript %}
-<script>
+    <script>
   document.addEventListener('DOMContentLoaded', function () {
     const thumbnails = document.querySelectorAll('.thumbnail');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const closeBtn = document.querySelector('.close-btn');
+    const nextBtn = document.querySelector('.lightbox-next');
+    const prevBtn = document.querySelector('.lightbox-prev');
 
-    thumbnails.forEach(img => {
-      img.addEventListener('click', () => {
-        lightbox.style.display = 'flex';
+    let currentIndex = -1;
+    const images = Array.from(thumbnails);
+
+    function showImage(index) {
+      const img = images[index];
+      if (img) {
         lightboxImg.src = img.dataset.full;
+        lightbox.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        currentIndex = index;
+      }
+    }
+
+    images.forEach((img, index) => {
+      img.addEventListener('click', () => {
+        showImage(index);
       });
     });
 
     closeBtn.addEventListener('click', () => {
       lightbox.style.display = 'none';
+      document.body.style.overflow = '';
     });
 
-    // Optional: click outside the image to close
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
         lightbox.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showImage((currentIndex + 1) % images.length);
+    });
+
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showImage((currentIndex - 1 + images.length) % images.length);
+    });
+
+    // Optional: keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.style.display === 'flex') {
+        if (e.key === 'ArrowRight') {
+          showImage((currentIndex + 1) % images.length);
+        } else if (e.key === 'ArrowLeft') {
+          showImage((currentIndex - 1 + images.length) % images.length);
+        } else if (e.key === 'Escape') {
+          lightbox.style.display = 'none';
+          document.body.style.overflow = '';
+        }
       }
     });
   });
 </script>
+
 {% endblock javascript %}
