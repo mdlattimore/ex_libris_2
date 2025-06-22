@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 import json
 import ast
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+import markdown
 
 
 
@@ -67,6 +67,7 @@ class BookSpotlightDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['editions'] = self.object.editions.all().order_by('sort_title')
         return context
+
 
 
 
@@ -132,6 +133,8 @@ def isbn_search_view(request):
 class BookDetailView(DetailView):
     model = Book
     template_name = "books/book_detail.html"
+
+
 
 
 class BookJsonView(LoginRequiredMixin, DetailView):
