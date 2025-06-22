@@ -6,7 +6,11 @@
 {% block content %}
     <br>
     <h1 class="display-6"><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}
-    </i></h1><br>
+    </i></h1>
+    <p>Part of the {{ book.collection }} Collection</p>
+    {% if book.book_spotlight %}
+        <p>Spotlight on <a href="{% url 'book_spotlight' book.book_spotlight.pk %}">{{ book.book_spotlight }}</a></p>
+    {% endif %}
     <div class="row">
         <div class="col-sm-7">
             <div class="card shadow">
@@ -168,8 +172,9 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
             <p>{{ book.collectible_notes }}</p>
-{#            <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ book.cover_id }}"/>#}
-{#            <br>#}
+            <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"
+                 alt="Book Cover" src="{{ book.cover_id }}"/>
+            <br>
             {% for image in book.images.all %}
                 {#                <a href="{{ image.image.url }}"><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ image.image.url }}"/></a>#}
                 {% thumbnail image.image "200x200" as thumb %}
@@ -190,7 +195,7 @@
     <br>
     <p><a href="{% url 'book_update' book.id %}" class="btn btn-primary">Update Book Info</a> &emsp;&emsp;
         <a href="{% url 'book_delete' book.id %}" class="btn btn-danger">Delete Book Info</a></p>
-    <p><a href="{% url 'book_list' %}">Back to List</a></p>
+    <p><a href="{% url 'book_list_all' %}">Back to List</a></p>
 
     {% if user.is_superuser %}
         <a
@@ -232,69 +237,69 @@
 {% endblock content %}
 {% block javascript %}
     <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.querySelector('.close-btn');
-    const nextBtn = document.querySelector('.lightbox-next');
-    const prevBtn = document.querySelector('.lightbox-prev');
+        document.addEventListener('DOMContentLoaded', function () {
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const closeBtn = document.querySelector('.close-btn');
+            const nextBtn = document.querySelector('.lightbox-next');
+            const prevBtn = document.querySelector('.lightbox-prev');
 
-    let currentIndex = -1;
-    const images = Array.from(thumbnails);
+            let currentIndex = -1;
+            const images = Array.from(thumbnails);
 
-    function showImage(index) {
-      const img = images[index];
-      if (img) {
-        lightboxImg.src = img.dataset.full;
-        lightbox.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        currentIndex = index;
-      }
-    }
+            function showImage(index) {
+                const img = images[index];
+                if (img) {
+                    lightboxImg.src = img.dataset.full;
+                    lightbox.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    currentIndex = index;
+                }
+            }
 
-    images.forEach((img, index) => {
-      img.addEventListener('click', () => {
-        showImage(index);
-      });
-    });
+            images.forEach((img, index) => {
+                img.addEventListener('click', () => {
+                    showImage(index);
+                });
+            });
 
-    closeBtn.addEventListener('click', () => {
-      lightbox.style.display = 'none';
-      document.body.style.overflow = '';
-    });
+            closeBtn.addEventListener('click', () => {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = '';
+            });
 
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        lightbox.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-    });
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
 
-    nextBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showImage((currentIndex + 1) % images.length);
-    });
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showImage((currentIndex + 1) % images.length);
+            });
 
-    prevBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showImage((currentIndex - 1 + images.length) % images.length);
-    });
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showImage((currentIndex - 1 + images.length) % images.length);
+            });
 
-    // Optional: keyboard controls
-    document.addEventListener('keydown', (e) => {
-      if (lightbox.style.display === 'flex') {
-        if (e.key === 'ArrowRight') {
-          showImage((currentIndex + 1) % images.length);
-        } else if (e.key === 'ArrowLeft') {
-          showImage((currentIndex - 1 + images.length) % images.length);
-        } else if (e.key === 'Escape') {
-          lightbox.style.display = 'none';
-          document.body.style.overflow = '';
-        }
-      }
-    });
-  });
-</script>
+            // Optional: keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (lightbox.style.display === 'flex') {
+                    if (e.key === 'ArrowRight') {
+                        showImage((currentIndex + 1) % images.length);
+                    } else if (e.key === 'ArrowLeft') {
+                        showImage((currentIndex - 1 + images.length) % images.length);
+                    } else if (e.key === 'Escape') {
+                        lightbox.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }
+                }
+            });
+        });
+    </script>
 
 {% endblock javascript %}

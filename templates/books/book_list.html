@@ -4,7 +4,13 @@
     <br>
     <div class="card shadow">
         <div class="card-body">
-            <h1 class="display-6">Book List</h1>
+            {% if collection.name %}
+                <h1 class="display-6">{{ collection.name }} Collection</h1>
+                <p>{{ collection.description }}</p>
+            {% else %}
+                <h1 class="display-6">All Books</h1>
+            {% endif %}
+
             <table class="table table-hover">
 
                 <thead>
@@ -16,12 +22,14 @@
                 </thead>
                 <tbody>
                 {% for book in books %}
-                    <tr onclick="window.location='{% url 'book_detail' book.id %}'">
+                    <tr onclick="window.location='{% url 'book_detail' book.id %}'" class="cursor-pointer">
                         <th scope="row"></th>
-                        <td><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle|truncatechars:20 }}{% endif %}</i></td>
+                        <td><i>
+                            {{ book.title }}{% if book.subtitle %}: {{ book.subtitle|truncatechars:20 }}{% endif %}</i>
+                        </td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.publication_date|slice:"0:4" }}</td>
-                        <td class="list-note">{{ book.collectible_notes|default:""|truncatechars:40}}</td>
+                        <td class="list-note">{{ book.collectible_notes|default:""|truncatechars:40 }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

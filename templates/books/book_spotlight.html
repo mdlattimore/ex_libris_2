@@ -1,0 +1,61 @@
+{% extends "_base.html" %}
+
+{% block title %}{{ book_spotlight.title }}{% endblock title %}
+
+{% block content %}
+    <br>
+    <h1 class="display-6"><i>{{ book_spotlight.title }}</i></h1>
+    <p class="text-muted">{{ book_spotlight.author }}</p>
+    <div class="row">
+        <div class="col-sm-8">
+            {{ book_spotlight.description|linebreaks }}
+            <br>
+            Notes on the collection <br>
+            {{ book_spotlight.notes|linebreaks }}
+            <br>
+            <p>Editions in collection:</p>
+
+        <table class="table table-hover">
+
+{#                <thead>#}
+{#                <th scope="col"></th>#}
+{#                <th scope="col">Title</th>#}
+{#                <th scope="col">Published</th>#}
+{#                <th scope="col">Notes</th>#}
+{#                </thead>#}
+                <tbody>
+                {% for edition in editions %}
+                    <tr onclick="window.location='{% url 'book_detail' edition.pk %}'" class="cursor-pointer">
+                        <th scope="row"></th>
+                        <td><i>
+                            {{ edition.title }}{% if edition.subtitle %}: {{ edition.subtitle|truncatechars:20 }}{% endif %}</i>
+                        </td>
+                        <td>{{ edition.publication_date|slice:"0:4" }}</td>
+                        <td class="list-note">{{ edition.collectible_notes|default:""}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3">
+{#            <figure>#}
+{#                <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 300px; height: auto;"#}
+{#                     alt="Book Cover" src="{{ book_spotlight.spotlight_images.first.image.url }}"/>#}
+{#                <figcaption><i>{{ book_spotlight.spotlight_images.first.caption }}</i></figcaption>#}
+{#            </figure>#}
+            {% for image in book_spotlight.spotlight_images.all %}
+                <figure>
+                <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"
+                     alt="Book Cover" src="{{ image.image.url }}"/>
+                <figcaption><i>{{ image.caption }}</i></figcaption>
+            </figure>
+                <br>
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock content %}

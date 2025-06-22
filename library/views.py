@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Book
+from .models import Book, Collection, BookSpotlight
 from .forms import BookForm, ISBNSearchForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (CreateView, ListView, DetailView,
@@ -24,6 +24,20 @@ class BookListView(ListView):
     ordering = ['sort_title']
     context_object_name = "books"
 
+    def get_queryset(self):
+        slug = self.kwargs.get('collection_slug')
+        if slug:
+            self.collection = get_object_or_404(Collection, slug__iexact=slug)
+            return Book.objects.filter(collection=self.collection).order_by('sort_title')
+        else:
+            self.collection = None
+            return Book.objects.all().order_by('sort_title')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['collection'] = self.collection
+        return context
+
 
 class BookCreateView(CreateView):
     model = Book
@@ -42,6 +56,20 @@ class BookCreateView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('book_detail', kwargs={'pk': self.object.pk})
+
+
+class BookSpotlightDetailView(DetailView):
+    model = BookSpotlight
+    template_name = "books/book_spotlight.html"
+    context_object_name = "book_spotlight"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['editions'] = self.object.editions.all().order_by('sort_title')
+        return context
+
+
+
 
 
 def isbn_search_view(request):
@@ -149,4 +177,4 @@ class BookUpdateView(UpdateView):
 class BookDeleteView(DeleteView):
     model = Book
     template_name = "books/book_confirm_delete.html"
-    success_url = reverse_lazy('book_list')
+    success_url = reverse_lazy('book_list_all')

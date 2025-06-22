@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Book, Genre, BookImage  # , Author
+from .models import Book, Genre, BookImage, Collection, BookSpotlight # , Author
+
+class BookSpotlightAdmin(admin.ModelAdmin):
+    model = BookSpotlight
+    list_display = ['title', ]
 
 
 class BookInline(admin.TabularInline):
@@ -9,8 +13,9 @@ class BookInline(admin.TabularInline):
 
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ['display_title', 'display_author', 'publication_date']
-    ordering = ('sort_name', 'sort_title')
+    list_display = ['display_title', 'collectible_notes','display_author',
+        'publication_date']
+    ordering = ('sort_title',)
     readonly_fields = ('id',)
     filter_horizontal = ('genres',)  # ✅ Works in BookAdmin
 
@@ -37,10 +42,15 @@ class GenreAdmin(admin.ModelAdmin):
 
 class BookImageAdmin(admin.ModelAdmin):
     model = BookImage
-    list_display = ['book', 'image']
+    list_display = ['display_name', 'image']
+
+class CategoryAdmin(admin.ModelAdmin):
+    model = Collection
 
 
 admin.site.register(Book, BookAdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(BookImage, BookImageAdmin)
+admin.site.register(Collection, CategoryAdmin)
+admin.site.register(BookSpotlight, BookSpotlightAdmin)
 # admin.site.register(Author, AuthorAdmin)

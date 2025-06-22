@@ -5,6 +5,7 @@ import sys
 import os
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.text import slugify
 
 parser = NameParser()
 parse_name = parser.parse_name
@@ -33,6 +34,19 @@ class Author(models.Model):
         else:
             self.sort_name = full_sort_name
 
+class BookSpotlight(models.Model):
+    class Meta:
+        verbose_name_plural = "Book Spotlights"
+    title = models.CharField(max_length=200)
+    # slug = models.SlugField(max_length=50, unique=True)
+    description = models.TextField(blank=True, null=True)
+    # author = models.ForeignKey("Author", on_delete=models.SET_NULL(),
+    #                            null=True, blank=True)
+    author = models.CharField(max_length=150, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Book(models.Model):
@@ -54,6 +68,11 @@ class Book(models.Model):
     ]
 
     # metadata
+    collection = models.ForeignKey("Collection", on_delete=models.CASCADE,
+                                   related_name="books", blank=True, null=True)
+    book_spotlight = models.ForeignKey(BookSpotlight,
+                                       on_delete=models.SET_NULL, blank=True,
+                                       null=True, related_name="editions")
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     author = models.CharField(max_length=200)
@@ -92,6 +111,14 @@ class Book(models.Model):
     google_info = models.CharField(max_length=200, blank=True, null=True)
     book_json = models.TextField(blank=True, null=True)
 
+    def normalize_sort_title(self, title):
+        articles = ["a ", "an ", "the "]
+        lower_title = title.lower()
+        for article in articles:
+            if lower_title.startswith(article):
+                return title[len(article):].strip()
+        return title.strip()
+
     def save(self, *args, **kwargs):
         # Parse full_name into first and last names before saving.
         # The function used (parse_name()) returns a named tuple
@@ -106,20 +133,21 @@ class Book(models.Model):
         else:
             self.sort_name = full_sort_name
 
-        if self.title.startswith("The "):
-            self.sort_title = self.title.lstrip("The ")
-        elif self.title.startswith("the "):
-            self.sort_title = self.title.lstrip("the ")
-        elif self.title.startswith("A "):
-            self.sort_title = self.title.lstrip("A ")
-        elif self.title.startswith("a "):
-            self.sort_title = self.title.lstrip("a ")
-        elif self.title.startswith("An "):
-            self.sort_title = self.title.lstrip("An ")
-        elif self.title.startswith("an "):
-            self.sort_title = self.title.lstrip("an ")
-        else:
-            self.sort_title = self.title
+        self.sort_title = self.normalize_sort_title(self.title)
+        # if self.title.startswith("The "):
+        #     self.sort_title = self.title.lstrip("The ")
+        # elif self.title.startswith("the "):
+        #     self.sort_title = self.title.lstrip("the ")
+        # elif self.title.startswith("A "):
+        #     self.sort_title = self.title.lstrip("A ")
+        # elif self.title.startswith("a "):
+        #     self.sort_title = self.title.lstrip("a ")
+        # elif self.title.startswith("An "):
+        #     self.sort_title = self.title.lstrip("An ")
+        # elif self.title.startswith("an "):
+        #     self.sort_title = self.title.lstrip("an ")
+        # else:
+        #     self.sort_title = self.title
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -127,9 +155,24 @@ class Book(models.Model):
 
 
 class BookImage(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="images")
+    class Meta:
+        verbose_name_plural = "Book Images"
+    book = models.ForeignKey(Book, on_delete=models.CASCADE,
+                             related_name="images", blank=True, null=True)
+    spotlight_cover = models.ForeignKey(BookSpotlight,
+                                        on_delete=models.SET_NULL,
+                                        related_name="spotlight_images", blank=True, null=True)
     image = models.ImageField(upload_to="images/", blank=True, null=True)
     caption = models.CharField(max_length=200, blank=True, null=True)
+
+    @property
+    def display_name(self):
+        if self.book:
+            display_name = self.book.title
+        else:
+            display_name = f"{self.spotlight_cover.title} Spotlight"
+
+        return display_name
 
     def save(self, *args, **kwargs):
         # Process the image for storage to resize to 200x200
@@ -169,10 +212,29 @@ class BookImage(models.Model):
 
 
     def __str__(self):
-        return f"Image for {self.book.title}."
+        try:
+            return f"Image for {self.book.title}."
+        except AttributeError:
+            return f"Image for {self.spotlight_cover.title}."
 
 class Genre(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
+
+class Collection(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+

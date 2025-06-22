@@ -4,7 +4,32 @@
 {% block title %}Home page{% endblock title %}
 
 {% block content %}
-    <a href="{% url 'book_list' %}">Book List</a>
+    <br>
+    <h1 class="display-6">Welcome to My Literary Collection</h1>
+    <p>This is a personal catalog of the books I collect with special interest—volumes that go beyond casual reading and
+        reflect a deeper connection to certain authors and their worlds. Here you'll find works by J.R.R. Tolkien and
+        Charles Dickens, as well as related books that explore their lives, influence, and the broader literary
+        landscapes they helped shape. It’s not a complete library, but a curated space for the titles that matter most
+        to me.</p>
+
+    <p>In the collections, you'll find a few of what I consider "collectible" pieces, editions with some special
+        significance. Among these include 5 first editions of Tolkien's <i>The Silmarillion</i> (my wife says I have a
+        problem) and multiple copies of Dickens' <i>A Christmas Carol</i> (none of which are valuable in any monetary
+        sense, but make up various presentations of one of my favorite stories of all time).</p>
+
+    <p>Select books have what I call "Spotlight" pages: deeper dives into the more significant works. You can look at
+        those Spotlights by following the links below or by following the link found on the individual edition
+        pages.</p>
+
+    <a href="{% url 'book_list_all' %}">All Books</a><br>
+    <a href="{% url 'book_list_collection' 'tolkien' %}">Tolkien Books</a><br>
+    <a href="{% url 'book_list_collection' 'dickens' %}">Dickens Books</a>
+    <br>
+    <h1 class="display-7">Spotlights</h1>
+    {% for book in works %}
+        <a href="{%  url 'book_spotlight' book.pk %}">{{ book }}</a> by {{ book.author }}<br>
+    {% endfor %}
+
 
 {% endblock content %}
 
