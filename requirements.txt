@@ -28,3 +28,6 @@ whitenoise==6.9.0
 
 Markdown~=3.8.2
 pillow~=11.2.1
+django-simple-deploy==1.0.0
+psycopg2-binary
+dj-database-url
