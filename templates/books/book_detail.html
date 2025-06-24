@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load thumbnail %}
+{% load md_tags %}
 
 {% block title %}{{ book.title }}{% endblock title %}
 
@@ -160,7 +161,7 @@
                         {% if book.notes %}
                             <tr>
                                 <th scope="row"></th>
-                                <td colspan="2"><b>Description:</b>&emsp;{{ book.notes }}</td>
+                                <td colspan="2"><b>Description:</b>&emsp;{{ book.notes|render_markdown }}</td>
                             </tr>
                         {% endif %}
 

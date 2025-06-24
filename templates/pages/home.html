@@ -21,10 +21,11 @@
         those Spotlights by following the links below or by following the link found on the individual edition
         pages.</p>
 
-    <a href="{% url 'book_list_all' %}">All Books</a><br>
-    <a href="{% url 'book_list_collection' 'tolkien' %}">Tolkien Books</a><br>
-    <a href="{% url 'book_list_collection' 'dickens' %}">Dickens Books</a>
-    <br>
+    <a href="{% url 'book_list_all' %}">All Books</a><br><br>
+    <a href="{% url 'book_list_collection' 'tolkien' %}"><img src="{% static 'images/tolkien_monogram.png' %}" alt="JRRT"> Tolkien Collection <img src="{% static 'images/tolkien_monogram.png' %}" alt="JRRT"></a><br>
+<br>
+    <a href="{% url 'book_list_collection' 'dickens' %}"><img src="{% static 'images/dickens.png' %}" width="31px;" height="auto;" alt="CD"> Dickens Collection <img src="{% static 'images/dickens.png' %}" width="31px;" height="auto;" alt="CD"></a>
+    <br><br>
     <h1 class="display-7">Spotlights</h1>
     {% for book in works %}
         <a href="{%  url 'book_spotlight' book.pk %}">{{ book }}</a> by {{ book.author }}<br>

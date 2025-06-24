@@ -4,6 +4,8 @@ html {
   position: relative;
   min-height: 100%;
   font-size: 14px;
+  font-family: var(--bs-font-sans-serif);
+
 }
 @media (min-width: 768px) {
   html {
@@ -14,6 +16,7 @@ html {
 body {
   margin-bottom: 60px; /* Margin bottom by footer height */
   background-color: #fdfaf3;
+
 }
 
 .container {
@@ -118,6 +121,13 @@ tr {
 
 .display-7 {
   font-size: 1.75rem;
+  font-weight: 300;
+  line-height: 1.2;
+  font-family: var(--bs-font-sans-serif);
+}
+
+.display-7 {
+  font-size: 1.5rem;
   font-weight: 300;
   line-height: 1.2;
   font-family: var(--bs-font-sans-serif);
