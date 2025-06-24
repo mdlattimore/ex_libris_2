@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "sorl.thumbnail",
+    "django_simple_deploy",
     # "debug_toolbar",
     # Local
     "accounts",
