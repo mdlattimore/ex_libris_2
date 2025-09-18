@@ -173,8 +173,8 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
             <p>{{ book.collectible_notes }}</p>
-            <img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"
-                 alt="Book Cover" src="{{ book.cover_id }}"/>
+            <a href={{ book.cover_id }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"
+                    alt="Book Cover" src="{{ book.cover_id }}"/></a>
             <br>
             {% for image in book.images.all %}
                 {#                <a href="{{ image.image.url }}"><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ image.image.url }}"/></a>#}

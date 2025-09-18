@@ -36,14 +36,7 @@
             </table>
         </div>
     </div>
-    {#    <p>#}
-    {#        {% for book in books %}#}
-    {#            <i><a href="{% url 'book_detail' book.id %}">#}
-    {#                {{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}</a></i> by#}
-    {#            {{ book.author }}#}
-    {#            <br>#}
-    {#        {% endfor %}#}
-    {#    </p>#}
+
     <p><a href="{% url 'isbn_search' %}">Add New Book</a></p>
 
 {% endblock content %}
