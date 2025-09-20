@@ -12,12 +12,21 @@ class BookInline(admin.TabularInline):
     readonly_fields = ['book']
 
 
+class BookImageInline(admin.TabularInline):
+    model = BookImage
+    extra = 1
+    fields = ("thumbnail_preview", "image", "caption", "is_cover")
+    readonly_fields = ("thumbnail_preview",)
+
+
 class BookAdmin(admin.ModelAdmin):
     list_display = ['display_title', 'collectible_notes','display_author',
         'publication_date']
     ordering = ('sort_title',)
     readonly_fields = ('id',)
     filter_horizontal = ('genres',)  # ✅ Works in BookAdmin
+    inlines = [BookImageInline]
+
 
     def display_title(self, obj):
         return obj.title
@@ -40,9 +49,13 @@ class GenreAdmin(admin.ModelAdmin):
         BookInline]  # ✅ Works because Book.collections.through links to Collection
     ordering = ['name']
 
+# class BookImageAdmin(admin.ModelAdmin):
+#     model = BookImage
+#     list_display = ['display_name', 'image']
+
 class BookImageAdmin(admin.ModelAdmin):
-    model = BookImage
-    list_display = ['display_name', 'image']
+    list_display = ("display_name", "is_cover", "thumbnail_preview")
+    readonly_fields = ("thumbnail_preview",)
 
 class CategoryAdmin(admin.ModelAdmin):
     model = Collection

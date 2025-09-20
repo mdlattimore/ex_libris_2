@@ -173,15 +173,16 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
             <p>{{ book.collectible_notes }}</p>
-            <a href={{ book.cover_id }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"
-                    alt="Book Cover" src="{{ book.cover_id }}"/></a>
+            <a href={{ book.cover_image.image.url }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"
+                    alt="Book Cover" src="{{ book.cover_image.image.url }}"/></a>
             <br>
             {% for image in book.images.all %}
-                {#                <a href="{{ image.image.url }}"><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" alt="Book Cover" src="{{ image.image.url }}"/></a>#}
+                {% if not image.is_book_cover %}
                 {% thumbnail image.image "200x200" as thumb %}
                     <img src="{{ thumb.url }}" alt="Thumbnail" class="thumbnail img-fluid shadow rounded p-2"
                          data-full="{{ image.image.url }}">
                 {% endthumbnail %}
+                {% endif %}
             {% endfor %}
             <!-- Lightbox overlay -->
             <div id="lightbox" class="lightbox">

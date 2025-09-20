@@ -6,6 +6,7 @@ import os
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.text import slugify
+from django.utils.html import mark_safe
 
 parser = NameParser()
 parse_name = parser.parse_name
@@ -111,6 +112,10 @@ class Book(models.Model):
     google_info = models.CharField(max_length=200, blank=True, null=True)
     book_json = models.TextField(blank=True, null=True)
 
+    @property
+    def cover_image(self):
+        return self.images.filter(is_cover=True).first()
+
     def normalize_sort_title(self, title):
         articles = ["a ", "an ", "the "]
         lower_title = title.lower()
@@ -154,68 +159,167 @@ class Book(models.Model):
         return self.title
 
 
+# class BookImage(models.Model):
+#     class Meta:
+#         verbose_name_plural = "Book Images"
+#         constraints = [
+#             models.UniqueConstraint(fields=['book'],
+#                                     condition=models.Q(is_book_cover=True),
+#                                     name='unique_cover_per_book')
+#         ]
+#
+#
+#
+#     book = models.ForeignKey(Book, on_delete=models.CASCADE,
+#                              related_name="images", blank=True, null=True)
+#     spotlight_cover = models.ForeignKey(BookSpotlight,
+#                                         on_delete=models.SET_NULL,
+#                                         related_name="spotlight_images", blank=True, null=True)
+#     image = models.ImageField(upload_to="images/", blank=True, null=True)
+#     caption = models.CharField(max_length=200, blank=True, null=True)
+#     is_book_cover = models.BooleanField(default=False)
+#
+#     @property
+#     def display_name(self):
+#         if self.book:
+#             display_name = self.book.title
+#         else:
+#             display_name = f"{self.spotlight_cover.title} Spotlight"
+#
+#         return display_name
+#
+#     def save(self, *args, **kwargs):
+#         # Process the image for storage to resize to 200x200
+#         if self.image:
+#             img = Image.open(self.image)
+#
+#             # Convert to RGB (prevents errors from PNG/WebP tranparency)
+#             if img.mode != "RGB":
+#                 img = img.convert("RGB")
+#
+#             # Resize image while maintaning aspect ratio
+#             output_size = (1200, 1200)
+#             img.thumbnail(output_size, Image.Resampling.LANCZOS)
+#
+#             # Save as jpeg with 85% quality
+#             img_io = BytesIO()
+#             img.save(img_io, format="JPEG", quality=85)
+#
+#             # Get original filename without extension
+#             original_name = os.path.splitext(self.image.name)[0]
+#
+#             # Generate a new filename with .jpg extension
+#             new_filename = f"{original_name}.jpg"
+#
+#             # Replace the uploaded image with the processed image
+#             self.image = InMemoryUploadedFile(
+#                 img_io,
+#                 'ImageField',
+#                 new_filename,
+#                 "image/jpeg",
+#                 sys.getsizeof(img_io),
+#                 None,
+#             )
+#
+#         super().save(*args, **kwargs)
+#
+#
+#
+#     def __str__(self):
+#         try:
+#             return f"Image for {self.book.title}."
+#         except AttributeError:
+#             return f"Image for {self.spotlight_cover.title}."
+
 class BookImage(models.Model):
     class Meta:
         verbose_name_plural = "Book Images"
-    book = models.ForeignKey(Book, on_delete=models.CASCADE,
-                             related_name="images", blank=True, null=True)
-    spotlight_cover = models.ForeignKey(BookSpotlight,
-                                        on_delete=models.SET_NULL,
-                                        related_name="spotlight_images", blank=True, null=True)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['book'],
+                condition=models.Q(is_cover=True),
+                name='unique_cover_per_book'
+            )
+        ]
+
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name="images",
+        blank=True,
+        null=True
+    )
+    spotlight_cover = models.ForeignKey(
+        BookSpotlight,
+        on_delete=models.SET_NULL,
+        related_name="spotlight_images",
+        blank=True,
+        null=True
+    )
     image = models.ImageField(upload_to="images/", blank=True, null=True)
+    thumbnail = models.ImageField(upload_to="images/thumbnails/", blank=True, null=True, editable=False)
     caption = models.CharField(max_length=200, blank=True, null=True)
+    is_cover = models.BooleanField(default=False)
 
     @property
     def display_name(self):
         if self.book:
-            display_name = self.book.title
-        else:
-            display_name = f"{self.spotlight_cover.title} Spotlight"
-
-        return display_name
+            return self.book.title
+        return f"{self.spotlight_cover.title} Spotlight"
 
     def save(self, *args, **kwargs):
-        # Process the image for storage to resize to 200x200
+        # --- Ensure only one cover per book ---
+        if self.is_cover and self.book:
+            BookImage.objects.filter(book=self.book, is_cover=True).exclude(pk=self.pk).update(is_cover=False)
+
         if self.image:
             img = Image.open(self.image)
 
-            # Convert to RGB (prevents errors from PNG/WebP tranparency)
+            # Convert to RGB (prevents errors from PNG/WebP transparency)
             if img.mode != "RGB":
                 img = img.convert("RGB")
 
-            # Resize image while maintaning aspect ratio
-            output_size = (1200, 1200)
-            img.thumbnail(output_size, Image.Resampling.LANCZOS)
-
-            # Save as jpeg with 85% quality
+            # --- Resize main image (max 1200x1200) ---
+            main_img = img.copy()
+            main_img.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
             img_io = BytesIO()
-            img.save(img_io, format="JPEG", quality=85)
-
-            # Get original filename without extension
+            main_img.save(img_io, format="JPEG", quality=85)
             original_name = os.path.splitext(self.image.name)[0]
-
-            # Generate a new filename with .jpg extension
             new_filename = f"{original_name}.jpg"
-
-            # Replace the uploaded image with the processed image
             self.image = InMemoryUploadedFile(
-                img_io,
-                'ImageField',
-                new_filename,
-                "image/jpeg",
-                sys.getsizeof(img_io),
-                None,
+                img_io, 'ImageField', new_filename, "image/jpeg", img_io.getbuffer().nbytes, None
+            )
+
+            # --- Create thumbnail (200x200) ---
+            thumb_img = img.copy()
+            thumb_img.thumbnail((200, 200), Image.Resampling.LANCZOS)
+            thumb_io = BytesIO()
+            thumb_img.save(thumb_io, format="JPEG", quality=85)
+            thumb_filename = f"{original_name}_thumb.jpg"
+            self.thumbnail = InMemoryUploadedFile(
+                thumb_io, 'ImageField', thumb_filename, "image/jpeg", thumb_io.getbuffer().nbytes, None
             )
 
         super().save(*args, **kwargs)
 
+    def thumbnail_preview(self):
+        """Returns an HTML img tag for admin preview."""
+        if self.thumbnail:
+            return mark_safe(
+                f'<img src="{self.thumbnail.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />')
+        elif self.image:
+            return mark_safe(
+                f'<img src="{self.image.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />')
+        return "(No image)"
 
+    thumbnail_preview.short_description = "Preview"
+    thumbnail_preview.allow_tags = True
 
     def __str__(self):
-        try:
-            return f"Image for {self.book.title}."
-        except AttributeError:
-            return f"Image for {self.spotlight_cover.title}."
+        if self.book:
+            return f"Image for {self.book.title}"
+        return f"Image for {self.spotlight_cover.title}"
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=100)

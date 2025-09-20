@@ -16,6 +16,7 @@
                 <thead>
                 <th scope="col"></th>
                 <th scope="col">Title</th>
+                <th scope="col">Cover</th>
                 <th scope="col">Author</th>
                 <th scope="col">Published</th>
                 <th scope="col">Notes</th>
@@ -27,6 +28,11 @@
                         <td><i>
                             {{ book.title }}{% if book.subtitle %}: {{ book.subtitle|truncatechars:20 }}{% endif %}</i>
                         </td>
+                        {% if book.cover_image.thumbnail.url %}
+                        <td><img src="{{ book.cover_image.thumbnail.url }}" alt="Book Cover"></td>
+                            {% else %}
+                            <td></td>
+                    {% endif %}
                         <td>{{ book.author }}</td>
                         <td>{{ book.publication_date|slice:"0:4" }}</td>
                         <td class="list-note">{{ book.collectible_notes|default:""|truncatechars:40 }}</td>
