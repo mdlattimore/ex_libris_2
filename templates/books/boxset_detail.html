@@ -1,0 +1,52 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br><br>
+    <h1 class="display-6 text-center">{{ boxset.name }}</h1>
+    <br>
+    <div class="text-center">
+        <img src="{{ boxset.cover_image.image.url }}" alt="Cover for {{ boxset.name }}" class="limited-img">
+    </div>
+    <br>
+    <h1 class="display-7 text-center">Books</h1>
+    <div class="text-center">
+        {% for book in boxset.books.all %}
+            <em><a href="{% url 'book_detail' book.id %}" class="display-8">{{ book.title }}</a></em><br><br>
+        {% endfor %}
+        <br><br>
+        <h1 class="display-7 text-center">Box Images</h1>
+        <div class="row">
+            <div class="col text-center">
+                <figure>
+                    <img src="{{ boxset.right_image.image.url }}" class="img-fluid rounded" alt="Box Right Image">
+                    <figcaption class="mt-2 text-muted">{{ boxset.right_image.caption }}</figcaption>
+                </figure>
+            </div>
+            <div class="col text-center">
+                <figure>
+                    <img src="{{ boxset.spine_image.image.url }}" class="img-fluid rounded" alt="Box Spine Image">
+                    <figcaption class="mt-2 text-muted">{{ boxset.spine_image.caption }}</figcaption>
+                </figure>
+            </div>
+
+            <div class="col text-center">
+                <figure>
+                    <img src="{{ boxset.left_image.image.url }}" class="img-fluid rounded" alt="Box Left Image">
+                    <figcaption class="mt-2 text-muted">{{ boxset.left_image.caption }}</figcaption>
+                </figure>
+            </div>
+        </div>
+        <br><br>
+        <h1 class="display-7 text-center mb-4">Other Images</h1>
+
+        <div class="row g-3 justify-content-center">
+            {% for image in boxset.other_images %}
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
+                    <img src="{{ image.image.url }}" alt="Other Image" class="img-fluid rounded">
+                </div>
+            {% endfor %}
+        </div>
+
+
+
+{% endblock content %}

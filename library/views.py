@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Book, Collection, BookSpotlight
+from .models import Book, Collection, BookSpotlight, BoxSet
 from .forms import BookForm, ISBNSearchForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (CreateView, ListView, DetailView,
@@ -134,6 +134,11 @@ class BookDetailView(DetailView):
     model = Book
     template_name = "books/book_detail.html"
 
+
+@method_decorator(never_cache, name='dispatch')
+class BoxSetDetailView(DetailView):
+    model = BoxSet
+    template_name = "books/boxset_detail.html"
 
 
 

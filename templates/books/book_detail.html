@@ -158,6 +158,14 @@
                             <td><b>Collectible Notes:</b></td>
                             <td>{{ book.collectible_notes }}</td>
                         </tr>
+                        {% if book.boxset %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Box Set:</b></td>
+                                <td><a href="{% url 'boxset_detail' book.boxset.id %}">{{ book.boxset }}</a></td>
+
+                            </tr>
+                        {% endif %}
                         {% if book.notes %}
                             <tr>
                                 <th scope="row"></th>
@@ -173,15 +181,23 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
             <p>{{ book.collectible_notes }}</p>
-            <a href={{ book.cover_image.image.url }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"
-                    alt="Book Cover" src="{{ book.cover_image.image.url }}"/></a>
+{#                        <a href={{ book.cover_image.image.url }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"#}
+{#                                alt="Book Cover" src="{{ book.cover_image.image.url }}"/></a>#}
+            {% thumbnail book.cover_image.image "600x600" as cover_thumb %}
+                <img src="{{ cover_thumb.url }}"
+                     alt="Book Cover"
+                     class="thumbnail rounded img-fluid shadow p-3 mb-5 bg-white rounded"
+                     style="width: 200px; height: auto;"
+                     data-full="{{ book.cover_image.image.url }}">
+            {% endthumbnail %}
+
             <br>
             {% for image in book.images.all %}
-                {% if not image.is_book_cover %}
-                {% thumbnail image.image "200x200" as thumb %}
-                    <img src="{{ thumb.url }}" alt="Thumbnail" class="thumbnail img-fluid shadow rounded p-2"
-                         data-full="{{ image.image.url }}">
-                {% endthumbnail %}
+                {% if not image.is_cover %}
+                    {% thumbnail image.image "200x200" as thumb %}
+                        <img src="{{ thumb.url }}" alt="Thumbnail" class="thumbnail img-fluid shadow rounded p-2"
+                             data-full="{{ image.image.url }}">
+                    {% endthumbnail %}
                 {% endif %}
             {% endfor %}
             <!-- Lightbox overlay -->

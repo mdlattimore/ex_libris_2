@@ -119,15 +119,17 @@ tr {
     cursor: pointer;
 }
 
+
+
 .display-7 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 300;
   line-height: 1.2;
   font-family: var(--bs-font-sans-serif);
 }
 
-.display-7 {
-  font-size: 1.5rem;
+.display-8 {
+  font-size: 1.25rem;
   font-weight: 300;
   line-height: 1.2;
   font-family: var(--bs-font-sans-serif);
@@ -144,4 +146,13 @@ blockquote {
     color: #666;
     background-color: #f9f9f9;
     font-style: italic;
+}
+
+img {
+    border-radius: .375rem;
+}
+
+.limited-img {
+    max-width: 300px;  /* cap size */
+    height: auto;      /* keep aspect ratio */
 }

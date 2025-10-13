@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Book, Genre, BookImage, Collection, BookSpotlight # , Author
+from .models import Book, Genre, BookImage, Collection, BookSpotlight, \
+    BoxSet  # , Author
 
 class BookSpotlightAdmin(admin.ModelAdmin):
     model = BookSpotlight
@@ -15,13 +16,13 @@ class BookInline(admin.TabularInline):
 class BookImageInline(admin.TabularInline):
     model = BookImage
     extra = 1
-    fields = ("thumbnail_preview", "image", "caption", "is_cover")
+    fields = ("thumbnail_preview", "image", "caption", "is_cover", "view_type")
     readonly_fields = ("thumbnail_preview",)
 
 
 class BookAdmin(admin.ModelAdmin):
     list_display = ['display_title', 'collectible_notes','display_author',
-        'publication_date']
+        'publication_date', 'id']
     ordering = ('sort_title',)
     readonly_fields = ('id',)
     filter_horizontal = ('genres',)  # ✅ Works in BookAdmin
@@ -54,11 +55,15 @@ class GenreAdmin(admin.ModelAdmin):
 #     list_display = ['display_name', 'image']
 
 class BookImageAdmin(admin.ModelAdmin):
-    list_display = ("display_name", "is_cover", "thumbnail_preview")
+    list_display = ("caption", "is_cover", "thumbnail_preview")
     readonly_fields = ("thumbnail_preview",)
 
 class CategoryAdmin(admin.ModelAdmin):
     model = Collection
+
+class BoxSetAdmin(admin.ModelAdmin):
+    list_display = ("name", "isbn10", "isbn13", "id")
+    inlines = [BookImageInline]  # same inline works for boxset; view_type shows in inline
 
 
 admin.site.register(Book, BookAdmin)
@@ -66,4 +71,5 @@ admin.site.register(Genre, GenreAdmin)
 admin.site.register(BookImage, BookImageAdmin)
 admin.site.register(Collection, CategoryAdmin)
 admin.site.register(BookSpotlight, BookSpotlightAdmin)
+admin.site.register(BoxSet, BoxSetAdmin)
 # admin.site.register(Author, AuthorAdmin)

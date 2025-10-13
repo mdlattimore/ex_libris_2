@@ -1,6 +1,6 @@
 from django.db import models
 from simple_name_parser import NameParser
-from PIL import Image
+from PIL import Image, ImageOps
 import sys
 import os
 from io import BytesIO
@@ -75,7 +75,7 @@ class Book(models.Model):
                                        on_delete=models.SET_NULL, blank=True,
                                        null=True, related_name="editions")
     title = models.CharField(max_length=200)
-    subtitle = models.CharField(max_length=100, blank=True, null=True)
+    subtitle = models.CharField(max_length=200, blank=True, null=True)
     author = models.CharField(max_length=200)
     publisher = models.CharField(max_length=200, blank=True, null=True)
     publication_date = models.CharField(max_length=50, blank=True, null=True)
@@ -105,6 +105,8 @@ class Book(models.Model):
     signed_by_author = models.BooleanField(default=False)
     is_collectible = models.BooleanField(default=False)
     collectible_notes = models.TextField(blank=True, null=True)
+    boxset = models.ForeignKey("BoxSet", on_delete=models.SET_NULL, blank=True,
+                                null=True, related_name="books")
 
     # utility
     sort_name = models.CharField(max_length=150, editable=True)
@@ -231,70 +233,235 @@ class Book(models.Model):
 #         except AttributeError:
 #             return f"Image for {self.spotlight_cover.title}."
 
+# class BookImage(models.Model):
+#     class Meta:
+#         verbose_name_plural = "Book Images"
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=['book'],
+#                 condition=models.Q(is_cover=True),
+#                 name='unique_cover_per_book'
+#             )
+#         ]
+#
+#     book = models.ForeignKey(
+#         Book,
+#         on_delete=models.CASCADE,
+#         related_name="images",
+#         blank=True,
+#         null=True
+#     )
+#     spotlight_cover = models.ForeignKey(
+#         BookSpotlight,
+#         on_delete=models.SET_NULL,
+#         related_name="spotlight_images",
+#         blank=True,
+#         null=True
+#     )
+#     image = models.ImageField(upload_to="images/", blank=True, null=True)
+#     thumbnail = models.ImageField(upload_to="images/thumbnails/", blank=True, null=True, editable=False)
+#     caption = models.CharField(max_length=200, blank=True, null=True)
+#     is_cover = models.BooleanField(default=False)
+#
+#     @property
+#     def display_name(self):
+#         if self.book:
+#             return self.book.title
+#         return f"{self.spotlight_cover.title} Spotlight"
+#
+#     def save(self, *args, **kwargs):
+#         # --- Ensure only one cover per book ---
+#         if self.is_cover and self.book:
+#             BookImage.objects.filter(book=self.book, is_cover=True).exclude(pk=self.pk).update(is_cover=False)
+#
+#         if self.image:
+#             img = Image.open(self.image)
+#
+#             # Convert to RGB (prevents errors from PNG/WebP transparency)
+#             if img.mode != "RGB":
+#                 img = img.convert("RGB")
+#
+#             # --- Resize main image (max 1200x1200) ---
+#             main_img = img.copy()
+#             main_img.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
+#             img_io = BytesIO()
+#             main_img.save(img_io, format="JPEG", quality=85)
+#             original_name = os.path.splitext(self.image.name)[0]
+#             new_filename = f"{original_name}.jpg"
+#             self.image = InMemoryUploadedFile(
+#                 img_io, 'ImageField', new_filename, "image/jpeg", img_io.getbuffer().nbytes, None
+#             )
+#
+#             # --- Create thumbnail (200x200) ---
+#             thumb_img = img.copy()
+#             thumb_img.thumbnail((200, 200), Image.Resampling.LANCZOS)
+#             thumb_io = BytesIO()
+#             thumb_img.save(thumb_io, format="JPEG", quality=85)
+#             thumb_filename = f"{original_name}_thumb.jpg"
+#             self.thumbnail = InMemoryUploadedFile(
+#                 thumb_io, 'ImageField', thumb_filename, "image/jpeg", thumb_io.getbuffer().nbytes, None
+#             )
+#
+#         super().save(*args, **kwargs)
+#
+#     def thumbnail_preview(self):
+#         """Returns an HTML img tag for admin preview."""
+#         if self.thumbnail:
+#             return mark_safe(
+#                 f'<img src="{self.thumbnail.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />')
+#         elif self.image:
+#             return mark_safe(
+#                 f'<img src="{self.image.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />')
+#         return "(No image)"
+#
+#     thumbnail_preview.short_description = "Preview"
+#     thumbnail_preview.allow_tags = True
+#
+#     def __str__(self):
+#         if self.book:
+#             return f"Image for {self.book.title}"
+#         return f"Image for {self.spotlight_cover.title}"
+
+
+
+
 class BookImage(models.Model):
     class Meta:
         verbose_name_plural = "Book Images"
         constraints = [
+            # single cover per Book (Postgres only for conditional index)
             models.UniqueConstraint(
                 fields=['book'],
                 condition=models.Q(is_cover=True),
                 name='unique_cover_per_book'
-            )
+            ),
+            # single cover per BoxSet
+            models.UniqueConstraint(
+                fields=['boxset'],
+                condition=models.Q(is_cover=True),
+                name='unique_cover_per_boxset'
+            ),
+            # If view_type is set for a box_set, it must be unique (front/back/spine)
+            models.UniqueConstraint(
+                fields=['boxset', 'view_type'],
+                condition=(
+                        models.Q(boxset__isnull=False)
+                        & models.Q(view_type__in=["front", "back", "spine"])
+                ),
+                name='unique_boxset_view_type_except_other'
+            ),
+
         ]
 
+    # ownership - exactly one of these should be set per image
     book = models.ForeignKey(
-        Book,
+        "Book",
         on_delete=models.CASCADE,
         related_name="images",
         blank=True,
         null=True
     )
     spotlight_cover = models.ForeignKey(
-        BookSpotlight,
+        "BookSpotlight",
         on_delete=models.SET_NULL,
         related_name="spotlight_images",
         blank=True,
         null=True
     )
+    boxset = models.ForeignKey(
+        "BoxSet",
+        on_delete=models.CASCADE,
+        related_name="boxset_images",
+        blank=True,
+        null=True
+    )
+
     image = models.ImageField(upload_to="images/", blank=True, null=True)
     thumbnail = models.ImageField(upload_to="images/thumbnails/", blank=True, null=True, editable=False)
-    caption = models.CharField(max_length=200, blank=True, null=True)
+
+    # cover flag applies per-owner; only one is_cover=True per Book and per BoxSet
     is_cover = models.BooleanField(default=False)
 
-    @property
-    def display_name(self):
-        if self.book:
-            return self.book.title
-        return f"{self.spotlight_cover.title} Spotlight"
+    # Optional for box set images: front/back/spine (or None)
+    VIEW_TYPE_CHOICES = [
+        ("left", "Left"),
+        ("spine", "Spine"),
+        ("right", "Right"),
+        ("other", "Other"),
+    ]
+    view_type = models.CharField(max_length=20, choices=VIEW_TYPE_CHOICES, blank=True, null=True)
+
+    caption = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        owner = self.book or self.boxset or self.spotlight_cover
+        return f"Image for {getattr(owner, 'title', getattr(owner, 'name', 'Unknown'))}"
+
+    # admin preview
+    def thumbnail_preview(self):
+        if self.thumbnail:
+            return mark_safe(
+                f'<img src="{self.thumbnail.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />'
+            )
+        if self.image:
+            return mark_safe(
+                f'<img src="{self.image.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />'
+            )
+        return "(No image)"
+    thumbnail_preview.short_description = "Preview"
+    thumbnail_preview.allow_tags = True
+
+    def clean(self):
+        # Called by ModelForm/Full clean; ensure exactly one owner is set
+        owner_count = sum(bool(x) for x in (self.book, self.spotlight_cover, self.boxset))
+        if owner_count != 1:
+            raise ValidationError("Image must belong to exactly one of: book, spotlight_cover, or box_set.")
 
     def save(self, *args, **kwargs):
-        # --- Ensure only one cover per book ---
-        if self.is_cover and self.book:
-            BookImage.objects.filter(book=self.book, is_cover=True).exclude(pk=self.pk).update(is_cover=False)
+        # Validate ownership at save time (in case full_clean isn't called)
+        owner_count = sum(bool(x) for x in (self.book, self.spotlight_cover, self.boxset))
+        if owner_count != 1:
+            raise ValueError("Image must belong to exactly one of: book, spotlight_cover, or box_set.")
 
+        # If this is being set as cover, demote any other covers for that owner
+        if self.is_cover:
+            if self.book:
+                BookImage.objects.filter(book=self.book, is_cover=True).exclude(pk=self.pk).update(is_cover=False)
+            if self.boxset:
+                BookImage.objects.filter(boxset=self.boxset, is_cover=True).exclude(pk=self.pk).update(is_cover=False)
+            if self.spotlight_cover:
+                BookImage.objects.filter(spotlight_cover=self.spotlight_cover, is_cover=True).exclude(pk=self.pk).update(is_cover=False)
+
+        # If there's an uploaded image, process it into a main and a thumbnail
         if self.image:
             img = Image.open(self.image)
 
-            # Convert to RGB (prevents errors from PNG/WebP transparency)
+            # ✅ Apply EXIF orientation (fixes rotated/sideways uploads)
+            img = ImageOps.exif_transpose(img)
+
+            # Ensure RGB mode
             if img.mode != "RGB":
                 img = img.convert("RGB")
 
-            # --- Resize main image (max 1200x1200) ---
+            original_name = os.path.splitext(os.path.basename(self.image.name))[0]
+
+            # --- main image (max 1200x1200) ---
             main_img = img.copy()
-            main_img.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
+            main_img.thumbnail((600, 600), Image.Resampling.LANCZOS)
             img_io = BytesIO()
             main_img.save(img_io, format="JPEG", quality=85)
-            original_name = os.path.splitext(self.image.name)[0]
-            new_filename = f"{original_name}.jpg"
+            img_io.seek(0)
+            main_filename = f"{original_name}.jpg"
             self.image = InMemoryUploadedFile(
-                img_io, 'ImageField', new_filename, "image/jpeg", img_io.getbuffer().nbytes, None
+                img_io, 'ImageField', main_filename, "image/jpeg", img_io.getbuffer().nbytes, None
             )
 
-            # --- Create thumbnail (200x200) ---
+            # --- thumbnail (200x200) ---
             thumb_img = img.copy()
             thumb_img.thumbnail((200, 200), Image.Resampling.LANCZOS)
             thumb_io = BytesIO()
             thumb_img.save(thumb_io, format="JPEG", quality=85)
+            thumb_io.seek(0)
             thumb_filename = f"{original_name}_thumb.jpg"
             self.thumbnail = InMemoryUploadedFile(
                 thumb_io, 'ImageField', thumb_filename, "image/jpeg", thumb_io.getbuffer().nbytes, None
@@ -302,23 +469,34 @@ class BookImage(models.Model):
 
         super().save(*args, **kwargs)
 
-    def thumbnail_preview(self):
-        """Returns an HTML img tag for admin preview."""
-        if self.thumbnail:
-            return mark_safe(
-                f'<img src="{self.thumbnail.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />')
-        elif self.image:
-            return mark_safe(
-                f'<img src="{self.image.url}" width="100" style="border:1px solid #ccc; border-radius:4px;" />')
-        return "(No image)"
 
-    thumbnail_preview.short_description = "Preview"
-    thumbnail_preview.allow_tags = True
+class BoxSet(models.Model):
+    name = models.CharField(max_length=200)
+    isbn10 = models.CharField(max_length=10, blank=True, null=True)
+    isbn13 = models.CharField(max_length=13, blank=True, null=True)
+
+    @property
+    def cover_image(self):
+        return self.boxset_images.filter(is_cover=True).first()
+
+    @property
+    def left_image(self):
+        return self.boxset_images.filter(view_type='left').first()
+
+    @property
+    def spine_image(self):
+        return self.boxset_images.filter(view_type='spine').first()
+
+    @property
+    def right_image(self):
+        return self.boxset_images.filter(view_type='right').first()
+
+    @property
+    def other_images(self):
+        return self.boxset_images.filter(view_type='other')
 
     def __str__(self):
-        if self.book:
-            return f"Image for {self.book.title}"
-        return f"Image for {self.spotlight_cover.title}"
+        return self.name
 
 
 class Genre(models.Model):
