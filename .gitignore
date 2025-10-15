@@ -10,6 +10,7 @@ __pycache__/
 *.log
 db.sqlite3
 media
+db_backup.sqlite3
 
 # Virtual environment
 .venv
