@@ -1,4 +1,4 @@
-# library/forms.py
+# catalog/forms.py
 from django import forms
 from .models import Book
 

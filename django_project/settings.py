@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     # Local
     "accounts",
     "pages",
-    "library",
+    "catalog",
     "utils",
 ]
 

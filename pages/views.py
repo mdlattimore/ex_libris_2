@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from library.models import BookSpotlight
+from catalog.models import BookSpotlight
 
 class HomePageView(TemplateView):
     template_name = "pages/home.html"
