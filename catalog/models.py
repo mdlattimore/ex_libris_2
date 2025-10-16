@@ -72,6 +72,11 @@ class Book(models.Model):
         ("FA", "Fair"),
         ("RC", "Reading Copy")
     ]
+    STATUS_CHOICES = [
+        ("Catalog", "Catalog"),
+        ("Inventory", "Inventory"),
+        ("Sold", "Sold"),
+    ]
 
     # metadata
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE,
@@ -92,11 +97,14 @@ class Book(models.Model):
     cover_id = models.CharField(max_length=250, blank=True, null=True)
 
     # collection data
-    owned = models.BooleanField(default=True)
+    # owned = models.BooleanField(default=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES,)
     date_acquired = models.DateField(blank=True, null=True)
     source = models.CharField(max_length=150, blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
                                 null=True)
+    acquisition_cost = models.DecimalField(decimal_places=2, max_digits=10,
+                                           blank=True, null=True)
     est_value = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
                                     null=True)
     notes = models.TextField(blank=True, null=True)
@@ -123,6 +131,16 @@ class Book(models.Model):
     @property
     def cover_image(self):
         return self.images.filter(is_cover=True).first()
+
+    @property
+    def total_cost(self):
+        if self.price and self.acquisition_cost:
+            return self.price + self.acquisition_cost
+        elif self.price:
+            return self.price
+        else:
+            return ""
+
 
     def normalize_sort_title(self, title):
         articles = ["a ", "an ", "the "]

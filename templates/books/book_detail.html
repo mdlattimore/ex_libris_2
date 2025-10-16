@@ -29,6 +29,9 @@
                         </thead>
                         <tbody>
                         <tr>
+                            <td colspan="3" class="text-center display-8 fw-bold">Bibliographic Info</td>
+                        </tr>
+                        <tr>
                             <th scope="row"></th>
                             <td><b>Author:</b></td>
                             <td>{{ book.author }}</td>
@@ -85,34 +88,14 @@
                                 <td><a href="https://openlibrary.org/isbn/{{ book.isbn_13 }}">{{ book.title }}</a></td>
                             </tr>
                         {% endif %}
+                        {% if book.notes %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td colspan="2"><b>Description:</b>&emsp;{{ book.notes|render_markdown }}</td>
+                            </tr>
+                        {% endif %}
                         <tr>
-                            <th scope="row"></th>
-                            <td><b>Owned:</b></td>
-                            <td>{{ book.owned|yesno:"Yes, No" }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Date Acquired:</b></td>
-                            <td>{{ book.date_acquired }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Source:</b></td>
-                            <td>{{ book.source }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Date Acquired:</b></td>
-                            <td>{{ book.date_acquired }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Price:</b></td>
-                            {% if book.price %}
-                                <td>${{ book.price }}</td>
-                            {% else %}
-                                <td></td>
-                            {% endif %}
+                            <td colspan="3" class="display-8 fw-bold text-center">Condition and Collectibility</td>
                         </tr>
                         <tr>
                             <th scope="row"></th>
@@ -166,12 +149,58 @@
 
                             </tr>
                         {% endif %}
-                        {% if book.notes %}
-                            <tr>
-                                <th scope="row"></th>
-                                <td colspan="2"><b>Description:</b>&emsp;{{ book.notes|render_markdown }}</td>
-                            </tr>
-                        {% endif %}
+                        <tr>
+                            <td colspan="3" class="display-8 text-center fw-bold">Acquisition and Status</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Status</b></td>
+                            <td>{{ book.status }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Date Acquired:</b></td>
+                            <td>{{ book.date_acquired }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Source:</b></td>
+                            <td>{{ book.source }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Date Acquired:</b></td>
+                            <td>{{ book.date_acquired }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Price:</b></td>
+                            {% if book.price %}
+                                <td>${{ book.price }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Acquisition Cost:</b></td>
+                            {% if book.acquisition_cost %}
+                                <td>${{ book.acquisition_cost }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Total Cost:</b></td>
+                            {% if book.total_cost %}
+                                <td>${{ book.total_cost }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
+
+
 
                         </tbody>
                     </table>
