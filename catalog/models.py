@@ -118,7 +118,7 @@ class Book(models.Model):
                                              blank=True, null=True)
     signed_by_author = models.BooleanField(default=False)
     is_collectible = models.BooleanField(default=False)
-    collectible_notes = models.TextField(blank=True, null=True)
+    collectibility_notes = models.TextField(blank=True, null=True)
     boxset = models.ForeignKey("BoxSet", on_delete=models.SET_NULL, blank=True,
                                null=True, related_name="books")
 

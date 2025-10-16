@@ -31,7 +31,7 @@ class BookForm(forms.ModelForm):
             'dust_jacket_condition',
             'signed_by_author',
             'is_collectible',
-            'collectible_notes',
+            'collectibility_notes',
             'google_info',
             'book_json'
         ]

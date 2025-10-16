@@ -21,7 +21,7 @@ class BookImageInline(admin.TabularInline):
 
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ['display_title', 'collectible_notes','display_author',
+    list_display = ['display_title', 'collectibility_notes', 'display_author',
         'publication_date', 'id']
     ordering = ('sort_title',)
     readonly_fields = ('id',)

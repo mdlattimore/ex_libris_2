@@ -97,15 +97,7 @@
                         <tr>
                             <td colspan="3" class="display-8 fw-bold text-center">Condition and Collectibility</td>
                         </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Estimated Value:</b></td>
-                            {% if book.est_value %}
-                                <td>${{ book.est_value }}</td>
-                            {% else %}
-                                <td></td>
-                            {% endif %}
-                        </tr>
+
                         <tr>
                             <th scope="row"></th>
                             <td><b>Binding:</b></td>
@@ -138,8 +130,8 @@
                         </tr>
                         <tr>
                             <th scope="row"></th>
-                            <td><b>Collectible Notes:</b></td>
-                            <td>{{ book.collectible_notes }}</td>
+                            <td><b>Collectibility Notes:</b></td>
+                            <td>{{ book.collectibility_notes }}</td>
                         </tr>
                         {% if book.boxset %}
                             <tr>
@@ -149,6 +141,15 @@
 
                             </tr>
                         {% endif %}
+                        <tr>
+                            <th scope="row"></th>
+                            <td><b>Estimated Value:</b></td>
+                            {% if book.est_value %}
+                                <td>${{ book.est_value }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
                         <tr>
                             <td colspan="3" class="display-8 text-center fw-bold">Acquisition and Status</td>
                         </tr>
@@ -209,7 +210,7 @@
         </div>
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
-            <p>{{ book.collectible_notes }}</p>
+            <p>{{ book.collectibility_notes }}</p>
 {#                        <a href={{ book.cover_image.image.url }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"#}
 {#                                alt="Book Cover" src="{{ book.cover_image.image.url }}"/></a>#}
             {% thumbnail book.cover_image.image "600x600" as cover_thumb %}
