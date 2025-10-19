@@ -75,10 +75,16 @@ class Book(models.Model):
     STATUS_CHOICES = [
         ("Catalog", "Catalog"),
         ("Inventory", "Inventory"),
+    ]
+    DISPOSITION_CHOICES = [
         ("Sold", "Sold"),
+        ("Donated", "Donated"),
+        ("Gifted", "Gifted"),
+        ("Discarded", "Discarded"),
+
     ]
 
-    # metadata
+    # bibliographic info
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE,
                                    related_name="books", blank=True, null=True)
     book_spotlight = models.ForeignKey(BookSpotlight,
@@ -105,9 +111,12 @@ class Book(models.Model):
                                 null=True)
     acquisition_cost = models.DecimalField(decimal_places=2, max_digits=10,
                                            blank=True, null=True)
-    est_value = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
-                                    null=True)
+
     notes = models.TextField(blank=True, null=True)
+    boxset = models.ForeignKey("BoxSet", on_delete=models.SET_NULL, blank=True,
+                               null=True, related_name="books")
+
+    # condition and collectibility
     binding = models.CharField(max_length=30, choices=BINDING_CHOICES,
                                blank=True, null=True)
     condition = models.CharField(max_length=30, choices=CONDITION_CHOICES,
@@ -117,10 +126,21 @@ class Book(models.Model):
                                              choices=CONDITION_CHOICES,
                                              blank=True, null=True)
     signed_by_author = models.BooleanField(default=False)
-    is_collectible = models.BooleanField(default=False)
     collectibility_notes = models.TextField(blank=True, null=True)
-    boxset = models.ForeignKey("BoxSet", on_delete=models.SET_NULL, blank=True,
-                               null=True, related_name="books")
+    est_value = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
+                                    null=True)
+
+    # Disposition
+    disposition = models.CharField(max_length=30,
+                                   choices=DISPOSITION_CHOICES, blank=True, null=True)
+    recipient = models.CharField(max_length=150, blank=True, null=True)
+    sales_price = models.DecimalField(decimal_places=2, blank=True,
+                                      null=True, max_digits=10)
+    shipping_charged = models.DecimalField(decimal_places=2, max_digits=10,
+                                           blank=True, null=True)
+    shipping_cost = models.DecimalField(decimal_places=2, blank=True,
+                                        null=True, max_digits=10)
+    disposition_date = models.DateField(blank=True, null=True)
 
     # utility
     sort_name = models.CharField(max_length=150, editable=True)
@@ -140,6 +160,27 @@ class Book(models.Model):
             return self.price
         else:
             return ""
+
+    @property
+    def total_sold_price(self):
+        if self.sales_price and self.shipping_charged:
+            return self.sales_price + self.shipping_charged
+        elif self.sales_price:
+            return self.sales_price
+        else:
+            return ""
+
+    @property
+    def total_profit(self):
+        if self.total_cost and self.total_sold_price:
+            return (self.sales_price - self.price) + (self.shipping_charged -
+                                                       self.acquisition_cost
+                                                       - self.shipping_cost
+                                                       )
+
+        else:
+            return ""
+
 
 
     def normalize_sort_title(self, title):

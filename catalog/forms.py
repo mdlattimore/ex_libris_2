@@ -30,8 +30,14 @@ class BookForm(forms.ModelForm):
             'dust_jacket',
             'dust_jacket_condition',
             'signed_by_author',
-            'is_collectible',
             'collectibility_notes',
+            'status',
+            'disposition',
+            'recipient',
+            'sales_price',
+            'shipping_charged',
+            'shipping_cost',
+            'disposition_date',
             'google_info',
             'book_json'
         ]

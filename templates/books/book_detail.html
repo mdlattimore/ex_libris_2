@@ -94,6 +94,14 @@
                                 <td colspan="2"><b>Description:</b>&emsp;{{ book.notes|render_markdown }}</td>
                             </tr>
                         {% endif %}
+                        {% if book.boxset %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Box Set:</b></td>
+                                <td><a href="{% url 'boxset_detail' book.boxset.id %}">{{ book.boxset }}</a></td>
+
+                            </tr>
+                        {% endif %}
                         <tr>
                             <td colspan="3" class="display-8 fw-bold text-center">Condition and Collectibility</td>
                         </tr>
@@ -123,24 +131,13 @@
                             <td><b>Signed By Author:</b></td>
                             <td>{{ book.signed_by_author|yesno:"Yes, No" }}</td>
                         </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Collectible:</b></td>
-                            <td>{{ book.is_collectible|yesno:"Yes, No" }}</td>
-                        </tr>
+
                         <tr>
                             <th scope="row"></th>
                             <td><b>Collectibility Notes:</b></td>
                             <td>{{ book.collectibility_notes }}</td>
                         </tr>
-                        {% if book.boxset %}
-                            <tr>
-                                <th scope="row"></th>
-                                <td><b>Box Set:</b></td>
-                                <td><a href="{% url 'boxset_detail' book.boxset.id %}">{{ book.boxset }}</a></td>
 
-                            </tr>
-                        {% endif %}
                         <tr>
                             <th scope="row"></th>
                             <td><b>Estimated Value:</b></td>
@@ -156,7 +153,12 @@
                         <tr>
                             <th scope="row"></th>
                             <td><b>Status</b></td>
-                            <td>{{ book.status }}</td>
+                            {% if book.status == "Inventory" %}
+                                <td style="color: red">{{ book.status }}</td>
+                            {% else %}
+                                <td style="color: green">{{ book.status }}</td>
+                            {% endif %}
+
                         </tr>
                         <tr>
                             <th scope="row"></th>
@@ -173,34 +175,80 @@
                             <td><b>Date Acquired:</b></td>
                             <td>{{ book.date_acquired }}</td>
                         </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Price:</b></td>
-                            {% if book.price %}
-                                <td>${{ book.price }}</td>
-                            {% else %}
-                                <td></td>
-                            {% endif %}
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Acquisition Cost:</b></td>
-                            {% if book.acquisition_cost %}
-                                <td>${{ book.acquisition_cost }}</td>
-                            {% else %}
-                                <td></td>
-                            {% endif %}
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Total Cost:</b></td>
-                            {% if book.total_cost %}
-                                <td>${{ book.total_cost }}</td>
-                            {% else %}
-                                <td></td>
-                            {% endif %}
-                        </tr>
+                        {% if user.is_authenticated %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Price:</b></td>
+                                {% if book.price %}
+                                    <td>${{ book.price }}</td>
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Acquisition Cost:</b></td>
+                                {% if book.acquisition_cost %}
+                                    <td>${{ book.acquisition_cost }}</td>
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Total Cost:</b></td>
+                                {% if book.total_cost %}
+                                    <td>${{ book.total_cost }}</td>
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            </tr>
 
+                            <tr>
+                                <td colspan="3" class="display-8 text-center fw-bold">Disposition</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Disposition:</b></td>
+                                <td>{{ book.disposition }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Disposition Date:</b></td>
+                                <td>{{ book.disposition_date }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Recipient:</b></td>
+                                <td>{{ book.recipient }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Sales Price:</b></td>
+                                <td>{{ book.sales_price }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Shipping Charged:</b></td>
+                                <td>{{ book.shipping_charged }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Shipping Cost:</b></td>
+                                <td>{{ book.shipping_cost }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Total Sold Price:</b></td>
+                                <td>{{ book.total_sold_price }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Profit/Loss:</b></td>
+                                <td>{{ book.total_profit }}</td>
+                            </tr>
+
+                        {% endif %}
 
 
                         </tbody>
@@ -211,8 +259,8 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
             <p>{{ book.collectibility_notes }}</p>
-{#                        <a href={{ book.cover_image.image.url }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"#}
-{#                                alt="Book Cover" src="{{ book.cover_image.image.url }}"/></a>#}
+            {#                        <a href={{ book.cover_image.image.url }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"#}
+            {#                                alt="Book Cover" src="{{ book.cover_image.image.url }}"/></a>#}
             {% thumbnail book.cover_image.image "600x600" as cover_thumb %}
                 <img src="{{ cover_thumb.url }}"
                      alt="Book Cover"
@@ -284,6 +332,7 @@
     <br>
 {% endblock content %}
 {% block javascript %}
+    {{ block.super }}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const thumbnails = document.querySelectorAll('.thumbnail');
