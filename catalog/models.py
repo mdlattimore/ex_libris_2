@@ -292,6 +292,9 @@ class BookImage(models.Model):
     image = models.ImageField(upload_to="images/", blank=True, null=True)
     thumbnail = models.ImageField(upload_to="images/thumbnails/", blank=True,
                                   null=True, editable=False)
+    small_thumbnail = models.ImageField(upload_to="images/thumbnails/",
+                                      blank=True,
+                                  null=True, editable=False)
 
     # cover flag applies per-owner; only one is_cover=True per Book and per BoxSet
     is_cover = models.BooleanField(default=False)
@@ -393,6 +396,18 @@ class BookImage(models.Model):
             self.thumbnail = InMemoryUploadedFile(
                 thumb_io, 'ImageField', thumb_filename, "image/jpeg",
                 thumb_io.getbuffer().nbytes, None
+            )
+
+            # --- small thumbnail (125x125) ---
+            sm_thumb_img = img.copy()
+            sm_thumb_img.thumbnail((125, 125), Image.Resampling.LANCZOS)
+            sm_thumb_io = BytesIO()
+            sm_thumb_img.save(sm_thumb_io, format="JPEG", quality=85)
+            sm_thumb_io.seek(0)
+            sm_thumb_filename = f"{original_name}_sm_thumb.jpg"
+            self.small_thumbnail = InMemoryUploadedFile(
+                sm_thumb_io, 'ImageField', sm_thumb_filename, "image/jpeg",
+                sm_thumb_io.getbuffer().nbytes, None
             )
 
         super().save(*args, **kwargs)

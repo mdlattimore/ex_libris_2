@@ -8,7 +8,11 @@
     <br>
     <h1 class="display-6"><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}
     </i></h1>
-    <p>Part of the {{ book.collection }} Collection</p>
+    {% if book.collection %}
+        <p>Part of the {{ book.collection }} Collection</p>
+    {% else %}
+        <p></p>
+    {% endif %}
     {% if book.book_spotlight %}
         <p>Spotlight on <a href="{% url 'book_spotlight' book.book_spotlight.pk %}">{{ book.book_spotlight }}</a></p>
     {% endif %}
@@ -35,9 +39,15 @@
                             <th scope="row"></th>
                             <td><b>Author:</b></td>
                             {% if book.author_id %}
-                            <td><a href={% url "author_detail" book.author_id %}>{{ book.named_author }}</a></td>
+                                {% if book.named_author != book.author.full_name %}
+                                    <td><a href={% url "author_detail" book.author_id %}>{{ book.named_author }}
+                                        ({{ book.author }})</a></td>
+                                {% else %}
+                                    <td><a href={% url "author_detail" book.author_id %}>{{ book.named_author }}</a>
+                                    </td>
+                                {% endif %}
                             {% else %}
-                            <td>None</td>
+                                <td>None</td>
                             {% endif %}
                         </tr>
                         <tr>
@@ -270,8 +280,11 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-4">
             <p>{{ book.collectibility_notes }}</p>
-            {#                        <a href={{ book.cover_image.image.url }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded" style="width: 200px; height: auto;"#}
-            {#                                alt="Book Cover" src="{{ book.cover_image.image.url }}"/></a>#}
+            {% if not book.cover_image.image %}
+                <a href={{ book.cover_id }}><img class="rounded img-fluid shadow p-3 mb-5 bg-white rounded"
+                                                 style="width: 200px; height: auto;"
+                                                 alt="Book Cover" src="{{ book.cover_id }}"/></a>
+            {% endif %}
             {% thumbnail book.cover_image.image "600x600" as cover_thumb %}
                 <img src="{{ cover_thumb.url }}"
                      alt="Book Cover"

@@ -109,14 +109,15 @@ def isbn_search_view(request):
             # check aliases
             all_aliases = AuthorAlias.objects.all()
             for alias in all_aliases:
-                if authors == alias.alias:
+                # if authors == alias.alias:
+                if name_match(authors, alias.alias) >= 90:
                     authors = alias.author.full_name
                     print(f"{alias} for {alias.author}")
                     break
 
             all_authors = Author.objects.all()
             for author_instance in all_authors:
-                if name_match(author_instance.full_name, authors) >= 80:
+                if name_match(author_instance.full_name, authors) >= 90:
                     author = author_instance
                     print(name_match(author.full_name, authors))
                     break
