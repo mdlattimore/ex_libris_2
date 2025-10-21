@@ -34,7 +34,11 @@
                         <tr>
                             <th scope="row"></th>
                             <td><b>Author:</b></td>
-                            <td>{{ book.author }}</td>
+                            {% if book.author_id %}
+                            <td><a href={% url "author_detail" book.author_id %}>{{ book.named_author }}</a></td>
+                            {% else %}
+                            <td>None</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <th scope="row"></th>
@@ -73,6 +77,13 @@
                                 <th scope="row"></th>
                                 <td><b>Google Book Listing:</b></td>
                                 <td><a href="{{ book.google_info }}">{{ book.title }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if book.gutenburg_info %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Gutenburg Book Listing:</b></td>
+                                <td><a href="{{ book.gutenburg_info }}">{{ book.title }}</a></td>
                             </tr>
                         {% endif %}
                         {% if book.isbn_10 %}

@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from .models import Book, Collection, BookSpotlight, BoxSet
+
+from .fuzzy_name_match_util import name_match, match_parse_name
+from .models import Book, Collection, BookSpotlight, BoxSet, Author, AuthorAlias
 from .forms import BookForm, ISBNSearchForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (CreateView, ListView, DetailView,
@@ -103,13 +105,31 @@ def isbn_search_view(request):
             notes = request.POST.get('notes')
             google_info = request.POST.get('google_info')
             book_json = request.POST.get('book_json')
+            named_author = authors
+            # check aliases
+            all_aliases = AuthorAlias.objects.all()
+            for alias in all_aliases:
+                if authors == alias.alias:
+                    authors = alias.author.full_name
+                    print(f"{alias} for {alias.author}")
+                    break
+
+            all_authors = Author.objects.all()
+            for author_instance in all_authors:
+                if name_match(author_instance.full_name, authors) >= 80:
+                    author = author_instance
+                    print(name_match(author.full_name, authors))
+                    break
+                else:
+                    author = None
 
             # Create or update the book instance
             book = Book.objects.create(
 
                 title=title,
                 subtitle=subtitle,
-                author=authors,
+                named_author=named_author,
+                author=author,
                 publisher=publisher,
                 publication_date=publication_date,
                 number_of_pages=number_of_pages,
@@ -133,6 +153,11 @@ def isbn_search_view(request):
 class BookDetailView(DetailView):
     model = Book
     template_name = "books/book_detail.html"
+
+@method_decorator(never_cache, name='dispatch')
+class AuthorDetailView(DetailView):
+    model = Author
+    template_name = "books/author_detail.html"
 
 
 @method_decorator(never_cache, name='dispatch')

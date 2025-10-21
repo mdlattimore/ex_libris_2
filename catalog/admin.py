@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Book, Genre, BookImage, Collection, BookSpotlight, \
-    BoxSet  # , Author
+    BoxSet, Author, AuthorAlias
+
 
 class BookSpotlightAdmin(admin.ModelAdmin):
     model = BookSpotlight
@@ -12,6 +13,22 @@ class BookInline(admin.TabularInline):
     extra = 0
     readonly_fields = ['book']
 
+class BooksByAuthorInline(admin.TabularInline):
+    model = Book
+    extra = 0
+
+class AuthorAdmin(admin.ModelAdmin):
+    model = Author
+    list_display = ['full_name',]
+    ordering = ('last_name', 'first_name')
+    inlines = [BooksByAuthorInline]
+
+class AuthorAliasAdmin(admin.ModelAdmin):
+    model = AuthorAlias
+    list_display = [
+        'alias',
+        'author'
+    ]
 
 class BookImageInline(admin.TabularInline):
     model = BookImage
@@ -72,4 +89,5 @@ admin.site.register(BookImage, BookImageAdmin)
 admin.site.register(Collection, CategoryAdmin)
 admin.site.register(BookSpotlight, BookSpotlightAdmin)
 admin.site.register(BoxSet, BoxSetAdmin)
-# admin.site.register(Author, AuthorAdmin)
+admin.site.register(Author, AuthorAdmin)
+admin.site.register(AuthorAlias, AuthorAliasAdmin)

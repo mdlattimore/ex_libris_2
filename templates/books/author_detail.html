@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br><br>
+    <h1 class="display-5 text-center">{{ author.full_name }}</h1>
+    Aliases
+    <ul>
+    {% for alias in author.aliases.all %}
+    <li>{{ alias.alias }}</li>
+    
+    {% endfor %}
+    </ul>
+    {% for book in author.book_set.all %}
+        <p><a href={% url 'book_detail' book.id %}>{{ book.title }}</a></p>
+    {% endfor %}
+    {{ author.bio|linebreaks }}
+    
+
+{% endblock content %}

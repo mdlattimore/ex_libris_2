@@ -2,13 +2,14 @@ import os
 from io import BytesIO
 
 from PIL import Image, ImageOps
+from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils.html import mark_safe
 from django.utils.text import slugify
 from simple_name_parser import NameParser
-from django.core.exceptions import ValidationError
 
+from .fuzzy_name_match_util import match_parse_name
 
 parser = NameParser()
 parse_name = parser.parse_name
@@ -22,13 +23,19 @@ class Author(models.Model):
     dob = models.DateField(blank=True, null=True)
     dod = models.DateField(blank=True, null=True)
     nationality = models.CharField(max_length=50, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     sort_name = models.CharField(max_length=150, blank=True, null=True)
+    match_name = models.CharField(max_length=150, blank=True, null=True,
+                                  unique=True)
 
     def save(self, *args, **kwargs):
         # Parse full_name into first and last names before saving.
         # The function used (parse_name()) returns a named tuple
         name_parts = parse_name(self.full_name)
+        self.first_name = name_parts.given_name
+        self.middle_name = name_parts.middle_name
+        self.last_name = name_parts.surname
         full_sort_name = []
         full_sort_name.append(name_parts.surname)
         full_sort_name.append(name_parts.given_name)
@@ -37,6 +44,23 @@ class Author(models.Model):
             self.sort_name = self.full_name
         else:
             self.sort_name = full_sort_name
+        self.match_name = match_parse_name(self.full_name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.full_name
+
+
+class AuthorAlias(models.Model):
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='aliases')
+    alias = models.CharField(max_length=150, unique=True)
+
+    class Meta:
+        verbose_name_plural = "aliases"
+
+    def __str__(self):
+        return f"{self.alias} = {self.author.full_name}"
+
 
 
 class BookSpotlight(models.Model):
@@ -92,7 +116,9 @@ class Book(models.Model):
                                        null=True, related_name="editions")
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
-    author = models.CharField(max_length=200)
+    named_author = models.CharField(max_length=150, blank=True, null=True)
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, blank=True,
+                               null=True)
     publisher = models.CharField(max_length=200, blank=True, null=True)
     publication_date = models.CharField(max_length=50, blank=True, null=True)
     number_of_pages = models.CharField(max_length=10, blank=True, null=True)
@@ -104,7 +130,7 @@ class Book(models.Model):
 
     # collection data
     # owned = models.BooleanField(default=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES,)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Catalog")
     date_acquired = models.DateField(blank=True, null=True)
     source = models.CharField(max_length=150, blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
@@ -132,7 +158,8 @@ class Book(models.Model):
 
     # Disposition
     disposition = models.CharField(max_length=30,
-                                   choices=DISPOSITION_CHOICES, blank=True, null=True)
+                                   choices=DISPOSITION_CHOICES, blank=True,
+                                   null=True)
     recipient = models.CharField(max_length=150, blank=True, null=True)
     sales_price = models.DecimalField(decimal_places=2, blank=True,
                                       null=True, max_digits=10)
@@ -143,9 +170,10 @@ class Book(models.Model):
     disposition_date = models.DateField(blank=True, null=True)
 
     # utility
-    sort_name = models.CharField(max_length=150, editable=True)
+    # sort_name = models.CharField(max_length=150, editable=True)
     sort_title = models.CharField(max_length=150, editable=True)
     google_info = models.CharField(max_length=200, blank=True, null=True)
+    gutenburg_info = models.CharField(max_length=200, blank=True, null=True)
     book_json = models.TextField(blank=True, null=True)
 
     @property
@@ -174,14 +202,11 @@ class Book(models.Model):
     def total_profit(self):
         if self.total_cost and self.total_sold_price:
             return (self.sales_price - self.price) + (self.shipping_charged -
-                                                       self.acquisition_cost
-                                                       - self.shipping_cost
-                                                       )
-
+                                                      self.acquisition_cost
+                                                      - self.shipping_cost
+                                                      )
         else:
             return ""
-
-
 
     def normalize_sort_title(self, title):
         articles = ["a ", "an ", "the "]
@@ -194,16 +219,16 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         # Parse full_name into first and last names before saving.
         # The function used (parse_name()) returns a named tuple
-        name_parts = parse_name(self.author)
-        full_sort_name = []
-        full_sort_name.append(name_parts.surname)
-        full_sort_name.append(name_parts.given_name)
-        full_sort_name.append(self.title)
-        full_sort_name = " ".join(full_sort_name)
-        if "of" in self.author.split() or "Of" in self.author.split():
-            self.sort_name = self.author
-        else:
-            self.sort_name = full_sort_name
+        # name_parts = parse_name(self.author.full_name)
+        # full_sort_name = []
+        # full_sort_name.append(name_parts.surname)
+        # full_sort_name.append(name_parts.given_name)
+        # full_sort_name.append(self.title)
+        # full_sort_name = " ".join(full_sort_name)
+        # if "of" in self.author.split() or "Of" in self.author.split():
+        #     self.sort_name = self.author
+        # else:
+        #     self.sort_name = full_sort_name
 
         self.sort_title = self.normalize_sort_title(self.title)
 
