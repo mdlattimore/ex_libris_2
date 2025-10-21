@@ -34,14 +34,16 @@
                         <td><i>
                             {{ book.title }}{% if book.subtitle %}: {{ book.subtitle|truncatechars:30 }}{% endif %}</i>
                         </td>
+                        <td>
                         {% if book.cover_image.small_thumbnail.url %}
-                            <td><img style="width: 125px; height: auto;" class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
-                                     src="{{ book.cover_image.small_thumbnail.url }}" alt="Book Cover"></td>
+                            <img style="width: 125px; height: auto;" class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
+                                     src="{{ book.cover_image.small_thumbnail.url }}" alt="Book Cover">
                         {% else %}
-                            <td><img class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
+                            <img class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
                                      style="width: 125px; height: auto;"
-                                     alt="Book Cover" src="{{ book.cover_id }}"/></td>
+                                     alt="Book Cover" src="{{ book.cover_id }}"/>
                         {% endif %}
+                    </td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.publication_date|slice:"0:4" }}</td>
                         <td class="list-note">{{ book.collectibility_notes|default:""|truncatechars:40 }}</td>
