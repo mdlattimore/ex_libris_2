@@ -17,11 +17,7 @@ class BooksByAuthorInline(admin.TabularInline):
     model = Book
     extra = 0
 
-class AuthorAdmin(admin.ModelAdmin):
-    model = Author
-    list_display = ['full_name',]
-    ordering = ('last_name', 'first_name')
-    inlines = [BooksByAuthorInline]
+
 
 class AuthorAliasAdmin(admin.ModelAdmin):
     model = AuthorAlias
@@ -35,6 +31,13 @@ class BookImageInline(admin.TabularInline):
     extra = 1
     fields = ("thumbnail_preview", "image", "caption", "is_cover", "view_type")
     readonly_fields = ("thumbnail_preview",)
+
+
+class AuthorAdmin(admin.ModelAdmin):
+    model = Author
+    list_display = ['full_name',]
+    ordering = ('last_name', 'first_name')
+    inlines = [BooksByAuthorInline, BookImageInline]
 
 
 class BookAdmin(admin.ModelAdmin):

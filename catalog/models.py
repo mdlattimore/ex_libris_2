@@ -29,6 +29,10 @@ class Author(models.Model):
     match_name = models.CharField(max_length=150, blank=True, null=True,
                                   unique=True)
 
+    @property
+    def author_image(self):
+        return self.author_images.filter().first()
+
     def save(self, *args, **kwargs):
         # Parse full_name into first and last names before saving.
         # The function used (parse_name()) returns a named tuple
@@ -49,7 +53,6 @@ class Author(models.Model):
 
     def __str__(self):
         return self.full_name
-
 
 class AuthorAlias(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='aliases')
@@ -263,6 +266,12 @@ class BookImage(models.Model):
                 ),
                 name='unique_boxset_view_type_except_other'
             ),
+            # single author per BoxSet
+            models.UniqueConstraint(
+                fields=['author'],
+                condition=models.Q(is_cover=True),
+                name='unique_image_per_author'
+            ),
 
         ]
 
@@ -285,6 +294,13 @@ class BookImage(models.Model):
         "BoxSet",
         on_delete=models.CASCADE,
         related_name="boxset_images",
+        blank=True,
+        null=True
+    )
+    author = models.ForeignKey(
+        "Author",
+        on_delete=models.SET_NULL,
+        related_name="author_images",
         blank=True,
         null=True
     )
@@ -312,7 +328,7 @@ class BookImage(models.Model):
     caption = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        owner = self.book or self.boxset or self.spotlight_cover
+        owner = self.book or self.boxset or self.spotlight_cover or self.author
         return f"Image for {getattr(owner, 'title', getattr(owner, 'name', 'Unknown'))}"
 
     # admin preview
@@ -333,18 +349,22 @@ class BookImage(models.Model):
     def clean(self):
         # Called by ModelForm/Full clean; ensure exactly one owner is set
         owner_count = sum(
-            bool(x) for x in (self.book, self.spotlight_cover, self.boxset))
+            bool(x) for x in (self.book, self.spotlight_cover, self.boxset,
+                self.author))
         if owner_count != 1:
             raise ValidationError(
-                "Image must belong to exactly one of: book, spotlight_cover, or box_set.")
+                "Image must belong to exactly one of: book, spotlight_cover, "
+                "box_set, or author.")
 
     def save(self, *args, **kwargs):
         # Validate ownership at save time (in case full_clean isn't called)
         owner_count = sum(
-            bool(x) for x in (self.book, self.spotlight_cover, self.boxset))
+            bool(x) for x in (self.book, self.spotlight_cover, self.boxset,
+                self.author))
         if owner_count != 1:
             raise ValueError(
-                "Image must belong to exactly one of: book, spotlight_cover, or box_set.")
+                "Image must belong to exactly one of: book, spotlight_cover, "
+                "box_set, or author.")
 
         # If this is being set as cover, demote any other covers for that owner
         if self.is_cover:
@@ -357,6 +377,10 @@ class BookImage(models.Model):
                     pk=self.pk).update(is_cover=False)
             if self.spotlight_cover:
                 BookImage.objects.filter(spotlight_cover=self.spotlight_cover,
+                                         is_cover=True).exclude(
+                    pk=self.pk).update(is_cover=False)
+            if self.author:
+                BookImage.objects.filter(author=self.author,
                                          is_cover=True).exclude(
                     pk=self.pk).update(is_cover=False)
 
@@ -451,7 +475,7 @@ class Genre(models.Model):
 
 class Collection(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):

@@ -9,7 +9,8 @@
     <h1 class="display-6"><i>{{ book.title }}{% if book.subtitle %}: {{ book.subtitle }}{% endif %}
     </i></h1>
     {% if book.collection %}
-        <p>Part of the {{ book.collection }} Collection</p>
+        <p>Part of the <a href={% url 'book_list_collection' book.collection.slug %}>{{ book.collection }}
+            Collection</a></p>
     {% else %}
         <p></p>
     {% endif %}
@@ -89,13 +90,7 @@
                                 <td><a href="{{ book.google_info }}">{{ book.title }}</a></td>
                             </tr>
                         {% endif %}
-                        {% if book.gutenburg_info %}
-                            <tr>
-                                <th scope="row"></th>
-                                <td><b>Gutenburg Book Listing:</b></td>
-                                <td><a href="{{ book.gutenburg_info }}">{{ book.title }}</a></td>
-                            </tr>
-                        {% endif %}
+
                         {% if book.isbn_10 %}
                             <tr>
                                 <th scope="row"></th>
@@ -107,6 +102,13 @@
                                 <th scope="row"></th>
                                 <td><b>Open Library Listing:</b></td>
                                 <td><a href="https://openlibrary.org/isbn/{{ book.isbn_13 }}">{{ book.title }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if book.gutenburg_info %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Gutenburg Book Listing:</b></td>
+                                <td><a href="{{ book.gutenburg_info }}">{{ book.title }}</a></td>
                             </tr>
                         {% endif %}
                         {% if book.notes %}
@@ -313,11 +315,12 @@
         </div>
     </div>
     <br>
-    <p><a href="{% url 'book_update' book.id %}" class="btn btn-primary">Update Book Info</a> &emsp;&emsp;
-        <a href="{% url 'book_delete' book.id %}" class="btn btn-danger">Delete Book Info</a></p>
-    <p><a href="{% url 'book_list_all' %}">Back to List</a></p>
-
     {% if user.is_superuser %}
+        <p><a href="{% url 'book_update' book.id %}" class="btn btn-primary">Update Book Info</a> &emsp;&emsp;
+            <a href="{% url 'book_delete' book.id %}" class="btn btn-danger">Delete Book Info</a></p>
+        <p><a href="{% url 'book_list_all' %}">Back to List</a></p>
+
+
         <a
                 href="#"
                 id="json-toggle"

@@ -3,17 +3,27 @@
 {% block content %}
     <br><br>
     <h1 class="display-5 text-center">{{ author.full_name }}</h1>
-    Aliases
-    <ul>
-    {% for alias in author.aliases.all %}
-    <li>{{ alias.alias }}</li>
-    
-    {% endfor %}
-    </ul>
-    {% for book in author.book_set.all %}
-        <p><a href={% url 'book_detail' book.id %}>{{ book.title }}</a></p>
-    {% endfor %}
+    {% if author.dob %} <p class="text-center">({{ author.dob.year }} - {{ author.dod.year }})</p>{% endif %}
+    {% if author.aliases.all %}
+                
+                    {% for alias in author.aliases.all %}
+                        <h1 class="display-8 text-center">{{ alias.alias }}</h1>
+                    {% endfor %}
+            {% endif %}
+    <br><br>
+    <div class="row">
+        <div class="col-sm-3">
+            <h1 class="display-6">Works</h1>
+            {% for book in author.book_set.all %}
+                <a href={% url 'book_detail' book.id %}><em>{{ book.title }}</em></a><br>
+            {% endfor %}
+        </div>
+        <div class="col-sm-9 author-bio">
+    {% if author.author_image.image %}
+        <img src="{{ author.author_image.image.url }}" alt="{{ author.full_name }}" class="author-photo">
+    {% endif %}
     {{ author.bio|linebreaks }}
-    
+</div>
 
+    </div>
 {% endblock content %}

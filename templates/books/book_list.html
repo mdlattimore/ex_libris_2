@@ -11,7 +11,7 @@
                 <h1 class="display-6">All Books</h1>
             {% endif %}
 
-            <table class="table table-hover" >
+            <table class="table table-hover" id="bookTable">
                 <colgroup>
                     <col style="width: 35%">   <!-- Title -->
                     <col style="width: 15%">   <!-- Cover -->
@@ -22,7 +22,12 @@
                 <thead>
                 {#                <th scope="col"></th>#}
                 <th scope="col">Title</th>
-                <th scope="col">Cover</th>
+                <th scope="col" class="cover-col">
+                    <button id="toggleCoversBtn" class="btn btn-link p-0 text-decoration-none">
+                        Hide Covers
+                    </button>
+                </th>
+                {#                <th scope="col">Cover</th>#}
                 <th scope="col">Author</th>
                 <th scope="col">Published</th>
                 <th scope="col">Notes</th>
@@ -34,16 +39,17 @@
                         <td><i>
                             {{ book.title }}{% if book.subtitle %}: {{ book.subtitle|truncatechars:30 }}{% endif %}</i>
                         </td>
-                        <td>
-                        {% if book.cover_image.small_thumbnail.url %}
-                            <img style="width: 125px; height: auto;" class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
+                        <td class="cover-col">
+                            {% if book.cover_image.small_thumbnail.url %}
+                                <img style="width: 125px; height: auto;"
+                                     class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
                                      src="{{ book.cover_image.small_thumbnail.url }}" alt="Book Cover">
-                        {% else %}
-                            <img class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
+                            {% else %}
+                                <img class="rounded img-fluid shadow p-1 mb-5 bg-white rounded"
                                      style="width: 125px; height: auto;"
                                      alt="Book Cover" src="{{ book.cover_id }}"/>
-                        {% endif %}
-                    </td>
+                            {% endif %}
+                        </td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.publication_date|slice:"0:4" }}</td>
                         <td class="list-note">{{ book.collectibility_notes|default:""|truncatechars:40 }}</td>
@@ -53,7 +59,28 @@
             </table>
         </div>
     </div>
+    {% if user.is_superuser %}
+        <p><a href="{% url 'isbn_search' %}">Add New Book</a></p>
+    {% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('toggleCoversBtn');
+            const table = document.getElementById('bookTable');
+            let coversVisible = localStorage.getItem('coversVisible') !== 'false';
 
-    <p><a href="{% url 'isbn_search' %}">Add New Book</a></p>
+            // Initialize state on page load
+            table.classList.toggle('hide-covers', !coversVisible);
+            btn.textContent = coversVisible ? 'Hide Covers' : 'Show Covers';
+
+            // Toggle on click
+            btn.addEventListener('click', function (event) {
+                event.preventDefault();
+                coversVisible = !coversVisible;
+                table.classList.toggle('hide-covers', !coversVisible);
+                btn.textContent = coversVisible ? 'Hide Covers' : 'Show Covers';
+                localStorage.setItem('coversVisible', coversVisible);
+            });
+        });
+    </script>
 
 {% endblock content %}
