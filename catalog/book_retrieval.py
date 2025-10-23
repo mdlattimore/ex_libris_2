@@ -3,12 +3,18 @@
 import requests
 import time
 from pprint import pprint
+import os
+
+
 
 
 def lookup_book(isbn: str) -> dict:
+    api_key = os.environ.get("GOOGLE_BOOKS_API_KEY")
     print("LUB", repr(isbn))
-    url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}"
+    url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}&key={api_key}"
     response = requests.get(url)
+    print(response.status_code)
+    print(f"API KEY = {api_key}")
     data = response.json()
     # pprint(data)
     if data['totalItems'] > 0:
