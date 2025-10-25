@@ -38,8 +38,8 @@ processes = []
     timeout = "2s"
 
 [[statics]]
-  guest_path = "/app/public"
-  url_prefix = "/static/"
+  guest_path = "/data/media"
+  url_prefix = "/media"
 
 
 [deploy]
@@ -47,4 +47,4 @@ processes = []
 
 [mounts]
 source="media_volume"
-destination="/data"
+destination="/data/media"
