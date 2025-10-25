@@ -1,0 +1,217 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 14px;
+    font-family: var(--bs-font-sans-serif);
+
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px; /* Margin bottom by footer height */
+    background-color: #fdfaf3;
+
+}
+
+.container {
+    max-width: 85%;
+}
+
+.pricing-header {
+    max-width: 700px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px; /* Set the fixed height of the footer here */
+    line-height: 60px; /* Vertically center the text there */
+    background-color: #f5f5f5;
+}
+
+table {
+    font-size: 16px;
+    background-color: #fdfaf3;
+"
+}
+
+tr {
+    line-height: 1.25em;
+}
+
+
+/* Thumbnail styling */
+.thumbnail {
+    width: 150px;
+    cursor: pointer;
+    margin: 10px;
+    transition: transform 0.2s;
+}
+
+.thumbnail:hover {
+    transform: scale(1.05);
+}
+
+/* Lightbox container */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Translucent background */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Lightbox image */
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 15px black;
+}
+
+/* Close button */
+.close-btn {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 1000;
+}
+
+
+.lightbox-prev, .lightbox-next {
+    position: absolute;
+    top: 50%;
+    font-size: 3rem;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    padding: 0 20px;
+    z-index: 1060;
+    transform: translateY(-50%);
+    text-decoration: none; /* <== removes underline */
+    display: block; /* <== makes it behave like a box, not inline text */
+    line-height: 1; /* <== removes excess spacing from font ascenders/descenders */
+}
+
+.lightbox-prev {
+    left: 0;
+}
+
+.lightbox-next {
+    right: 0;
+}
+
+.lightbox-prev:hover, .lightbox-next:hover {
+    color: #ccc;
+}
+
+.cursor-pointer:hover {
+    cursor: pointer;
+}
+
+
+.display-7 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1.2;
+    font-family: var(--bs-font-sans-serif);
+}
+
+.display-8 {
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1.2;
+    font-family: var(--bs-font-sans-serif);
+}
+
+figcaption {
+    margin-top: -30px;
+}
+
+blockquote {
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    border-left: 4px solid #ccc;
+    color: #666;
+    background-color: #f9f9f9;
+    font-style: italic;
+}
+
+img {
+    border-radius: .375rem;
+}
+
+.limited-img {
+    max-width: 300px; /* cap size */
+    height: auto; /* keep aspect ratio */
+}
+
+
+table.table td,
+table.table th {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    vertical-align: middle;
+}
+
+/* Optional: remove extra space below the cover images */
+table.table img {
+    margin-bottom: 0 !important;
+}
+
+/* Hide only the <img> inside cover column */
+.hide-covers td.cover-col img {
+  display: none;
+}
+
+/* Tighten spacing when covers hidden */
+.hide-covers td,
+.hide-covers th {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.95em;
+}
+
+
+
+
+/* Keep column widths fixed even when one disappears */
+#bookTable {
+  table-layout: fixed;
+  width: 100%;
+}
+#bookTable col:nth-child(1) { width: 35%; }   /* Title */
+#bookTable col:nth-child(2) { width: 15%; }   /* Cover */
+#bookTable col:nth-child(3) { width: 20%; }   /* Author */
+#bookTable col:nth-child(4) { width: 10%; }   /* Published */
+#bookTable col:nth-child(5) { width: 20%; }   /* Notes */
+
+
+.author-bio {
+    position: relative;
+}
+
+.author-photo {
+    float: left;
+    margin: 0 15px 10px 0;  /* space around the image */
+    width: 200px;           /* adjust to taste */
+    height: auto;           /* maintain aspect ratio */
+    border-radius: 6px;     /* optional, for rounded corners */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);  /* optional subtle shadow */
+}

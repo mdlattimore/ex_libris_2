@@ -5,6 +5,7 @@ processes = []
 
 [env]
   PORT = "8000"
+  DJANGO_PRODUCTION = "True"
 
 [experimental]
   allowed_public_ports = []
@@ -43,3 +44,7 @@ processes = []
 
 [deploy]
   release_command = "python manage.py migrate"
+
+[mounts]
+source="media_volume"
+destination="/data"
