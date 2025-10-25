@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -150,9 +151,20 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"  # or os.path.join(BASE_DIR, 'media') if you're not using pathlib
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = BASE_DIR / "media"  # or os.path.join(BASE_DIR, 'media') if you're not using pathlib
 
+# Default to development
+DJANGO_PRODUCTION = os.environ.get('DJANGO_PRODUCTION', 'False') == 'True'
+
+if DJANGO_PRODUCTION:
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = "/data/media"
+else:
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+
+print(f"DP: {DJANGO_PRODUCTION}")
 
 # https://whitenoise.readthedocs.io/en/latest/django.html
 # STATICFILES_STORAGE = {
