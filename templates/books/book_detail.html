@@ -175,7 +175,7 @@
                         </tr>
                         <tr>
                             <th scope="row"></th>
-                            <td><b>Status</b></td>
+                            <td><b>Status:</b></td>
                             {% if book.status == "Inventory" %}
                                 <td style="color: red">{{ book.status }}</td>
                             {% else %}
@@ -198,6 +198,8 @@
                             <td><b>Date Acquired:</b></td>
                             <td>{{ book.date_acquired }}</td>
                         </tr>
+                        
+{#                        Disposition Section#}
                         {% if user.is_authenticated %}
                             <tr>
                                 <th scope="row"></th>

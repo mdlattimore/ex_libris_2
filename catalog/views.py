@@ -105,6 +105,10 @@ def isbn_search_view(request):
             notes = request.POST.get('notes')
             google_info = request.POST.get('google_info')
             book_json = request.POST.get('book_json')
+
+            # named_author is the [0] index in "authors" from the api response
+            # we assign it to "named_author" since "authors" can be reassigned
+            # below
             named_author = authors
             # check aliases
             all_aliases = AuthorAlias.objects.all()
@@ -123,6 +127,10 @@ def isbn_search_view(request):
                     break
                 else:
                     author = None
+
+            # The difference between "author" and "authors" is "authors" is
+            # from the api response. "author" references the foreign key "author"
+            # in book model.
 
             # Create or update the book instance
             book = Book.objects.create(

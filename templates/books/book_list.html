@@ -50,7 +50,14 @@
                                      alt="Book Cover" src="{{ book.cover_id }}"/>
                             {% endif %}
                         </td>
-                        <td>{{ book.author }}</td>
+{#                        <td>{{ book.author }}</td>#}
+                    {% if book.named_author != book.author.full_name %}
+                                    <td><a href={% url "author_detail" book.author_id %}>{{ book.named_author }}
+                                        ({{ book.author }})</a></td>
+                                {% else %}
+                                    <td><a href={% url "author_detail" book.author_id %}>{{ book.named_author }}</a>
+                                    </td>
+                                {% endif %}
                         <td>{{ book.publication_date|slice:"0:4" }}</td>
                         <td class="list-note">{{ book.collectibility_notes|default:""|truncatechars:40 }}</td>
                     </tr>

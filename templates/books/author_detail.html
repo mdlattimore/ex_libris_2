@@ -22,7 +22,9 @@
     {% if author.author_image.image %}
         <img src="{{ author.author_image.image.url }}" alt="{{ author.full_name }}" class="author-photo">
     {% endif %}
+        <div style="text-align: justify;">
     {{ author.bio|linebreaks }}
+        </div>
 </div>
 
     </div>
