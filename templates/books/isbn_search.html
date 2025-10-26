@@ -40,6 +40,7 @@
                         <input type="hidden" name="title" value="{{ result.title }}">
                         <input type="hidden" name="subtitle" value="{{ result.subtitle }}">
                         <input type="hidden" name="author" value="{{ result.authors.0 }}">
+                        <input type="hidden" name="additional_contributors" value="{{ result.authors|slice:"1:" }}">
                         <input type="hidden" name="publisher" value="{{ result.publisher }}">
                         <input type="hidden" name="publication_date" value="{{ result.publishedDate }}">
                         <input type="hidden" name="number_of_pages" value="{{ result.pageCount }}">
@@ -69,6 +70,7 @@
                             {{ result.title }}{% if result.subtitle %}: {{ result.subtitle }}{% endif %}
                         </i></p>
                         <p><strong>Author:</strong> {{ result.authors.0 }}</p>
+                            <p><strong>Additional Contributors:</strong>{{ result.authors|slice:"1:" }} </p>
                         <p><strong>Publisher:</strong> {{ result.publisher }}</p>
                         <p><strong>Publication Date:</strong> {{ result.publishedDate }}</p>
                         <p><strong>Number of Pages:</strong> {{ result.pageCount }}</p>
@@ -83,7 +85,7 @@
                         {% if result.industryIdentifiers.1.type == 'ISBN_13' %}
                             <p><strong>ISBN 13:</strong> {{ result.industryIdentifiers.1.identifier }}</p>
                         {% elif result.industryIdentifiers.0.type == "ISBN_13" %}
-                            <p><strong>ISBN 13:</strong> {{ result.industryIdentifiers.0.identifier }}</p
+                            <p><strong>ISBN 13:</strong> {{ result.industryIdentifiers.0.identifier }}</p>
                         {% else %}
                             <p><strong>ISBN 13:</strong>{{ Search }}</p>
                         {% endif %}

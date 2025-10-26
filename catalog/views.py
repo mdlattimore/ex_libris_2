@@ -95,7 +95,10 @@ def isbn_search_view(request):
             title = request.POST.get('title')
             subtitle = request.POST.get('subtitle')
             authors = request.POST.get('author')
-
+            additional_contributors = request.POST.get('additional_contributors')
+            additional_contributors = additional_contributors.lstrip("["
+                                                                     "").rstrip("]").replace("'", "")
+            # additional_contributors = "".join(additional_contributors)
             publisher = request.POST.get('publisher')
             publication_date = request.POST.get('publication_date')
             number_of_pages = request.POST.get('number_of_pages')
@@ -126,7 +129,7 @@ def isbn_search_view(request):
                     print(name_match(author.full_name, authors))
                     break
                 else:
-                    author = None
+                    author = all_authors.filter(full_name="Unknown Author").first()
 
             # The difference between "author" and "authors" is "authors" is
             # from the api response. "author" references the foreign key "author"
@@ -139,6 +142,7 @@ def isbn_search_view(request):
                 subtitle=subtitle,
                 named_author=named_author,
                 author=author,
+                additional_contributors=additional_contributors,
                 publisher=publisher,
                 publication_date=publication_date,
                 number_of_pages=number_of_pages,

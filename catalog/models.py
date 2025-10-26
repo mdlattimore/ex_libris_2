@@ -122,6 +122,8 @@ class Book(models.Model):
     named_author = models.CharField(max_length=150, blank=True, null=True)
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, blank=True,
                                null=True)
+    additional_contributors = models.CharField(max_length=250, blank=True,
+                                               null=True)
     publisher = models.CharField(max_length=200, blank=True, null=True)
     publication_date = models.CharField(max_length=50, blank=True, null=True)
     number_of_pages = models.CharField(max_length=10, blank=True, null=True)

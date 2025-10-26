@@ -51,6 +51,13 @@
                                 <td>None</td>
                             {% endif %}
                         </tr>
+                        {% if book.additional_contributors %}
+                            <tr>
+                            <th scope="row"></th>
+                            <td><b>Additional Contributors:</b></td>
+                            <td>{{ book.additional_contributors }}</td>
+                        </tr>
+                        {% endif %}
                         <tr>
                             <th scope="row"></th>
                             <td><b>Publisher:</b></td>
