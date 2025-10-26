@@ -11,6 +11,7 @@ class BookForm(forms.ModelForm):
             'title',
             'subtitle',
             'author',
+            'named_author',
             'additional_contributors',
             'publisher',
             'publication_date',

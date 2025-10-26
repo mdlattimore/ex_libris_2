@@ -112,6 +112,7 @@ def isbn_search_view(request):
             # named_author is the [0] index in "authors" from the api response
             # we assign it to "named_author" since "authors" can be reassigned
             # below
+
             named_author = authors
             # check aliases
             all_aliases = AuthorAlias.objects.all()

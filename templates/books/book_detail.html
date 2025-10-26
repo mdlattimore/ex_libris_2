@@ -53,10 +53,10 @@
                         </tr>
                         {% if book.additional_contributors %}
                             <tr>
-                            <th scope="row"></th>
-                            <td><b>Additional Contributors:</b></td>
-                            <td>{{ book.additional_contributors }}</td>
-                        </tr>
+                                <th scope="row"></th>
+                                <td><b>Additional Contributors:</b></td>
+                                <td>{{ book.additional_contributors }}</td>
+                            </tr>
                         {% endif %}
                         <tr>
                             <th scope="row"></th>
@@ -200,13 +200,9 @@
                             <td><b>Source:</b></td>
                             <td>{{ book.source }}</td>
                         </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td><b>Date Acquired:</b></td>
-                            <td>{{ book.date_acquired }}</td>
-                        </tr>
-                        
-{#                        Disposition Section#}
+                  
+
+                        {#                        Disposition Section#}
                         {% if user.is_authenticated %}
                             <tr>
                                 <th scope="row"></th>
