@@ -4,24 +4,25 @@
 
 {% block content %}
 <br>
-<h1 class="display-6">About</h1>
 <br>
-<h1 class="display-7">Nerd Stuff</h1>
-<p>Tech Stack: This site is written using Python's Django web framework and a smattering of third party libraries to add
-    various functionalities. For api calls, it uses the Python `Requests` module, `sorl-thumbnail` for thumbnail
-    handling, `Pillow` for automatic resizing of uploaded images (to give image size consistency and manage storage
-    requirements), and `python-markdown` for rendering markdown as html. It uses HTMX to handle partial page rendering
-    and lazy loading, `django-crispy-forms` for form formatting, and `simple-name-parser`, a super-basic
-    third-party library written by yours truly, to simplify name entry and sorting. `Django-allauth` manages all
-    authentication functions.</p>
-<p>Design and Architectural Decisions: The isbn search function queries the Google Books api. To be honest, I prefer
-    Open Library's api. It provides more detailed information and returns fewer "Not Found" responses than Google Books.
-    However it is also significantly slower and requires the use of a (free) api key. I opted for the speed
-    and simplicity of Google Books to lessen the maintenance burden and provide a faster end-user experience. </p>
-<p>Roadmap: Right now, there are two planned upgrades to the app. One is the addition of barcode scanning capability
-    when the site is used on a mobile device. The other is the addition of a more robust <i>and automated</i> treatment of authors, giving
-    them their own detail pages. The current challenge is handling author names returned by the isbn search function.
-    For example, right now, if one book returned an author "J.R.R. Tolkien" and another returned author "John R.R.
-    Tolkien", the two name variations would be treated as separate authors when what we want is for them to be
-    associated with the same author. The solution is likely to be some kind of fuzzy name matching. </p>
+{#<h1 class="display-7">Nerd Stuff</h1>#}
+{#<p>Tech Stack: This site is written using Python's Django web framework and a smattering of third party libraries to add#}
+{#    various functionalities. For api calls, it uses the Python `Requests` module, `sorl-thumbnail` for thumbnail#}
+{#    handling, `Pillow` for automatic resizing of uploaded images (to give image size consistency and manage storage#}
+{#    requirements), and `python-markdown` for rendering markdown as html. It uses HTMX to handle partial page rendering#}
+{#    and lazy loading, `django-crispy-forms` for form formatting, and `simple-name-parser`, a super-basic#}
+{#    third-party library written by yours truly, to simplify name entry and sorting. `Django-allauth` manages all#}
+{#    authentication functions.</p>#}
+{#<p>Design and Architectural Decisions: The isbn search function queries the Google Books api. To be honest, I prefer#}
+{#    Open Library's api. It provides more detailed information and returns fewer "Not Found" responses than Google Books.#}
+{#    However it is also significantly slower and requires the use of a (free) api key. I opted for the speed#}
+{#    and simplicity of Google Books to lessen the maintenance burden and provide a faster end-user experience. </p>#}
+{#<p>Roadmap: Right now, there are two planned upgrades to the app. One is the addition of barcode scanning capability#}
+{#    when the site is used on a mobile device. The other is the addition of a more robust <i>and automated</i> treatment of authors, giving#}
+{#    them their own detail pages. The current challenge is handling author names returned by the isbn search function.#}
+{#    For example, right now, if one book returned an author "J.R.R. Tolkien" and another returned author "John R.R.#}
+{#    Tolkien", the two name variations would be treated as separate authors when what we want is for them to be#}
+{#    associated with the same author. The solution is likely to be some kind of fuzzy name matching. </p>#}
+{{ content.about_html|safe }}
+
 {% endblock content %}

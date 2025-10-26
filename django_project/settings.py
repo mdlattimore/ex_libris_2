@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "sorl.thumbnail",
     "django_simple_deploy",
+    "markdownx",
     # "debug_toolbar",
     # Local
     "accounts",

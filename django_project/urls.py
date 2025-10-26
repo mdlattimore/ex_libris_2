@@ -10,6 +10,8 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("", include("pages.urls")),
     path("catalog/", include("catalog.urls")),
+    path("markdownx/", include("markdownx.urls")),
+
 ]
 
 if settings.DEBUG:
