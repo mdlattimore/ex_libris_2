@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+
+  {% if orphaned_files %}
+    <p>The following files are not referenced by any <code>BookImage</code> object:</p>
+    <ul>
+      {% for f in orphaned_files %}
+        <li>{{ f }}</li>
+      {% endfor %}
+    </ul>
+    <form method="post" style="margin-top:1em;">
+      {% csrf_token %}
+      <input type="submit" class="button default" value="Delete These Files">
+      <a href=".." class="button cancel-link">Cancel</a>
+    </form>
+  {% else %}
+    <p>No orphaned files found. 🎉</p>
+    <a href=".." class="button default">Back</a>
+  {% endif %}
+{% endblock %}

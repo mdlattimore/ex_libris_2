@@ -1,6 +1,10 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from .models import Book, Genre, BookImage, Collection, BookSpotlight, \
     BoxSet, Author, AuthorAlias
+from django.urls import path
+from django.shortcuts import redirect, render
+from django.utils.html import format_html
+from .utils.cleanup import find_orphan_images, delete_orphan_images
 
 
 class BookSpotlightAdmin(admin.ModelAdmin):
@@ -77,6 +81,35 @@ class GenreAdmin(admin.ModelAdmin):
 class BookImageAdmin(admin.ModelAdmin):
     list_display = ("caption", "is_cover", "thumbnail_preview")
     readonly_fields = ("thumbnail_preview",)
+
+    change_list_template = "admin/catalog/bookimage_change_list.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path("cleanup-orphans/",
+                 self.admin_site.admin_view(self.cleanup_orphans_view),
+                 name="bookimage_cleanup_orphans"),
+        ]
+        return custom_urls + urls
+
+    def cleanup_orphans_view(self, request):
+        """Custom admin view for cleaning up orphan image files."""
+        orphaned_files = find_orphan_images()
+
+        if request.method == "POST":
+            delete_orphan_images(orphaned_files)
+            self.message_user(request,
+                              f"Deleted {len(orphaned_files)} orphaned files.",
+                              messages.SUCCESS)
+            return redirect("..")
+
+        context = {
+            **self.admin_site.each_context(request),
+            "title": "Clean Up Orphan Images",
+            "orphaned_files": orphaned_files,
+        }
+        return render(request, "admin/catalog/cleanup_orphans.html", context)
 
 class CategoryAdmin(admin.ModelAdmin):
     model = Collection
