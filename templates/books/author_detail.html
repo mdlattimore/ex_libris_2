@@ -5,11 +5,11 @@
     <h1 class="display-5 text-center">{{ author.full_name }}</h1>
     {% if author.dob %} <p class="text-center">({{ author.dob.year }} - {{ author.dod.year }})</p>{% endif %}
     {% if author.aliases.all %}
-                
-                    {% for alias in author.aliases.all %}
-                        <h1 class="display-8 text-center">{{ alias.alias }}</h1>
-                    {% endfor %}
-            {% endif %}
+
+        {% for alias in author.aliases.all %}
+            <h1 class="display-8 text-center">{{ alias.alias }}</h1>
+        {% endfor %}
+    {% endif %}
     <br><br>
     <div class="row">
         <div class="col-sm-3">
@@ -19,13 +19,13 @@
             {% endfor %}
         </div>
         <div class="col-sm-9 author-bio">
-    {% if author.author_image.image %}
-        <img src="{{ author.author_image.image.url }}" alt="{{ author.full_name }}" class="author-photo">
-    {% endif %}
-        <div style="text-align: justify;">
-    {{ author.bio|linebreaks }}
+            {% if author.author_image.image %}
+                <img src="{{ author.author_image.image.url }}" alt="{{ author.full_name }}" class="author-photo">
+            {% endif %}
+            <div style="text-align: justify;">
+                {{ author.bio_html|safe }}
+            </div>
         </div>
-</div>
 
     </div>
 {% endblock content %}

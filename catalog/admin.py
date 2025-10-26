@@ -5,6 +5,7 @@ from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
 from .utils.cleanup import find_orphan_images, delete_orphan_images
+from markdownx.admin import MarkdownxModelAdmin
 
 
 class BookSpotlightAdmin(admin.ModelAdmin):
@@ -37,7 +38,7 @@ class BookImageInline(admin.TabularInline):
     readonly_fields = ("thumbnail_preview",)
 
 
-class AuthorAdmin(admin.ModelAdmin):
+class AuthorAdmin(MarkdownxModelAdmin):
     model = Author
     list_display = ['full_name',]
     ordering = ('last_name', 'first_name')

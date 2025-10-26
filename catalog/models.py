@@ -8,6 +8,9 @@ from django.db import models
 from django.utils.html import mark_safe
 from django.utils.text import slugify
 from simple_name_parser import NameParser
+from markdownx.models import MarkdownxField
+from markdownx.utils import markdownify
+
 
 from .fuzzy_name_match_util import match_parse_name
 
@@ -23,7 +26,7 @@ class Author(models.Model):
     dob = models.DateField(blank=True, null=True)
     dod = models.DateField(blank=True, null=True)
     nationality = models.CharField(max_length=50, blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
+    bio = MarkdownxField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     sort_name = models.CharField(max_length=150, blank=True, null=True)
     match_name = models.CharField(max_length=150, blank=True, null=True,
@@ -32,6 +35,10 @@ class Author(models.Model):
     @property
     def author_image(self):
         return self.author_images.filter().first()
+
+    @property
+    def bio_html(self):
+        return markdownify(self.bio)
 
     def save(self, *args, **kwargs):
         # Parse full_name into first and last names before saving.
