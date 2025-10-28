@@ -33,6 +33,7 @@ CSRF_TRUSTED_ORIGINS = ["https://*.fly.dev"]
 # Application definition
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -254,6 +255,25 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+
+
+# Admin (Jazzmin) Settings
+JAZZMIN_SETTINGS = {
+    "site_url": "/",
+    "site_title": "Ex Libris Admin",
+    "site_header": "Ex Libris",
+    "welcome_sign": "Welcome to Ex Libris Admin",
+
+    "topmenu_links": [
+    {"name": "View Site", "url": "/", "new_window": False}
+    ,],
+    "changeform_format": "horizontal_tabs",
+    "login_logo": "images/favicon-32x32.png",
+}
+
+
+
+
 
 # Fly.io settings.
 import os
