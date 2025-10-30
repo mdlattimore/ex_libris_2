@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+{% load thumbnail %}
+{% load md_tags %}
+{% block content %}
+
+    {{ work.title }}<br>
+    {% for volume in work.volumes.all %}
+        {{ volume.title }}<br>
+    {% endfor %}
+    
+{% endblock content %}
+
+
+           

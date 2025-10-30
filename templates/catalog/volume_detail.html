@@ -1,0 +1,96 @@
+{% extends "_base.html" %}
+{% load thumbnail %}
+{% load md_tags %}
+{% block content %}
+    <br>
+    <h1 class="text-center">{{ volume.title }}</h1>
+    <br>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header fw-semibold text-center">Bibliographic Info</div>
+                <div class="card-body">
+                    {#            <div class="row">#}
+                    {#                <div class="col-sm-4">Author:</div>#}
+                    {#                <div class="col-sm-8 fw-bolder">{{ volume.works.all.0.author }}</div>#}
+                    {#            </div>#}
+                    {% with first_work=volume.works.first %}
+                        {% if first_work %}
+                            <div class="row">
+                                <div class="col-sm-4">Author:</div>
+                                <div class="col-sm-8 fw-bolder">{{ first_work.author }}</div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    {% if volume.illustrator %}
+                        <div class="row">
+                            <div class="col-sm-4">Illustrator:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.illustrator }}</div>
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-sm-4">Published:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.publication_year }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Publisher:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.publisher }}</div>
+                    </div>
+                    {% if volume.book_set %}
+                        <div class="row">
+                            <div class="col-sm-4">Book Set:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.book_set }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">Volume:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.volume_number }}</div>
+                        </div>
+                    {% endif %}
+                    {% if volume.edition %}
+                        <div class="row">
+                            <div class="col-sm-4">Edition:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.edition }}</div>
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-sm-4">ISBN10:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.isbn10 }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">ISBN13:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.isbn13 }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header fw-semibold text-center">Description and Condition</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">Binding:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.get_binding_display }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Condition:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.get_condition_display }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Dust Jacket:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.dust_jacket|yesno:"Yes,No" }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">DJ Condition:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.get_dust_jacket_condition_display }}</div>
+                    </div>
+                    {% if volume.notes %}
+                        <div class="row">
+                            <div class="col-sm-4">Notes:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.notes_html|safe }}</div>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -69,6 +69,10 @@ class Work(models.Model):
     class Meta:
         ordering = ['title']
 
+    @property
+    def kind(self):
+        return "Work"
+
     def __str__(self):
         return self.title
 
@@ -86,6 +90,10 @@ class BookSet(models.Model):
 
     class Meta:
         ordering = ['title']
+
+    @property
+    def kind(self):
+        return "BookSet"
 
     def __str__(self):
         return self.title
@@ -197,6 +205,10 @@ class Volume(models.Model):
         check = 11 - (total % 11)
         check_digit = "X" if check == 10 else "0" if check == 11 else str(check)
         return core + check_digit
+
+    @property
+    def notes_html(self):
+        return markdownify(self.notes)
 
 #============== Ex Libris (original) Models ========================
 # class Author(models.Model):
