@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django.contrib.humanize",
     # Third-party
     "allauth",
     "allauth.account",
@@ -256,7 +257,6 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 
-
 # Admin (Jazzmin) Settings
 JAZZMIN_SETTINGS = {
     "site_url": "/",
@@ -265,12 +265,14 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to Ex Libris Admin",
 
     "topmenu_links": [
-    {"name": "View Site", "url": "/", "new_window": False},
+        {"name": "View Site", "url": "/", "new_window": False},
         {"app": "catalog"}],
     "changeform_format": "horizontal_tabs",
     "login_logo": "images/favicon-32x32.png",
     "order_with_respect_to": ["catalog.author", "catalog.work"],
     "show_ui_builder": True,
+    "custom_css": "css/admin_overrides.css",
+
 }
 
 JAZZMIN_UI_TWEAKS = {
@@ -302,12 +304,8 @@ JAZZMIN_UI_TWEAKS = {
         "warning": "btn-warning",
         "danger": "btn-danger",
         "success": "btn-success"
-    }
+    },
 }
-
-
-
-
 
 # Fly.io settings.
 import os

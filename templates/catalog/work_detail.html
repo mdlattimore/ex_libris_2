@@ -2,13 +2,23 @@
 {% load thumbnail %}
 {% load md_tags %}
 {% block content %}
-
-    {{ work.title }}<br>
-    {% for volume in work.volumes.all %}
-        {{ volume.title }}<br>
-    {% endfor %}
-    
+    <br>
+    <h1 class="text-center">{{ work.title }}</h1>
+    <br>
+    <div class="row">
+        <div class="col-md-5">
+        <h1 class="display-7">Appears In</h1><br>
+            {% for volume in work.volumes.all %}
+                <p><a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }}</a>
+                    ({{ volume.publication_year }}) {{ volume.edition }}</p>
+            {% endfor %}
+        </div>
+        <div class="col-md-7">
+            {{ work.work_notes_html|safe }}
+        </div>
+    </div>
 {% endblock content %}
+
 
 
            

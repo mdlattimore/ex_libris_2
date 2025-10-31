@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+
+
+{% block content %}
+    <br>
+    <h1 class="display-5 text-center">{{ author.full_name }}</h1>
+    <h1 class="display-8 text-center mb-0">({{ author.dob.year }} - {{ author.dod.year }})</h1>
+    <h1 class="display-8 text-center">{{ author.nationality }} Author</h1>
+    <br>
+    <div class="row">
+        <div class="col-md-3">
+            <h1 class="display-7">Works</h1>
+            {% for work in author.works.all %}
+                <p><a href="{% url 'work_detail' work.pk %}">{{ work.title }}</a></p>
+            {% endfor %}
+        </div>
+        <div class="col-md-9">
+            <div style="text-align: justify;">
+                {{ author.bio_html|safe }}
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock content %}
+

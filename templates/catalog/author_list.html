@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+
+
+
+{% block content %}
+    <br>
+    <h1 class="display-5 text-center mb-4">Authors</h1>
+    
+    {#    {% for author in authors_display %}#}
+    {#        <h1 class="display-8 "><a href="#">{{ author }}</a></h1>#}
+    {#    {% endfor %}#}
+    {#    #}
+
+    <div class="container text-center">
+        {% for author in authors_display %}
+            <a href="#" class="btn btn-outline-secondary m-2">{{ author }}</a><br>
+        {% endfor %}
+    </div>
+
+
+
+{% endblock content %}
+

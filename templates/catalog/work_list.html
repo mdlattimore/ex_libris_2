@@ -3,49 +3,7 @@
 {% block content %}
     <br>
     <h1 class="display-5 text-center mb-4">Everything</h1>
-
-    {#<div class="container my-4">#}
-    {#    <h1 class="display-5 text-center mb-4">Everything</h1>#}
-    {#    <p class="text-center text-muted" style="font-size: 0.9em;">#}
-    {#        The top level is the title of the work or book set. Below each are the volumes you own.#}
-    {#    </p>#}
-    {##}
-    {#    {% for item in items %}#}
-    {#        <div class="mb-3 pb-1 border-bottom">#}
-    {#            {% if item.kind == "BookSet" %}#}
-    {#                <h2 class="h4 mb-2">#}
-    {#                    {{ item.title }}#}
-    {#                    <small class="text-muted">(Set)</small>#}
-    {#                    {% with first_author=item.volumes.all.0.works.all.0.author %}#}
-    {#                        {% if first_author %}#}
-    {#                            <span class="text-muted" style="font-size:.85em;">by {{ first_author }}</span>#}
-    {#                        {% endif %}#}
-    {#                    {% endwith %}#}
-    {#                </h2>#}
-    {#            {% else %}#}
-    {#                <h2 class="h4 mb-2">#}
-    {#                    {{ item.title }}#}
-    {#                    <span class="text-muted" style="font-size:.85em;">by {{ item.author }}</span>#}
-    {#                </h2>#}
-    {#            {% endif %}#}
-    {##}
-    {#            <ul class="list-unstyled ps-3">#}
-    {#                {% for volume in item.volumes.all %}#}
-    {#                    <li class="mb-1">#}
-    {#                        <span class="fw-light" style="font-style: italic;">{{ volume }}</span>#}
-    {#                        <small class="text-muted">#}
-    {#                            {% if volume.edition %}#}
-    {#                                ({{ volume.publication_year }}, {{ volume.edition }})#}
-    {#                            {% else %}#}
-    {#                                ({{ volume.publication_year }})#}
-    {#                            {% endif %}#}
-    {#                        </small>#}
-    {#                    </li>#}
-    {#                {% endfor %}#}
-    {#            </ul>#}
-    {#        </div>#}
-    {#    {% endfor %}#}
-    {#</div>#}
+    
     {% for item in items %}
         <div class="catalog-item">
             {% if item.kind == "BookSet" %}

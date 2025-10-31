@@ -1,12 +1,13 @@
 {% extends "_base.html" %}
 {% load thumbnail %}
 {% load md_tags %}
+{% load humanize %}
 {% block content %}
     <br>
     <h1 class="text-center">{{ volume.title }}</h1>
     <br>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header fw-semibold text-center">Bibliographic Info</div>
                 <div class="card-body">
@@ -18,7 +19,9 @@
                         {% if first_work %}
                             <div class="row">
                                 <div class="col-sm-4">Author:</div>
-                                <div class="col-sm-8 fw-bolder">{{ first_work.author }}</div>
+                                <div class="col-sm-8 fw-bolder"><a
+                                        href="{% url 'author_detail' first_work.author.pk %}">{{ first_work.author }}</a>
+                                </div>
                             </div>
                         {% endif %}
                     {% endwith %}
@@ -61,6 +64,27 @@
                         <div class="col-sm-4">ISBN13:</div>
                         <div class="col-sm-8 fw-bolder">{{ volume.isbn13 }}</div>
                     </div>
+{#                    <div class="row">#}
+{#                        <div class="col-sm-4">Works:</div>#}
+{#                        <div class="col-sm-8 fw-bolder">#}
+{#                            {% for work in volume.works.all %}#}
+{#                                <a href="{% url 'work_detail' work.pk %}">{{ work }}</a><br>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{#                    </div>#}
+                    <hr class="my-2">
+                    <div class="row">
+                        <div class="col-sm-4">Works:</div>
+                        <div class="col-sm-8 fw-bolder">
+                            {% for work in volume.works.all %}
+                                <a href="{% url 'work_detail' work.pk %}">{{ work }}</a>{% if not forloop.last %}<br>
+                            {% endif %}
+                            {% empty %}
+                                <span class="text-muted">No associated works</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="card">
@@ -91,6 +115,59 @@
 
                 </div>
             </div>
+            <div class="card">
+                <div class="card-header fw-semibold text-center">Collection Data</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">Acquisition Date:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.acquisition_date }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Acquisition year:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.acquisition_year }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Source:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.source }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Price:</div>
+                        <div class="col-sm-8 fw-bolder">
+                            {% if volume.price %}
+                                ${{ volume.price|intcomma }}
+                            {% else %}
+                                <span class="text-muted fst-italic">—</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Estimated Value:</div>
+                        <div class="col-sm-8 fw-bolder">
+                            {% if volume.estimated_value %}
+                                ${{ volume.estimated_value|intcomma }}
+                            {% else %}
+                                <span class="text-muted fst-italic">—</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if volume.edition_notes %}
+                        <div class="row">
+                            <div class="col-sm-4">Edition Notes:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.edition_notes_html|safe }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header fw-semibold text-center">Disposition</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">Coming</div>
+                        <div class="col-sm-8 fw-bolder">Soon</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 {% endblock content %}

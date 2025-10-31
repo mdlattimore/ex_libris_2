@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br>
+    <h1 class="display-7 text-center">All Volumes</h1>
+    <br>
+    {% for volume in volumes %}
+        {{ volume }}<br>
+        
+    {% endfor %}
+
+
+
+{% endblock content %}

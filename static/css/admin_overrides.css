@@ -1,0 +1,43 @@
+/* --- Make Markdownx editor full-width and taller --- */
+
+/* 1. Expand Markdownx wrapper */
+.field-markdownx,
+.markdownx {
+    width: 100% !important;
+    max-width: 1400px !important;   /* adjust to taste */
+}
+
+/* 2. Expand the editor area itself */
+.markdownx-editor,
+.markdownx-editor textarea {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 250px !important;   /* adjust height as needed */
+    box-sizing: border-box;
+}
+
+/* 3. Expand the preview panel to match */
+.markdownx-preview {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.field-notes .col-sm-6 {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
+.field-bio .col-sm-6 {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
+
+/* 4. Defeat Jazzmin column width limits */
+.form-row,
+.form-group,
+.col-md-6,
+.col-lg-6 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}

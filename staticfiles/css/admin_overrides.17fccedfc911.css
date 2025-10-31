@@ -1,0 +1,29 @@
+/* admin_overrides.css */
+
+body::before {
+  content: "✅ Jazzmin CSS loaded";
+  position: fixed;
+  color: red;
+  top: 5px;
+  left: 10px;
+  z-index: 9999;
+}
+
+
+
+/* --- Markdownx width overrides --- */
+.form-group, .field-markdownx, .markdownx, .markdownx-editor, .markdownx-editor textarea {
+    width: 95% !important;
+    max-width: 1400px !important;
+}
+
+/* Ensure parent columns don't clip it */
+.col-lg-6, .col-md-6, .col-sm-12 {
+    max-width: none !important;
+}
+
+/* Make textarea taller */
+.markdownx-editor textarea {
+    min-height: 350px !important;
+    font-family: monospace;
+}

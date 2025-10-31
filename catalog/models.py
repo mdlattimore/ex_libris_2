@@ -1,21 +1,13 @@
-import os
-from io import BytesIO
-
-from PIL import Image, ImageOps
-from django.core.exceptions import ValidationError
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
-from django.utils.html import mark_safe
-from django.utils.text import slugify
-from simple_name_parser import NameParser
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
-
+from simple_name_parser import NameParser
 
 from .fuzzy_name_match_util import match_parse_name
 
 parser = NameParser()
 parse_name = parser.parse_name
+
 
 # ---- 1. Author -----------------------------------------
 
@@ -30,7 +22,7 @@ class Author(models.Model):
     bio = MarkdownxField(blank=True, null=True)
     sort_name = models.CharField(max_length=150, blank=True, null=True)
     match_name = models.CharField(max_length=150, blank=True, null=True,
-                                    unique=True)
+                                  unique=True)
 
     @property
     def bio_html(self):
@@ -62,9 +54,10 @@ class Author(models.Model):
 
 class Work(models.Model):
     title = models.CharField(max_length=200)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='works')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE,
+                               related_name='works')
     first_published = models.IntegerField(blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
+    notes = MarkdownxField(blank=True, null=True)
 
     class Meta:
         ordering = ['title']
@@ -72,6 +65,10 @@ class Work(models.Model):
     @property
     def kind(self):
         return "Work"
+
+    @property
+    def work_notes_html(self):
+        return markdownify(self.notes)
 
     def __str__(self):
         return self.title
@@ -143,11 +140,14 @@ class Volume(models.Model):
     edition = models.CharField(max_length=100, blank=True, null=True)
 
     # Description and Condition
-    binding = models.CharField(choices=BINDING_CHOICES, max_length=30, blank=True, null=True)
-    condition = models.CharField(choices=CONDITION_CHOICES, max_length=30, blank=True, null=True)
+    binding = models.CharField(choices=BINDING_CHOICES, max_length=30,
+                               blank=True, null=True)
+    condition = models.CharField(choices=CONDITION_CHOICES, max_length=30,
+                                 blank=True, null=True)
     dust_jacket = models.BooleanField(default=False)
     dust_jacket_condition = models.CharField(choices=CONDITION_CHOICES,
-                                             max_length=30, blank=True, null=True)
+                                             max_length=30, blank=True,
+                                             null=True)
     notes = MarkdownxField(blank=True, null=True)
 
     # Collection Data
@@ -158,12 +158,13 @@ class Volume(models.Model):
         blank=True,
         null=True,
     )
-    price = models.DecimalField(decimal_places=2, max_digits=10, blank=True, null=True)
-    estimated_value = models.DecimalField(decimal_places=2, max_digits=10, blank=True, null=True)
+    price = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
+                                null=True)
+    estimated_value = models.DecimalField(decimal_places=2, max_digits=10,
+                                          blank=True, null=True)
     edition_notes = MarkdownxField(blank=True, null=True)
 
     # Disposition
-
 
     class Meta:
         ordering = ["book_set__title", "volume_number", "title"]
@@ -210,7 +211,11 @@ class Volume(models.Model):
     def notes_html(self):
         return markdownify(self.notes)
 
-#============== Ex Libris (original) Models ========================
+    @property
+    def edition_notes_html(self):
+        return markdownify(self.edition_notes)
+
+# ============== Ex Libris (original) Models ========================
 # class Author(models.Model):
 #     full_name = models.CharField(max_length=150, unique=True)
 #     first_name = models.CharField(max_length=50, blank=True, null=True)
@@ -688,4 +693,4 @@ class Volume(models.Model):
 #     def __str__(self):
 #         return self.name
 
-#============ End Ex Libris (original) models ======================
+# ============ End Ex Libris (original) models ======================
