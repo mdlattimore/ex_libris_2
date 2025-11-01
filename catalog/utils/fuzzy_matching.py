@@ -1,8 +1,10 @@
+# utils/fuzzy_matching.py
+
 from rapidfuzz import fuzz, utils
 from simple_name_parser import NameParser
 from unidecode import unidecode
 
-def match_parse_name(name):
+def normalize_name(name):
     name_parser = NameParser()
     #strip accents/diacriticals
     name = unidecode(name)
@@ -24,14 +26,14 @@ def match_parse_name(name):
 
 
 def name_match(source, target):
-    source = match_parse_name(source)
-    target = match_parse_name(target)
+    source = normalize_name(source)
+    target = normalize_name(target)
     return fuzz.token_sort_ratio(source, target)
 
 
 if __name__ == '__main__':
     import json
-    with open('names.json', 'r') as f:
+    with open('../names.json', 'r') as f:
         names = json.load(f)
     results = []
     for name, value in names.items():

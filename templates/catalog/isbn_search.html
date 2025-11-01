@@ -1,0 +1,32 @@
+{% extends "_base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h1>ISBN Lookup</h1>
+
+  <form method="post" class="mb-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  {% if result %}
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">{{ result.result.title }}</h3>
+        {% if result.result.subtitle %}
+          <h5 class="card-subtitle text-muted">{{ result.result.subtitle }}</h5>
+        {% endif %}
+        {% if result.result.author %}
+          <p><strong>Author:</strong> {{ result.result.author }}</p>
+        {% endif %}
+        {% if result.result.publisher %}
+          <p><strong>Publisher:</strong> {{ result.result.publisher }}</p>
+        {% endif %}
+        {% if result.result.published_date %}
+          <p><strong>Publication date:</strong> {{ result.result.published_date }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

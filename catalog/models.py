@@ -3,13 +3,15 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from simple_name_parser import NameParser
 
-from .fuzzy_name_match_util import match_parse_name
+from catalog.utils.fuzzy_matching import normalize_name
 
 parser = NameParser()
 parse_name = parser.parse_name
 
 
 # ---- 1. Author -----------------------------------------
+
+
 
 class Author(models.Model):
     full_name = models.CharField(max_length=200, unique=True)
@@ -43,11 +45,22 @@ class Author(models.Model):
             self.sort_name = self.full_name
         else:
             self.sort_name = full_sort_name
-        self.match_name = match_parse_name(self.full_name)
+        self.match_name = normalize_name(self.full_name)
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.full_name
+
+
+class AuthorAlias(models.Model):
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='aliases')
+    alias = models.CharField(max_length=150, unique=True)
+
+    class Meta:
+        verbose_name_plural = "aliases"
+
+    def __str__(self):
+        return f"{self.alias} = {self.author.full_name}"
 
 
 # -------- 2. Work -----------------------------------------

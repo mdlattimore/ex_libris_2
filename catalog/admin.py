@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from .models import Author, Work, BookSet, Volume
+from .models import Author, Work, BookSet, Volume, AuthorAlias
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -10,6 +10,10 @@ from markdownx.admin import MarkdownxModelAdmin
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ['full_name']
+
+@admin.register(AuthorAlias)
+class AuthorAlias(admin.ModelAdmin):
+    list_display = ['alias', 'author']
 
 
 @admin.register(Work)
