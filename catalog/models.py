@@ -53,10 +53,33 @@ class Author(models.Model):
 # -------- 2. Work -----------------------------------------
 
 class Work(models.Model):
+    class WorkType(models.TextChoices):
+        NOVEL = "NOVEL", "Novel"
+        NOVELLA = "NOVELLA", "Novella"
+        SHORT_STORY = "SHORT_STORY", "Short Story"
+        STORY_COLLECTION = "STORY_COLLECTION", "Story Collection"
+        POEM = "POEM", "Poem"
+        POETRY_COLLECTION = "POETRY_COLLECTION", "Poetry Collection"
+        PLAY = "PLAY", "Play / Drama"
+        ESSAY = "ESSAY", "Essay"
+        ESSAY_COLLECTION = "ESSAY_COLLECTION", "Essay Collection"
+        NONFICTION_BOOK = "NONFICTION_BOOK", "Non-Fiction Book"
+        LETTER = "LETTER", "Letter / Correspondence"
+        SPEECH = "SPEECH", "Speech / Lecture"
+        TRANSLATION = "TRANSLATION", "Translation"
+        ANTHOLOGY = "ANTHOLOGY", "Anthology / Edited Volume"
+        CRITICISM = "CRITICISM", "Criticism / Commentary"
+        OTHER = "OTHER", "Other"
     title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE,
                                related_name='works')
     first_published = models.IntegerField(blank=True, null=True)
+    work_type = models.CharField(
+        max_length=50,
+        choices=WorkType.choices,
+        default=WorkType.NOVEL
+    )
+
     notes = MarkdownxField(blank=True, null=True)
 
     class Meta:

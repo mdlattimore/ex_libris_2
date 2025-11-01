@@ -8,4 +8,5 @@ urlpatterns = [
     path('work_detail/<int:pk>/', views.WorkDetailView.as_view(), name='work_detail'),
     path('volume_list/', views.VolumeListView.as_view(), name='volume_list'),
     path('volume_detail/<int:pk>/', views.VolumeDetailView.as_view(), name='volume_detail'),
+    path('isbn_lookup/', views.isbn_lookup, name='isbn_lookup'),
 ]
