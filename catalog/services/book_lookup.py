@@ -1,23 +1,8 @@
-from catalog.utils.fuzzy_matching import name_match, normalize_name
+from catalog.utils.fuzzy_matching import (name_match, normalize_name,
+                                          normalize_title, title_match)
 
 from catalog.integrations.google_books_provider import GoogleBooksProvider
-from catalog.models import Author, AuthorAlias
-
-
-def perform_isbn_lookup(isbn):
-    result = GoogleBooksProvider.lookup(isbn)
-
-    author_name = result.get("author")
-    title = result.get("title")
-
-    if not (author_name and title):
-        raise ValueError(f"Incomplete data returned for ISBN {isbn}: {result}")
-
-    author = resolve_author(author_name)
-    # work = resolve_work(title, author)
-
-    return {"result": result, "author": author} #, "work": work}
-
+from catalog.models import Author, AuthorAlias, Work
 
 def resolve_author(name: str):
     """Return best-matching Author instance, accounting for aliases and fuzzy similarity."""
@@ -40,15 +25,41 @@ def resolve_author(name: str):
     return Author.objects.filter(full_name="Unknown Author").first()
 
 
-# all_aliases = AuthorAlias.objects.all()
-    #         for alias in all_aliases:
-    #             # if authors == alias.alias:
-    #             if name_match(authors, alias.alias) >= 90:
-    #                 authors = alias.author.full_name
-    #                 print(f"{alias} for {alias.author}")
-    #                 break
+
+def resolve_work(title: str):
+    """Return best-matching Work instance (or Unknown Work), using fuzzy title matching."""
+    if not title:
+        return Work.objects.filter(title="Unknown Work").first()
+
+    normalized_title = normalize_title(title)
+    best_match = None
+    best_score = 0
+
+    for work_instance in Work.objects.all():
+        score = title_match(work_instance.title, normalized_title)
+        if score > best_score:
+            best_score = score
+            best_match = work_instance
+
+    if best_match and best_score >= 80:
+        return best_match
+
+    # No sufficiently close match found — create or fallback
+    return Work.objects.filter(title="Unknown Work").first()
+
+def perform_isbn_lookup(isbn):
+    result = GoogleBooksProvider.lookup(isbn)
+
+    author_name = result.get("author")
+    title = result.get("title")
+
+    if not (author_name and title):
+        raise ValueError(f"Incomplete data returned for ISBN {isbn}: {result}")
+
+    author = resolve_author(author_name)
+    work = resolve_work(title)
+
+    return {"result": result, "author": author, "work": work}
 
 
-def resolve_work(title: str, author: Author):
-    # Fuzzy match or create Work
-    ...
+

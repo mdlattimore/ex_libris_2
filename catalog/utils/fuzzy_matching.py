@@ -3,6 +3,7 @@
 from rapidfuzz import fuzz, utils
 from simple_name_parser import NameParser
 from unidecode import unidecode
+import re
 
 def normalize_name(name):
     name_parser = NameParser()
@@ -29,6 +30,17 @@ def name_match(source, target):
     source = normalize_name(source)
     target = normalize_name(target)
     return fuzz.token_sort_ratio(source, target)
+
+
+def normalize_title(title):
+    title = title.lower()
+    title = re.sub(r'[^\w\s]', '', title).strip()
+    return title
+
+def title_match(source, target):
+    source = normalize_title(source)
+    target = normalize_title(target)
+    return fuzz.token_set_ratio(source, target)
 
 
 if __name__ == '__main__':

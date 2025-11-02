@@ -1,49 +1,36 @@
 # catalog/forms.py
 from django import forms
-# from .models import Book
-#
-#
-# class BookForm(forms.ModelForm):
-#     class Meta:
-#         model = Book
-#         fields = [
-#             'collection',
-#             'title',
-#             'subtitle',
-#             'author',
-#             'named_author',
-#             'additional_contributors',
-#             'publisher',
-#             'publication_date',
-#             'number_of_pages',
-#             'isbn_10',
-#             'isbn_13',
-#             'genres',
-#             'cover_id',
-#             'status',
-#             'date_acquired',
-#             'source',
-#             'price',
-#             'acquisition_cost',
-#             'est_value',
-#             'notes',
-#             'binding',
-#             'condition',
-#             'dust_jacket',
-#             'dust_jacket_condition',
-#             'signed_by_author',
-#             'collectibility_notes',
-#             'status',
-#             'disposition',
-#             'recipient',
-#             'sales_price',
-#             'shipping_charged',
-#             'shipping_cost',
-#             'disposition_date',
-#             'google_info',
-#             'book_json'
-#         ]
+from .models import Volume
+
+
+class VolumeForm(forms.ModelForm):
+    class Meta:
+        model = Volume
+        fields = [
+            'title',
+            'works',
+            'book_set',
+            'volume_number',
+            'publisher',
+            'publication_date',
+            'publication_year',
+            'isbn13',
+            'isbn10',
+            'illustrator',
+            'edition',
+            'binding',
+            'condition',
+            'dust_jacket',
+            'dust_jacket_condition',
+            'notes',
+            'acquisition_date',
+            'acquisition_year',
+            'source',
+            'price',
+            'estimated_value',
+            'edition_notes'
+        ]
 
 
 class ISBNSearchForm(forms.Form):
-    isbn = forms.CharField(max_length=13, label='ISBN')
+    isbn = forms.CharField(max_length=14, label='ISBN')

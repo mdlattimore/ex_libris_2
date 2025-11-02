@@ -1,32 +1,43 @@
 {% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
 {% block content %}
-<div class="container mt-4">
-  <h1>ISBN Lookup</h1>
+<div class="container mt-5">
+  <h1 class="mb-4">Book Lookup / Entry</h1>
 
-  <form method="post" class="mb-3">
+  <form
+    method="post"
+    hx-post="{% url 'isbn_lookup' %}"
+    hx-target="#lookup-result"
+    hx-swap="innerHTML"
+    class="mb-3"
+  >
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Search</button>
-  </form>
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        {{ form|crispy }}
 
-  {% if result %}
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">{{ result.result.title }}</h3>
-        {% if result.result.subtitle %}
-          <h5 class="card-subtitle text-muted">{{ result.result.subtitle }}</h5>
-        {% endif %}
-        {% if result.result.author %}
-          <p><strong>Author:</strong> {{ result.result.author }}</p>
-        {% endif %}
-        {% if result.result.publisher %}
-          <p><strong>Publisher:</strong> {{ result.result.publisher }}</p>
-        {% endif %}
-        {% if result.result.published_date %}
-          <p><strong>Publication date:</strong> {{ result.result.published_date }}</p>
-        {% endif %}
+        <!-- Stack buttons, left-aligned -->
+        <div class="d-flex flex-column align-items-start gap-2 mt-2">
+  <button type="submit" class="btn btn-primary">
+    Search by ISBN
+  </button>
+  <button
+    class="btn btn-outline-secondary"
+    hx-get="{% url 'manual_volume_form' %}"
+    hx-target="#lookup-result"
+    hx-swap="innerHTML"
+  >
+    Manually Enter Book
+  </button>
+</div>
+
       </div>
     </div>
-  {% endif %}
+  </form>
+
+  <div id="lookup-result" class="mt-4">
+    {% include "partials/lookup_result.html" %}
+  </div>
 </div>
-{% endblock %}
+{% endblock content %}

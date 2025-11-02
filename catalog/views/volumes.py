@@ -1,7 +1,8 @@
 from django.views.generic import ListView, DetailView
 from catalog.models import Volume
 from django.db.models.functions import Lower
-
+from catalog.forms import VolumeForm
+from django.shortcuts import render
 
 class VolumeListView(ListView):
     model = Volume
@@ -28,3 +29,16 @@ class VolumeDetailView(DetailView):
     model = Volume
     context_object_name = "volume"
     template_name = "catalog/volume_detail.html"
+
+def volume_create_view(request):
+    form = VolumeForm(request.POST or None)
+    if form.is_valid():
+        volume = form.save()
+        return render(request, "partials/volume_saved.html", {"volume": volume})
+    return render(request, "partials/volume_form_errors.html", {"form": form})
+
+def manual_volume_form(request):
+    """Render a blank manual entry form for creating a new Volume."""
+    form = VolumeForm()
+    context = {"volume_form": form}
+    return render(request, "partials/manual_form.html", context)

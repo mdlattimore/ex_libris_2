@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "sorl.thumbnail",
     "django_simple_deploy",
+    "django_htmx",
     "markdownx",
     # "debug_toolbar",
     # Local
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",  # WhiteNoise
     # "debug_toolbar.middleware.DebugToolbarMiddleware",  # Django Debug Toolbar
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",

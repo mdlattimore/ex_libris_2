@@ -158,6 +158,7 @@ class Volume(models.Model):
                                  related_name='volumes', blank=True, null=True)
     volume_number = models.PositiveIntegerField(blank=True, null=True)
     publisher = models.CharField(max_length=200, blank=True, null=True)
+    publication_date = models.DateField(blank=True, null=True)
     publication_year = models.IntegerField(blank=True, null=True)
     isbn13 = models.CharField(
         max_length=13,
