@@ -4,13 +4,13 @@ from markdownx.utils import markdownify
 from simple_name_parser import NameParser
 
 from catalog.utils.fuzzy_matching import normalize_name
+from catalog.utils.normalization import normalize_sort_title
 
 parser = NameParser()
 parse_name = parser.parse_name
 
 
 # ---- 1. Author -----------------------------------------
-
 
 
 class Author(models.Model):
@@ -53,7 +53,8 @@ class Author(models.Model):
 
 
 class AuthorAlias(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='aliases')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE,
+                               related_name='aliases')
     alias = models.CharField(max_length=150, unique=True)
 
     class Meta:
@@ -83,7 +84,9 @@ class Work(models.Model):
         ANTHOLOGY = "ANTHOLOGY", "Anthology / Edited Volume"
         CRITICISM = "CRITICISM", "Criticism / Commentary"
         OTHER = "OTHER", "Other"
+
     title = models.CharField(max_length=200)
+    sort_title = models.CharField(max_length=150, blank=True, null=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE,
                                related_name='works')
     first_published = models.IntegerField(blank=True, null=True)
@@ -95,8 +98,12 @@ class Work(models.Model):
 
     notes = MarkdownxField(blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        self.sort_title = normalize_sort_title(self.title)
+        super().save(*args, **kwargs)
+
     class Meta:
-        ordering = ['title']
+        ordering = ['sort_title']
 
     @property
     def kind(self):
@@ -153,6 +160,7 @@ class Volume(models.Model):
     ]
     # Bibliographic Information
     title = models.CharField(max_length=200)
+    sort_title = models.CharField(max_length=255, editable=False, blank=True)
     works = models.ManyToManyField(Work, related_name='volumes', blank=True)
     book_set = models.ForeignKey(BookSet, on_delete=models.CASCADE,
                                  related_name='volumes', blank=True, null=True)
@@ -175,6 +183,7 @@ class Volume(models.Model):
 
     illustrator = models.CharField(max_length=200, blank=True, null=True)
     edition = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
 
     # Description and Condition
     binding = models.CharField(choices=BINDING_CHOICES, max_length=30,
@@ -204,13 +213,18 @@ class Volume(models.Model):
     # Disposition
 
     class Meta:
-        ordering = ["book_set__title", "volume_number", "title"]
+        ordering = ["sort_title"]
 
     def __str__(self):
         if self.book_set:
-            num = f"Vol. {self.volume_number}" if self.volume_number else "Vol."
-            return f"{self.book_set.title} — {num}: {self.title}"
-        return self.title
+            if self.volume_number:
+                return (f"{self.title} (Part of '{self.book_set.title}' Set, "
+                        f"Vol. {self.volume_number})")
+            else:
+                return f"{self.title} (Part of '{self.book_set.title}' Set)"
+        else:
+            return f"{self.title}"
+
 
     def save(self, *args, **kwargs):
         if self.isbn10 and not self.isbn13:
@@ -219,6 +233,7 @@ class Volume(models.Model):
             maybe10 = self.convert_isbn13_to_10(self.isbn13)
             if maybe10:
                 self.isbn10 = maybe10
+        self.sort_title = normalize_sort_title(self.title)
         super().save(*args, **kwargs)
 
     # ISBN conversion functions ISBN10 to 13 and ISBN13 to 10
@@ -251,6 +266,8 @@ class Volume(models.Model):
     @property
     def edition_notes_html(self):
         return markdownify(self.edition_notes)
+
+
 
 # ============== Ex Libris (original) Models ========================
 # class Author(models.Model):

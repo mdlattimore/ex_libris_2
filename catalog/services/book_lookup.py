@@ -37,10 +37,11 @@ def resolve_work(title: str):
 
     for work_instance in Work.objects.all():
         score = title_match(work_instance.title, normalized_title)
+        print(f"work score: {score}")
         if score > best_score:
             best_score = score
             best_match = work_instance
-
+    print(f"best score: {best_score}, best match: {best_match}, {type(best_match)}")
     if best_match and best_score >= 80:
         return best_match
 

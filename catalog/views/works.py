@@ -1,6 +1,11 @@
+import re
+
 from django.views.generic import ListView, DetailView
 from catalog.models import Work, BookSet
 from itertools import chain
+from catalog.utils.normalization import normalize_sort_title
+
+
 
 
 class WorkListView(ListView):
@@ -11,21 +16,20 @@ class WorkListView(ListView):
     def get_queryset(self):
         """
         Combine Work and BookSet objects into one unified queryset,
-        sorted alphabetically by title.
+        sorted alphabetically by title (ignoring leading articles).
         """
         works = Work.objects.all().prefetch_related("volumes")
         booksets = BookSet.objects.all().prefetch_related("volumes")
 
-        # Combine and sort
         combined = chain(works, booksets)
-        sorted_combined = sorted(combined, key=lambda obj: obj.title.lower())
+        sorted_combined = sorted(
+            combined,
+            key=lambda obj: normalize_sort_title(obj.title)
+        )
 
         return sorted_combined
 
     def get_context_data(self, **kwargs):
-        """
-        Override to ensure the template context variable name matches expectations.
-        """
         context = super().get_context_data(**kwargs)
         context["works"] = self.get_queryset()
         return context

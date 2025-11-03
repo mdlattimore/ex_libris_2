@@ -18,6 +18,7 @@ class VolumeForm(forms.ModelForm):
             'isbn10',
             'illustrator',
             'edition',
+            'description',
             'binding',
             'condition',
             'dust_jacket',

@@ -2,11 +2,12 @@
 
 {% block content %}
     <br>
-    <h1 class="display-7 text-center">All Volumes</h1>
+    <h1 class="display-6 text-center">All Volumes</h1>
     <br>
     {% for volume in volumes %}
-        {{ volume }}<br>
-        
+        <div class="catalog-item">
+        <a href="{% url 'volume_detail' volume.pk %}">{{ volume }}</a> by {{ volume.works.first.author }}<br>
+        </div>  
     {% endfor %}
 
 

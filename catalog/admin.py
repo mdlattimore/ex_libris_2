@@ -5,11 +5,13 @@ from django.shortcuts import redirect, render
 from django.utils.html import format_html
 # from .utils.cleanup import find_orphan_images, delete_orphan_images
 from markdownx.admin import MarkdownxModelAdmin
+from catalog.utils.normalization import normalize_sort_title
 
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ['full_name']
+    ordering = ('last_name', 'first_name')
 
 @admin.register(AuthorAlias)
 class AuthorAlias(admin.ModelAdmin):
@@ -19,6 +21,7 @@ class AuthorAlias(admin.ModelAdmin):
 @admin.register(Work)
 class WorkAdmin(admin.ModelAdmin):
     list_display = ['title']
+    ordering = ('sort_title',)
 
 
 @admin.register(BookSet)
@@ -29,6 +32,7 @@ class BookSetAdmin(admin.ModelAdmin):
 @admin.register(Volume)
 class VolumeAdmin(admin.ModelAdmin):
     list_display = ['title', 'edition']
+    ordering = ('sort_title',)
     # 🧭 Jazzmin tabs configuration
     # Define your sections as normal Django fieldsets
     fieldsets = [
@@ -37,7 +41,7 @@ class VolumeAdmin(admin.ModelAdmin):
                 "title", "works", "book_set", "volume_number",
                 "publisher", "publication_year",
                 "isbn13", "isbn10",
-                "illustrator", "edition",
+                "illustrator", "edition", "description",
             ),
         }),
         ("Description & Condition", {

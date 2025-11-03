@@ -5,6 +5,9 @@
 {% block content %}
     <br>
     <h1 class="text-center">{{ volume.title }}</h1>
+    {% if volume.description %}
+        <p>{{ volume.description }}</p>
+    {% endif %}
     <br>
     <div class="row">
         <div class="col-md-6">
@@ -43,7 +46,7 @@
                     {% if volume.book_set %}
                         <div class="row">
                             <div class="col-sm-4">Book Set:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.book_set }}</div>
+                            <div class="col-sm-8 fw-bolder"><a href="{% url 'bookset_detail' volume.book_set.pk %}">{{ volume.book_set }}</a></div>
                         </div>
                         <div class="row">
                             <div class="col-sm-4">Volume:</div>
@@ -92,7 +95,7 @@
                 </div>
             </div>
             <div class="card">
-                <div class="card-header fw-semibold text-center">Description and Condition</div>
+                <div class="card-header fw-semibold text-center">Volume Description and Condition</div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-4">Binding:</div>

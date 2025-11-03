@@ -22,12 +22,14 @@ def isbn_lookup_view(request):
         # Prefill form with lookup data
         initial_data = {
             "title": result["result"].get("title", ""),
-            "isbn": isbn,
+            # "isbn": isbn,
+            "isbn10": result["result"].get("isbn_10", ""),
+            "isbn13": result["result"].get("isbn_13", ""),
             "publisher": result["result"].get("publisher", ""),
             "publication_date": publication_date,
             "publication_year": publication_date.year,
             "description": result["result"].get("description", ""),
-            "work": result["work"].id if result["work"] else None,
+            "works": result["work"].id if result["work"] else None,
         }
         volume_form = VolumeForm(initial=initial_data)
 
