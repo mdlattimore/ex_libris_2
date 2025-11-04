@@ -6,7 +6,7 @@
     <br>
     {% for volume in volumes %}
         <div class="catalog-item">
-        <a href="{% url 'volume_detail' volume.pk %}">{{ volume }}</a> by {{ volume.works.first.author }}<br>
+        <a href="{% url 'volume_detail' volume.pk %}">{{ volume }}</a> by {{ volume.works.first.author }} {% if volume.edition %}({{ volume.edition }}){% endif %}<br>
         </div>  
     {% endfor %}
 
