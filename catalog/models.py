@@ -2,6 +2,7 @@ from django.db import models
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from simple_name_parser import NameParser
+from django.utils.text import slugify
 
 from catalog.utils.fuzzy_matching import normalize_name
 from catalog.utils.normalization import normalize_sort_title
@@ -139,6 +140,25 @@ class BookSet(models.Model):
         return self.title
 
 
+# ------ 3.5 Collection ----------------------------
+class Collection(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
+    description = MarkdownxField(blank=True, null=True)
+
+    @property
+    def description_html(self):
+        return markdownify(self.description)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
 # ------ 4. Volume ----------------------------------------
 
 class Volume(models.Model):
@@ -160,6 +180,7 @@ class Volume(models.Model):
     ]
     # Bibliographic Information
     title = models.CharField(max_length=200)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, blank=True, null=True)
     sort_title = models.CharField(max_length=255, editable=False, blank=True)
     works = models.ManyToManyField(Work, related_name='volumes', blank=True)
     book_set = models.ForeignKey(BookSet, on_delete=models.CASCADE,
@@ -194,7 +215,9 @@ class Volume(models.Model):
     dust_jacket_condition = models.CharField(choices=CONDITION_CHOICES,
                                              max_length=30, blank=True,
                                              null=True)
+    cover_url = models.URLField(blank=True, null=True)
     notes = MarkdownxField(blank=True, null=True)
+    volume_json = models.JSONField(blank=True, null=True)
 
     # Collection Data
     acquisition_date = models.DateField(blank=True, null=True)
@@ -205,7 +228,7 @@ class Volume(models.Model):
         null=True,
     )
     price = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
-                                null=True)
+                                null=True, default=0)
     estimated_value = models.DecimalField(decimal_places=2, max_digits=10,
                                           blank=True, null=True)
     edition_notes = MarkdownxField(blank=True, null=True)

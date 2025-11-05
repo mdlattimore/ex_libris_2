@@ -6,20 +6,25 @@
     
     {% for item in items %}
         <div class="catalog-item">
-            {% if item.kind == "BookSet" %}
-                <h2>{{ item.title }}
-                    <small>(Set)</small>
-                    {% with first_author=item.volumes.all.0.works.all.0.author %}
-                        {% if first_author %}
-                            <span class="text-muted" style="font-size:.85em;">by {{ first_author }}</span>
-                        {% endif %}
-                    {% endwith %}
-                </h2>
-            {% else %}
-                <h2>{{ item.title }}
-                    <span class="text-muted" style="font-size:.85em;">by {{ item.author }}</span>
-                </h2>
-            {% endif %}
+            {% with first_volume=item.volumes.all.0 %}
+    {% if first_volume.book_set %}
+        <h2>
+            <a href="{% url 'bookset_detail' first_volume.book_set.pk %}">
+                {{ item.title }}
+            </a>
+            <small>(Set)</small>
+            {% with first_author=first_volume.works.all.0.author %}
+                {% if first_author %}
+                    <span class="text-muted" style="font-size:.85em;">by {{ first_author }}</span>
+                {% endif %}
+            {% endwith %}
+        </h2>
+        {% else %}
+    <h2><a href="{% url 'work_detail' item.pk %}">{{ item.title }}</a>
+        <span class="text-muted" style="font-size:.85em;">by {{ item.author }}</span>
+    </h2>
+    {% endif %}
+{% endwith %}
 
             <ul class="list-unstyled">
                 {% for volume in item.volumes.all %}

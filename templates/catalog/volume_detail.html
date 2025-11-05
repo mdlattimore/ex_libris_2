@@ -18,6 +18,13 @@
                     {#                <div class="col-sm-4">Author:</div>#}
                     {#                <div class="col-sm-8 fw-bolder">{{ volume.works.all.0.author }}</div>#}
                     {#            </div>#}
+                {% if volume.collection %}
+                <div class="row">
+                        <div class="col-sm-4">Collection:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.collection }}</div>
+                    </div>
+                {% endif %}
+                
                     {% with first_work=volume.works.first %}
                         {% if first_work %}
                             <div class="row">
@@ -50,7 +57,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-4">Volume:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.volume_number }}</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.volume_number|default:"" }}</div>
                         </div>
                     {% endif %}
                     {% if volume.edition %}
@@ -176,5 +183,7 @@
             </div>
 
         </div>
+        <div class="col-md-6">
+<img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover">        </div>
     </div>
 {% endblock content %}

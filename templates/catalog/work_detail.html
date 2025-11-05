@@ -10,7 +10,7 @@
         <h1 class="display-7">Appears In</h1><br>
             {% for volume in work.volumes.all %}
                 <p><a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }}</a>
-                    ({{ volume.publication_year }}) {{ volume.edition }}</p>
+                    ({{ volume.publication_year }}) {{ volume.edition|default:""}}</p>
             {% endfor %}
         </div>
         <div class="col-md-7">
@@ -21,4 +21,3 @@
 
 
 
-           

@@ -1,5 +1,7 @@
 # catalog/forms.py
 from django import forms
+from django_json_widget.widgets import JSONEditorWidget
+
 from .models import Volume
 
 
@@ -8,6 +10,7 @@ class VolumeForm(forms.ModelForm):
         model = Volume
         fields = [
             'title',
+            'collection',
             'works',
             'book_set',
             'volume_number',
@@ -23,14 +26,26 @@ class VolumeForm(forms.ModelForm):
             'condition',
             'dust_jacket',
             'dust_jacket_condition',
+            'cover_url',
             'notes',
             'acquisition_date',
             'acquisition_year',
             'source',
             'price',
             'estimated_value',
-            'edition_notes'
+            'edition_notes',
+            'volume_json',
         ]
+
+        widgets = {
+            "volume_json": JSONEditorWidget(
+                options={
+                    "mode": "code",  # start in "code" view
+                    "modes": ["tree", "code"],
+                    "search": True,
+                }
+            ),
+        }
 
 
 class ISBNSearchForm(forms.Form):

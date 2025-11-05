@@ -27,6 +27,7 @@
   max-width: 100% !important;
 }
 
+
 .field-bio .col-sm-6 {
   flex: 0 0 100% !important;
   max-width: 100% !important;
@@ -40,4 +41,18 @@
 .col-lg-6 {
     flex: 0 0 100% !important;
     max-width: 100% !important;
+}
+
+
+
+/* Force the JSON editor column to full width */
+.form-group.field-volume_json .col-sm-7 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* Now expand the editor itself to fill its parent */
+.form-group.field-volume_json #id_volume_json {
+    width: 100% !important;
 }

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "django_simple_deploy",
     "django_htmx",
     "markdownx",
+    "django_json_widget",
     # "debug_toolbar",
     # Local
     "accounts",

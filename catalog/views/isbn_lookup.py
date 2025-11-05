@@ -16,6 +16,8 @@ def isbn_lookup_view(request):
     if request.method == "POST" and form.is_valid():
         isbn = form.cleaned_data["isbn"]
         result = perform_isbn_lookup(isbn)
+        pprint(result)
+        print(result['result']['cover_url'])
 
         publication_date = parse_published_date(
             result["result"].get("published_date"))
@@ -30,6 +32,8 @@ def isbn_lookup_view(request):
             "publication_year": publication_date.year,
             "description": result["result"].get("description", ""),
             "works": result["work"].id if result["work"] else None,
+            "cover_url": result["result"].get("cover_url", ""),
+            "volume_json": result["result"]
         }
         volume_form = VolumeForm(initial=initial_data)
 

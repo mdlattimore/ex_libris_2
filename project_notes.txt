@@ -1,0 +1,7 @@
+Stats View:
+Total Volumes
+Total Authors
+Total investment:
+Avg price per volume
+Number of volumes by collection
+Avg age
