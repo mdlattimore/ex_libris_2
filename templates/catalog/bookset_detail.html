@@ -1,13 +1,26 @@
 {% extends "_base.html" %}
 
 {% block content %}
-    <br>
-    <h1 class="display-6 text-center">{{ bookset.title }} Set</h1>
+<br>
+<h1 class="display-6 text-center">{{ bookset.title }} Set</h1>
+
+<div class="container mt-3">
     {% for volume in bookset.volumes.all %}
-        <div class="catalog-item">
-            <a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }}</a><br>
+        <div class="d-flex justify-content-between align-items-center border-bottom py-2 catalog-item">
+            <div>
+                <a href="{% url 'volume_detail' volume.pk %}" class="fw-semibold text-decoration-none">
+                    <i>{{ volume.title }}</i>
+                </a>
+            </div>
+            <div class="text-muted small text-end">
+                {% if volume.edition %}
+                    {{ volume.edition }} |
+                {% endif %}
+                {{ volume.publisher }}
+                ({{ volume.publication_year }})
+                <i class="bi bi-chevron-right ms-1"></i>
+            </div>
         </div>
     {% endfor %}
-
-
-{% endblock content %}
+</div>
+{% endblock %}

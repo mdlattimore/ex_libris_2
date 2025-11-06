@@ -1,0 +1,8 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br><br>
+    {% for collection in collections %}
+        <p><a href="{% url 'collection_detail' collection.pk %}">{{ collection.name }}</a></p>
+    {% endfor %}
+{% endblock content %}

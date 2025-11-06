@@ -1,12 +1,14 @@
 from django.views.generic import ListView, DetailView
 from catalog.models import BookSet
 from catalog.utils.normalization import normalize_sort_title
+from catalog.views import CatalogBaseView
 
 
-class BookSetListView(ListView):
+class BookSetListView(CatalogBaseView):
     model = BookSet
     context_object_name = 'booksets'
-    template_name = "catalog/bookset_list.html"
+    template_name = "catalog/work_list.html"
+    view_type = "booksets"
 
     def get_context_data(self, **kwargs):
         context = super(BookSetListView, self).get_context_data(**kwargs)

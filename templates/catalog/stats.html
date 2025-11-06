@@ -1,0 +1,16 @@
+{% extends "_base.html" %}
+{% block content %}
+    <br><br>
+    <p>Total Volumes: {{ total_volumes }}</p>
+    <p>Total Cost: {{ total_cost|floatformat:2 }}</p>
+    <p>Average Cost Per Volume: {{ avg_cost|floatformat:2 }}</p>
+    <p>Most Expensive: {{ max_cost|floatformat:2 }} ({{ max_cost_volume.0.title }})</p>
+    <br>
+    <p>Total Authors: {{ total_authors }}</p>
+    <h3>Authors by Nationality</h3>
+    <ul>
+        {% for item in authors_by_nationality %}
+            <li>{{ item.nationality|default:"(Unknown)" }} — {{ item.count }}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

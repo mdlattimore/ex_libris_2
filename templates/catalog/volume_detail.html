@@ -21,7 +21,7 @@
                 {% if volume.collection %}
                 <div class="row">
                         <div class="col-sm-4">Collection:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.collection }}</div>
+                    <div class="col-sm-8 fw-bolder"><a href="{% url 'collection_detail' volume.collection.pk %}">{{ volume.collection }}</a></div>
                     </div>
                 {% endif %}
                 

@@ -4,14 +4,14 @@ from django.views.generic import ListView, DetailView
 from catalog.models import Work, BookSet
 from itertools import chain
 from catalog.utils.normalization import normalize_sort_title
+from catalog.views import CatalogBaseView
 
 
-
-
-class WorkListView(ListView):
+class WorkListView(CatalogBaseView):
     model = Work
     context_object_name = "items"
     template_name = "catalog/work_list.html"
+    view_type = "works"
 
     def get_queryset(self):
         """

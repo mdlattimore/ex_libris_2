@@ -45,6 +45,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'volume_list' %}">All Books</a>
                 </li>
+            <li class="nav-item">
+                    <a class="nav-link" href="{% url 'collection_list' %}">All Collections</a>
+                </li>
                 {% if user.is_superuser %}
                     <li>&emsp;&emsp;</li>
                     <li class="nav-item">
@@ -52,7 +55,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stats' %}">Stats</a>
                     </li>
                 {% endif %}
 

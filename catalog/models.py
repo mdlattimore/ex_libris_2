@@ -3,7 +3,7 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from simple_name_parser import NameParser
 from django.utils.text import slugify
-
+from django.urls import reverse
 from catalog.utils.fuzzy_matching import normalize_name
 from catalog.utils.normalization import normalize_sort_title
 
@@ -114,6 +114,9 @@ class Work(models.Model):
     def work_notes_html(self):
         return markdownify(self.notes)
 
+    def get_absolute_url(self):
+        return reverse("work_detail", args=[self.id])
+
     def __str__(self):
         return self.title
 
@@ -128,6 +131,7 @@ class BookSet(models.Model):
     total_volumes = models.IntegerField(blank=True, null=True)
     is_box_set = models.BooleanField(default=False)
     notes = MarkdownxField(blank=True, null=True)
+    sort_title = models.CharField(max_length=150, blank=True, null=True)
 
     class Meta:
         ordering = ['title']
@@ -135,6 +139,13 @@ class BookSet(models.Model):
     @property
     def kind(self):
         return "BookSet"
+
+    def save(self, *args, **kwargs):
+        self.sort_title = normalize_sort_title(self.title)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("bookset_detail", args=[self.id])
 
     def __str__(self):
         return self.title
@@ -154,6 +165,8 @@ class Collection(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+
 
     def __str__(self):
         return self.name
@@ -289,6 +302,9 @@ class Volume(models.Model):
     @property
     def edition_notes_html(self):
         return markdownify(self.edition_notes)
+
+    def get_absolute_url(self):
+        return reverse("volume_detail", kwargs={"pk": self.pk})
 
 
 
