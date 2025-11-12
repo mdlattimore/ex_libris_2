@@ -7,6 +7,9 @@ class CollectionListView(ListView):
     context_object_name = 'collections'
     template_name = "catalog/collection_list.html"
 
+    def get_queryset(self):
+        return Collection.objects.all().order_by('name')
+
 
 class CollectionDetailView(DetailView):
     model = Collection

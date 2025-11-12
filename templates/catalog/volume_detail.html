@@ -4,7 +4,7 @@
 {% load humanize %}
 {% block content %}
     <br>
-    <h1 class="text-center">{{ volume.title }}</h1>
+    <h1 class="text-center"><i>{{ volume.title }}</i></h1>
     {% if volume.description %}
         <p>{{ volume.description }}</p>
     {% endif %}
@@ -18,13 +18,19 @@
                     {#                <div class="col-sm-4">Author:</div>#}
                     {#                <div class="col-sm-8 fw-bolder">{{ volume.works.all.0.author }}</div>#}
                     {#            </div>#}
-                {% if volume.collection %}
-                <div class="row">
-                        <div class="col-sm-4">Collection:</div>
-                    <div class="col-sm-8 fw-bolder"><a href="{% url 'collection_detail' volume.collection.pk %}">{{ volume.collection }}</a></div>
-                    </div>
-                {% endif %}
-                
+                    {% if volume.collection.exists %}
+                        <div class="row">
+                            <div class="col-sm-4">Collection:</div>
+                            <div class="col-sm-8 fw-bolder">
+                                {% for coll in volume.collection.all %}
+                                    <a href="{% url 'collection_detail' coll.pk %}">{{ coll.name }}</a>
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+
                     {% with first_work=volume.works.first %}
                         {% if first_work %}
                             <div class="row">
@@ -53,12 +59,15 @@
                     {% if volume.book_set %}
                         <div class="row">
                             <div class="col-sm-4">Book Set:</div>
-                            <div class="col-sm-8 fw-bolder"><a href="{% url 'bookset_detail' volume.book_set.pk %}">{{ volume.book_set }}</a></div>
+                            <div class="col-sm-8 fw-bolder"><a
+                                    href="{% url 'bookset_detail' volume.book_set.pk %}">{{ volume.book_set }}</a></div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-4">Volume:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.volume_number|default:"" }}</div>
-                        </div>
+                        {% if volume.volume_number %}
+                            <div class="row">
+                                <div class="col-sm-4">Volume:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.volume_number|default:"" }}</div>
+                            </div>
+                        {% endif %}
                     {% endif %}
                     {% if volume.edition %}
                         <div class="row">
@@ -75,8 +84,8 @@
                         <div class="col-sm-8 fw-bolder">{{ volume.isbn13 }}</div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4">Work Type:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.works.first.get_work_type_display }}</div>
+                        <div class="col-sm-4">Volume Type:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.get_volume_type_display }}</div>
                     </div>
                     {#                    <div class="row">#}
                     {#                        <div class="col-sm-4">Works:</div>#}
@@ -118,7 +127,13 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-4">DJ Condition:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.get_dust_jacket_condition_display }}</div>
+                        <div class="col-sm-8 fw-bolder">
+                            {% if volume.get_dust_jacket_condition_display %}
+                            {{ volume.get_dust_jacket_condition_display }}
+                            {% else %}
+                            <span class="text-muted fst-italic">—</span>
+                            {% endif %}
+                        </div>
                     </div>
                     {% if volume.notes %}
                         <div class="row">
@@ -184,6 +199,6 @@
 
         </div>
         <div class="col-md-6">
-<img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover">        </div>
+            <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"></div>
     </div>
 {% endblock content %}

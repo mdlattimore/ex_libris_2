@@ -21,3 +21,9 @@ class BookSetDetailView(DetailView):
     model = BookSet
     context_object_name = 'bookset'
     template_name = "catalog/bookset_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(BookSetDetailView, self).get_context_data(**kwargs)
+        context["sorted_bookset"] = self.object.volumes.order_by(
+            'volume_number', normalize_sort_title('title'))
+        return context

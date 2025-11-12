@@ -5,9 +5,10 @@ from pprint import pprint
 from catalog.models import Author
 from catalog.services.book_lookup import perform_isbn_lookup
 from catalog.utils.date_parser import parse_published_date
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required(login_url="account_login")
 def isbn_lookup_view(request):
     form = ISBNSearchForm(request.POST or None)
     volume_form = VolumeForm()

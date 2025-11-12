@@ -1,8 +1,51 @@
+{#{% extends "_base.html" %}#}
+{##}
+{#{% block content %}#}
+{#    <br>#}
+{#    <h1 class="text-center">Collections</h1><br>#}
+{#    {% for collection in collections %}#}
+{#        <a href="{% url 'collection_detail' collection.pk %}" style="text-decoration: none">#}
+{#        <div class="card" style="width: 18rem;">#}
+{#            <div class="card-header text-center">#}
+{#                {{ collection.name }}#}
+{#            </div>#}
+{#            <div class="card-body">#}
+{#                {{ collection.description }}#}
+{#            </div>#}
+{#        </div>#}
+{#        </a>#}
+{#    {% endfor %}#}
+{#{% endblock content %}#}
+
 {% extends "_base.html" %}
 
 {% block content %}
-    <br><br>
-    {% for collection in collections %}
-        <p><a href="{% url 'collection_detail' collection.pk %}">{{ collection.name }}</a></p>
-    {% endfor %}
+  <div class="container">
+      <br>
+    <h1 class="text-center">Collections</h1>
+      <br>
+    <!-- Bootstrap responsive grid -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      {% for collection in collections %}
+        <div class="col">
+          <a href="{% url 'collection_detail' collection.pk %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm">
+              <div class="card-header text-center">
+                {{ collection.name }}
+              </div>
+              <div class="card-body">
+                {% if collection.description %}
+                  <p class="card-text small text-muted">
+                    {{ collection.description|truncatewords:30 }}
+                  </p>
+                {% else %}
+                  <p class="card-text text-muted fst-italic small">No description available.</p>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock content %}

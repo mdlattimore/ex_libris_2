@@ -5,18 +5,56 @@
     <br>
     <h1 class="text-center">{{ work.title }}</h1>
     <br>
+
     <div class="row">
-        <div class="col-md-5">
-        <h1 class="display-7">Appears In</h1><br>
-            {% for volume in work.volumes.all %}
-                <p><a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }}</a>
-                    ({{ volume.publication_year }}) {{ volume.edition|default:""}}</p>
-            {% endfor %}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">Author:</div>
+                        <div class="col-md-8"><a
+                                href="{% url 'author_detail' work.author.pk %}">{{ work.author }}</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">First Published:</div>
+                        <div class="col-md-8">{{ work.first_published }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">Work Type:</div>
+                        <div class="col-md-8">{{ work.get_work_type_display }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-11">
+                    <p>{{ work.work_notes_html|safe }}</p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-7">
-            {{ work.work_notes_html|safe }}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    Appears In:<br>
+                    {% for volume in work.volumes.all %}
+                        <a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }}</a>
+                            ({{ volume.publication_year }}) {{ volume.edition|default:"" }}<br>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
+    <br>
+    {% if work.text %}
+        <h1 class="display-7 text-center">{{ work.title }}</h1>
+        <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            {{ work.work_text_html|safe }}
+        </div>
+        <div class="col-md-2"></div>
+    {% endif %}
+
+</div>
 {% endblock content %}
 
 

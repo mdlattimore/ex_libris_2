@@ -19,6 +19,7 @@ class VolumeForm(forms.ModelForm):
             'publication_year',
             'isbn13',
             'isbn10',
+            'volume_type',
             'illustrator',
             'edition',
             'description',

@@ -10,9 +10,7 @@ class AuthorListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AuthorListView, self).get_context_data(**kwargs)
         all_authors = Author.objects.all()
-        authors_sorted = sorted(all_authors, key=lambda author: author.last_name
-                                                                + " " +
-                                                                author.first_name)
+        authors_sorted = sorted(all_authors, key=lambda author: author.sort_name)
         context['authors_display'] = authors_sorted
         return context
 

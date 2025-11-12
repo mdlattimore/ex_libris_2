@@ -10,7 +10,8 @@
     <meta name="description" content="A framework for launching new Django projects quickly.">
     <meta name="author" content="">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon-32x32.png' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap"
+          rel="stylesheet">
 
     {% block css %}
         <!-- Bootstrap CSS -->
@@ -39,30 +40,66 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
-            <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'work_list' %}">All Works</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'volume_list' %}">All Books</a>
                 </li>
-            <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'collection_list' %}">All Collections</a>
                 </li>
+            <li class="nav-item">
+                    <a class="nav-link" href="{% url 'author_list' %}">All Authors</a>
+                </li>
                 {% if user.is_superuser %}
-                    <li>&emsp;&emsp;</li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'isbn_lookup' %}">Add Book</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stats' %}">Stats</a>
-                    </li>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Admin Links
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
+
+                                <li><a class="dropdown-item" href="{% url 'isbn_lookup' %}">Add Book</a></li>
+                                <li><a class="dropdown-item" href="{% url 'stats' %}">Stats</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
                 {% endif %}
 
             </ul>
+
+            <!-- SEARCH BAR -->
+            {#                    <form action="{% url 'search_results' %}" method="post" class="d-flex input-group w-50 ms-auto">#}
+            <form action="#" method="post" class="d-flex input-group w-100 w-md-50 w-lg-33 ms-auto">
+
+                {% csrf_token %}
+                <input
+                        type="search"
+                        class="form-control"
+                        style="border-radius: 7px 0px 0px 7px;"
+                        name="q"
+                        placeholder="Search Work, Book, or Author"
+                        aria-label="Search"
+                        aria-describedby="search-addon"
+                />
+                <span class="input-group-text text-black border-0" id="search-addon">
+                            <button type="submit" style="border: none">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                            </svg>
+                            </button>
+                        </span>
+            </form>
+            <!--- End Search bar --->
+
+
             {% if user.is_authenticated %}
+
                 <div class="mr-auto">
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
@@ -86,7 +123,7 @@
                 <div class="mr-auto">
                     <form class="form d-flex">
                         <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">Log in</a>
-{#                        <a href="{% url 'account_signup' %}" class="btn btn-primary ms-2">Sign up</a>#}
+                        {#                        <a href="{% url 'account_signup' %}" class="btn btn-primary ms-2">Sign up</a>#}
                     </form>
                 </div>
             {% endif %}

@@ -44,6 +44,10 @@ class Author(models.Model):
         full_sort_name = " ".join(full_sort_name)
         if "of" in self.full_name.split() or "Of" in self.full_name.split():
             self.sort_name = self.full_name
+        elif self.first_name == "Unknown":
+            self.sort_name = "ZZ Author"
+        elif self.last_name == "Various":
+            self.sort_name = "Z Author"
         else:
             self.sort_name = full_sort_name
         self.match_name = normalize_name(self.full_name)
@@ -98,6 +102,7 @@ class Work(models.Model):
     )
 
     notes = MarkdownxField(blank=True, null=True)
+    text = MarkdownxField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.sort_title = normalize_sort_title(self.title)
@@ -113,6 +118,10 @@ class Work(models.Model):
     @property
     def work_notes_html(self):
         return markdownify(self.notes)
+
+    @property
+    def work_text_html(self):
+        return markdownify(self.text)
 
     def get_absolute_url(self):
         return reverse("work_detail", args=[self.id])
@@ -191,9 +200,18 @@ class Volume(models.Model):
         ("FA", "Fair"),
         ("RC", "Reading Copy")
     ]
+    VOLUME_TYPE_CHOICES = [
+        ("SINGLE", "Single Work"),
+        ("COLLECTION", "Collection of One Author"),
+        ("ANTHOLOGY", "Anthology (Multiple Authors)"),
+        ("EDITED", "Edited Edition"),
+        ("COMMENTARY", "Commentary or Critical Edition"),
+        ("OTHER", "Other"),
+    ]
     # Bibliographic Information
     title = models.CharField(max_length=200)
-    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, blank=True, null=True)
+    collection = models.ManyToManyField(Collection, related_name="volumes",
+                                        blank=True)
     sort_title = models.CharField(max_length=255, editable=False, blank=True)
     works = models.ManyToManyField(Work, related_name='volumes', blank=True)
     book_set = models.ForeignKey(BookSet, on_delete=models.CASCADE,
@@ -214,7 +232,8 @@ class Volume(models.Model):
         null=True,
         help_text="10-digit ISBN (legacy, optional)."
     )
-
+    volume_type = models.CharField(max_length=50,
+                                   choices=VOLUME_TYPE_CHOICES, blank=True, null=True)
     illustrator = models.CharField(max_length=200, blank=True, null=True)
     edition = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)

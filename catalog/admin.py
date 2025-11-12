@@ -22,7 +22,7 @@ class CollectionAdmin(admin.ModelAdmin):
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ['full_name']
-    ordering = ('last_name', 'first_name')
+    ordering = ('sort_name',)
 
 @admin.register(AuthorAlias)
 class AuthorAlias(admin.ModelAdmin):
@@ -82,9 +82,10 @@ class VolumeAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Bibliographic", {
             "fields": (
-                "title", "collection", "works", "book_set", "volume_number",
+                "title", "collection", "works", "book_set",
+            "volume_number",
                 "publisher", "publication_year",
-                "isbn13", "isbn10",
+                "isbn13", "isbn10", "volume_type",
                 "illustrator", "edition", "description",
             ),
         }),
