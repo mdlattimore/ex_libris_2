@@ -23,7 +23,19 @@
                         <div class="col-md-4">Work Type:</div>
                         <div class="col-md-8">{{ work.get_work_type_display }}</div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-4">Genre(s):</div>
+                        <div class="col-sm-8">
+                            {% for genre in work.genre.all %}
+                                {{ genre }}{% if not forloop.last %}<br>
+                            {% endif %}
+                            {% empty %}
+                                <span class="text-muted">No associated genre</span>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
+
             </div>
             <div class="row">
                 <div class="col-md-11">
@@ -37,7 +49,7 @@
                     Appears In:<br>
                     {% for volume in work.volumes.all %}
                         <a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }}</a>
-                            ({{ volume.publication_year }}) {{ volume.edition|default:"" }}<br>
+                        ({{ volume.publication_year }}) {{ volume.edition|default:"" }}<br>
                     {% endfor %}
                 </div>
             </div>

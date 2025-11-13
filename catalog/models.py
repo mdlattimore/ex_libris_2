@@ -69,6 +69,25 @@ class AuthorAlias(models.Model):
         return f"{self.alias} = {self.author.full_name}"
 
 
+#--------- 1.5 Genre ----------------------------------
+class Genre(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+
 # -------- 2. Work -----------------------------------------
 
 class Work(models.Model):
@@ -100,6 +119,7 @@ class Work(models.Model):
         choices=WorkType.choices,
         default=WorkType.NOVEL
     )
+    genre = models.ManyToManyField(Genre, related_name="works", blank=True)
 
     notes = MarkdownxField(blank=True, null=True)
     text = MarkdownxField(blank=True, null=True)
@@ -324,6 +344,8 @@ class Volume(models.Model):
 
     def get_absolute_url(self):
         return reverse("volume_detail", kwargs={"pk": self.pk})
+
+
 
 
 

@@ -24,6 +24,20 @@ class VolumeDetailView(DetailView):
     context_object_name = "volume"
     template_name = "catalog/volume_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        volume = self.object
+
+        # Collect all unique genres from associated works (field is singular)
+        genres = (
+            volume.works.values_list("genre__name", flat=True)
+            .distinct()
+            .order_by("genre__name")
+        )
+
+        context["genres"] = genres
+        return context
+
 def volume_create_view(request):
     form = VolumeForm(request.POST or None)
     if form.is_valid():

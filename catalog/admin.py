@@ -3,7 +3,8 @@ import json
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 
-from .models import Author, Work, BookSet, Volume, AuthorAlias, Collection
+from .models import (Author, Work, BookSet, Volume, AuthorAlias, Collection,
+                     Genre)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -27,6 +28,13 @@ class AuthorAdmin(admin.ModelAdmin):
 @admin.register(AuthorAlias)
 class AuthorAlias(admin.ModelAdmin):
     list_display = ['alias', 'author']
+
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    prepopulated_fields = {"slug": ("name",)}
+    search_fields = ["name", "description"]
+
 
 
 @admin.register(Work)

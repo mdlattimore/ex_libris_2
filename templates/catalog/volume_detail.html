@@ -87,6 +87,18 @@
                         <div class="col-sm-4">Volume Type:</div>
                         <div class="col-sm-8 fw-bolder">{{ volume.get_volume_type_display }}</div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-4">Genre(s):</div>
+                        <div class="col-sm-8 fw-bolder">
+                            {% if genres %}
+                                {% for genre in genres %}
+                                    {{ genre }}{% if not forloop.last %}<br>{% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-muted">No associated genres</span>
+                            {% endif %}
+                        </div>
+                    </div>
                     {#                    <div class="row">#}
                     {#                        <div class="col-sm-4">Works:</div>#}
                     {#                        <div class="col-sm-8 fw-bolder">#}
@@ -129,9 +141,9 @@
                         <div class="col-sm-4">DJ Condition:</div>
                         <div class="col-sm-8 fw-bolder">
                             {% if volume.get_dust_jacket_condition_display %}
-                            {{ volume.get_dust_jacket_condition_display }}
+                                {{ volume.get_dust_jacket_condition_display }}
                             {% else %}
-                            <span class="text-muted fst-italic">—</span>
+                                <span class="text-muted fst-italic">—</span>
                             {% endif %}
                         </div>
                     </div>
