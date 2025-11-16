@@ -16,3 +16,5 @@ db_backup.sqlite3
 .venv
 
 dsd_logs/
+
+*.sh

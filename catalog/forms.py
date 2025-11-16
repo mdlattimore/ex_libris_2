@@ -24,6 +24,7 @@ class VolumeForm(forms.ModelForm):
             'edition',
             'description',
             'binding',
+            'volume_url',
             'condition',
             'dust_jacket',
             'dust_jacket_condition',

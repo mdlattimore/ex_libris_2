@@ -254,6 +254,8 @@ class Volume(models.Model):
     )
     volume_type = models.CharField(max_length=50,
                                    choices=VOLUME_TYPE_CHOICES, blank=True, null=True)
+    volume_url = models.URLField(blank=True, null=True, help_text="URL to "
+                                                                  "ebook")
     illustrator = models.CharField(max_length=200, blank=True, null=True)
     edition = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
