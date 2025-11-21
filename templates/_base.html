@@ -74,9 +74,9 @@
 
             <!-- SEARCH BAR -->
             {#                    <form action="{% url 'search_results' %}" method="post" class="d-flex input-group w-50 ms-auto">#}
-            <form action="#" method="post" class="d-flex input-group w-100 w-md-50 w-lg-33 ms-auto">
+            <form action="{% url 'search_results' %}" method="get" class="d-flex input-group w-100 w-md-50 w-lg-33 ms-auto">
 
-                {% csrf_token %}
+{#                {% csrf_token %}#}
                 <input
                         type="search"
                         class="form-control"

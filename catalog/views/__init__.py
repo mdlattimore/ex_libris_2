@@ -7,3 +7,4 @@ from .book_set import *
 from .stats import *
 from .base import *
 from .collections import *
+from .search import *

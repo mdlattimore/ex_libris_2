@@ -2,12 +2,22 @@
 {% block content %}
     <br><br>
     <p>Total Volumes: {{ total_volumes }}</p>
-    <p>Total Cost: {{ total_cost|floatformat:2 }}</p>
-    <p>Average Cost Per Volume: {{ avg_cost|floatformat:2 }}</p>
-    <p>Most Expensive: {{ max_cost|floatformat:2 }} ({{ max_cost_volume.0.title }})</p>
+    <p>Total Cost: ${{ total_cost|floatformat:2 }}</p>
+    <p>Average Cost Per Volume: ${{ avg_cost|floatformat:2 }}<br>
+        <span class="small">Note: The average includes only volumes with a recorded price greater than $0.</span>
+
+    <p>Most Expensive: ${{ max_cost|floatformat:2 }} ({{ max_cost_volume.0.title }})</p>
     <br>
-    <p>Total Authors: {{ total_authors }}</p>
+    <h3>Number of Volumes Per Collection</h3>
+    <ul>
+        {% for item in num_volumes_by_collection %}
+            <li>{{ item.name|default:"(Unknown)" }} — {{ item.count }}</li>
+        {% endfor %}
+    </ul>
+    <br>
+
     <h3>Authors by Nationality</h3>
+    <p>Total Authors: {{ total_authors }}</p>
     <ul>
         {% for item in authors_by_nationality %}
             <li>{{ item.nationality|default:"(Unknown)" }} — {{ item.count }}</li>

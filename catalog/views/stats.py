@@ -1,6 +1,6 @@
 from django.db.models import Sum, Avg, Max, Count
 from django.views.generic import TemplateView
-from catalog.models import Volume, Author
+from catalog.models import Volume, Author, Collection
 
 
 class StatsView(TemplateView):
@@ -27,5 +27,11 @@ class StatsView(TemplateView):
             Author.objects.values("nationality")
             .annotate(count=Count("id"))
             .order_by("-count")
+        )
+
+        context["num_volumes_by_collection"] = (
+            Collection.objects.values("name")
+            .annotate(count=Count("volumes"))
+            .order_by("name")
         )
         return context

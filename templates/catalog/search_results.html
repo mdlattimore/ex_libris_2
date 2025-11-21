@@ -1,0 +1,154 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br>
+    <h1 class="display-5 text-center mb-4">Search Results</h1>
+    <p class="text-center text-muted">You searched for: <strong>{{ query }}</strong></p>
+
+    {# ------------------------------- AUTHORS ------------------------------- #}
+    {% if authors %}
+        <h3 class="mt-4 mb-3">Authors</h3>
+        <div class="list-group shadow-sm mb-5">
+            {% for author in authors %}
+                <a href="{% url 'author_detail' author.pk %}"
+                   class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">
+
+                    <div class="me-3 d-flex align-items-center justify-content-center bg-light border rounded text-muted"
+                         style="width:60px; height:90px; font-size:.8em;">
+                        No<br>Image
+                    </div>
+
+                    <div class="flex-fill">
+                        <h6 class="mb-0">{{ author.full_name }}</h6>
+                        {% if author.nationality %}
+                            <small class="text-muted">{{ author.nationality }}</small><br>
+                        {% endif %}
+                        {% if author.dob %}
+                            <small>{{ author.dob.year }} - {{ author.dod.year }}</small><br>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {# ------------------------------- WORKS / BOOKSETS ------------------------------- #}
+    {% if works %}
+        <h3 class="mt-4 mb-3">Works</h3>
+        <div class="list-group shadow-sm mb-5">
+
+            {# ----- WORKS ----- #}
+            {% for work in works %}
+                <a href="{{ work.get_absolute_url }}"
+                   class="list-group-item list-group-item-action d-flex align-items-center py-2 catalog-item">
+
+                    <div class="flex-fill">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 fw-semibold">
+                                {{ work.title }}
+                                <span class="small fw-lighter">
+                                    ({{ work.get_work_type_display }})
+                                </span>
+                            </h6>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </div>
+
+                        <small class="text-muted">{{ work.author }}</small><br>
+
+                        {% if work.volumes.exists %}
+                            <small class="text-muted">
+                                {{ work.volumes.count }} volume{{ work.volumes.count|pluralize }}
+                            </small>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if booksets %}
+        <h3 class="mt-4 mb-3">Book Sets</h3>
+        <div class="list-group shadow-sm mb-5">
+
+            {# ----- BOOKSETS ----- #}
+            {% for bs in booksets %}
+                <a href="{{ bs.get_absolute_url }}"
+                   class="list-group-item list-group-item-action d-flex align-items-center py-2 catalog-item">
+
+                    {% if bs.get_primary_image %}
+                        <img src="{{ bs.get_primary_image.image.url }}"
+                             alt="{{ bs.title }}"
+                             class="me-3 rounded"
+                             style="width:70px; height:100px; object-fit:cover;">
+                    {% else %}
+                        <div class="me-3 d-flex align-items-center justify-content-center bg-light border rounded text-muted"
+                             style="width:70px; height:100px; font-size:.8em;">
+                            No<br>Image
+                        </div>
+                    {% endif %}
+
+                    <div class="flex-fill">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 fw-semibold">
+                                {{ bs.title }} <span class="small fw-lighter">(Set)</span>
+                            </h6>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </div>
+                        <small class="text-muted">
+                            {{ bs.volumes.count }} volume{{ bs.volumes.count|pluralize }}
+                        </small>
+                    </div>
+
+                </a>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+    {# ------------------------------- VOLUMES ------------------------------- #}
+    {% if volumes %}
+        <h3 class="mt-4 mb-3">Books / Volumes</h3>
+        <div class="list-group shadow-sm mb-5">
+
+            {% for volume in volumes %}
+                <a href="{% url 'volume_detail' volume.pk %}"
+                   class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">
+
+                    {% if volume.cover_url %}
+                        <img src="{{ volume.cover_url }}"
+                             alt="{{ volume.title }}"
+                             class="rounded shadow-sm"
+                             style="width:80px;height:auto;">
+                    {% else %}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                             style="width:80px;height:120px;">
+                            <i class="bi bi-book text-muted fs-2"></i>
+                        </div>
+                    {% endif %}
+
+                    <div class="flex-fill">
+                        <h6 class="mb-0"><i>{{ volume.title }}</i></h6>
+                        <small class="text-muted">
+                            {{ volume.works.first.author }}
+                        </small><br>
+                        <small>
+                            {{ volume.publisher }} ({{ volume.publication_year }})
+                        </small><br>
+                        {% if volume.edition %}
+                            <small>{{ volume.edition }}</small>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+    {# NO RESULTS #}
+    {% if not authors and not works and not booksets and not volumes %}
+        <div class="text-center mt-5">
+            <h5 class="text-muted">No results found</h5>
+            <p>Try adjusting your search terms.</p>
+        </div>
+    {% endif %}
+
+{% endblock content %}

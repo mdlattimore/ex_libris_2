@@ -6,7 +6,7 @@
     <br>
     <h1 class="display-5 text-center">{{ author.full_name }}</h1>
     <h1 class="display-8 text-center mb-0">({{ author.dob.year }} - {{ author.dod.year }})</h1>
-    <h1 class="display-8 text-center">{{ author.nationality }} Author</h1>
+    <h1 class="display-8 text-center">{{ author.nationality|default:"" }}</h1>
     <br>
     <div class="row">
         <div class="col-md-3">
