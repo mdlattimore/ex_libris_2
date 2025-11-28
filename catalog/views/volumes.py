@@ -1,9 +1,8 @@
-from django.views.generic import ListView, DetailView
-from catalog.models import Volume
-from catalog.forms import VolumeForm
 from django.shortcuts import render
+from django.views.generic import ListView, DetailView, UpdateView
 
-
+from catalog.forms import VolumeForm
+from catalog.models import Volume
 from catalog.utils.normalization import normalize_sort_title
 
 
@@ -15,8 +14,6 @@ class VolumeListView(ListView):
     def get_queryset(self):
         qs = Volume.objects.select_related("book_set")
         return sorted(qs, key=lambda v: normalize_sort_title(v.title))
-
-
 
 
 class VolumeDetailView(DetailView):
@@ -38,12 +35,23 @@ class VolumeDetailView(DetailView):
         context["genres"] = genres
         return context
 
+
+class VolumeUpdateView(UpdateView):
+    model = Volume
+    context_object_name = "volume"
+    template_name = "catalog/volume_update.html"
+    fields = "__all__"
+    exclude_fields = ("volume_json",)
+
+
+
 def volume_create_view(request):
     form = VolumeForm(request.POST or None)
     if form.is_valid():
         volume = form.save()
         return render(request, "partials/volume_saved.html", {"volume": volume})
     return render(request, "partials/volume_form_errors.html", {"form": form})
+
 
 def manual_volume_form(request):
     """Render a blank manual entry form for creating a new Volume."""

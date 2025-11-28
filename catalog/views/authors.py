@@ -1,5 +1,19 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.models import Author
+
+
+class AuthorCreateView(CreateView):
+    model = Author
+    context_object_name = "author"
+    template_name = "catalog/author_create_update.html"
+    fields = "__all__"
+
+
+class AuthorUpdateView(UpdateView):
+    model = Author
+    context_object_name = "author"
+    template_name = "catalog/author_create_update.html"
+    fields = "__all__"
 
 
 class AuthorListView(ListView):

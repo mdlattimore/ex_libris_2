@@ -2,42 +2,45 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container mt-5">
-  <h1 class="mb-4">Book Lookup / Entry</h1>
+    <br>
+            <h1 class="text-center">Add Book/Volume</h1>
 
-  <form
-    method="post"
-    hx-post="{% url 'isbn_lookup' %}"
-    hx-target="#lookup-result"
-    hx-swap="innerHTML"
-    class="mb-3"
-  >
-    {% csrf_token %}
-    <div class="row g-2 align-items-end">
-      <div class="col-md-3">
-        {{ form|crispy }}
+    <div class="container mt-5">
+        <h2 class="mb-4">Book Lookup / Entry</h2>
 
-        <!-- Stack buttons, left-aligned -->
-        <div class="d-flex flex-column align-items-start gap-2 mt-2">
-  <button type="submit" class="btn btn-primary">
-    Search by ISBN
-  </button>
-  <button
-    class="btn btn-outline-secondary"
-    hx-get="{% url 'manual_volume_form' %}"
-    hx-target="#lookup-result"
-    hx-swap="innerHTML"
-  >
-    Manually Enter Book
-  </button>
-</div>
+        <form
+                method="post"
+                hx-post="{% url 'isbn_lookup' %}"
+                hx-target="#lookup-result"
+                hx-swap="innerHTML"
+                class="mb-3"
+        >
+            {% csrf_token %}
+            <div class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    {{ form|crispy }}
 
-      </div>
+                    <!-- Stack buttons, left-aligned -->
+                    <div class="d-flex flex-column align-items-start gap-2 mt-2">
+                        <button type="submit" class="btn btn-primary">
+                            Search by ISBN
+                        </button>
+                        <button
+                                class="btn btn-outline-secondary"
+                                hx-get="{% url 'manual_volume_form' %}"
+                                hx-target="#lookup-result"
+                                hx-swap="innerHTML"
+                        >
+                            Manually Enter Book
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+        <div id="lookup-result" class="mt-4">
+            {% include "partials/lookup_result.html" %}
+        </div>
     </div>
-  </form>
-
-  <div id="lookup-result" class="mt-4">
-    {% include "partials/lookup_result.html" %}
-  </div>
-</div>
 {% endblock content %}

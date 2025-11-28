@@ -1,5 +1,19 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.models import Collection
+
+
+class CollectionCreateView(CreateView):
+    model = Collection
+    context_object_name = "collection"
+    template_name = "catalog/collection_create_update.html"
+    fields = "__all__"
+
+
+class CollectionUpdateView(UpdateView):
+    model = Collection
+    context_object_name = "collection"
+    template_name = "catalog/collection_create_update.html"
+    fields = "__all__"
 
 
 class CollectionListView(ListView):

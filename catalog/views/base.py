@@ -13,9 +13,15 @@ class CatalogBaseView(TemplateView):
         if view_type == "works":
             context["items"] = Work.objects.all().order_by("sort_title")
             context["heading"] = "Works"
+            context["sub_heading"] = ("Creative texts (novels, poems, essays, "
+                                      "or stories) independent of any "
+                                      "particular edition or printing.")
         elif view_type == "booksets":
             context["items"] = BookSet.objects.all().order_by("title")
             context["heading"] = "Book Sets"
+            context["sub_heading"] = ("A group of volumes published or "
+                                      "packaged as a unit. May or may not be "
+                                      "'boxed.'")
         else:
             # Combine both - combine QuerySets to lists so they're concatenable
             items_list = list(Work.objects.all()) + list(BookSet.objects.all())

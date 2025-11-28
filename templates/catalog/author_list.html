@@ -4,7 +4,7 @@
 
 {% block content %}
     <br>
-    <h1 class="display-5 text-center mb-4">Authors</h1>
+    <h1 class="text-center mb-4">Authors</h1>
 
     {#    {% for author in authors_display %}#}
     {#        <h1 class="display-8 "><a href="#">{{ author }}</a></h1>#}
@@ -20,16 +20,17 @@
     <div class="list-group shadow-sm">
         {% for author in authors_display %}
             <a href="{% url 'author_detail' author.pk %}"
-               class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">
-                {#                {% if volume.cover_url %}#}
-                {#                    <img src="{{ volume.cover_url }}" alt="{{ volume.title }}" style="width:80px;height:auto;"#}
-                {#                         class="rounded shadow-sm">#}
-                {#                {% else %}#}
-                <div class="me-3 d-flex align-items-center justify-content-center bg-light border rounded text-muted"
-                     style="width:60px; height:90px; font-size:.8em;">
-                    No<br>Image
-                </div>
-                {#                {% endif %}#}
+               class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item" style="max-height: 107px; min-height: 107px;">
+                {% if author.author_image_url %}
+                    <img src="{{ author.author_image_url }}" alt="{{ author.full_name }}"
+                         style="width:60px;height:auto;margin-right:15px;"
+                         class="rounded shadow-sm">
+                {% else %}
+                    <div class="me-3 d-flex align-items-center justify-content-center bg-light border rounded text-muted"
+                         style="width:60px; height:90px; font-size:.8em;">
+                        No<br>Image
+                    </div>
+                {% endif %}
                 <div class="flex-fill">
                     <h6 class="mb-0">{{ author.full_name }}</h6>
                     <small class="text-muted">{{ author.nationality }}</small><br>

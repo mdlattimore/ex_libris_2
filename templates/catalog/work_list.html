@@ -1,7 +1,9 @@
 {% extends "_base.html" %}
 {% block content %}
     <div class="container mt-4">
-        <h1 class="text-center mb-4">{{ heading }}</h1>
+        <h1 class="text-center mb-1">{{ heading }}</h1>
+        <p class="text-center" style="font-size: 1em;">{{ sub_heading }}</p>
+    
 
         <div class="text-center mb-4">
             <a href="{% url 'work_list' %}"
@@ -43,6 +45,7 @@
                                     {% else %} ({{ item.get_work_type_display }}){% endif %}</span></h6>
                                     <i class="bi bi-chevron-right text-muted"></i>
                                 </div>
+                                <div><span class="small fw-light">{{ item.author }}</span></div>
 
                                 {% if view_type == "booksets" or item.volumes.exists %}
                                     <small class="text-muted">

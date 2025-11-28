@@ -1,10 +1,24 @@
 import re
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.models import Work, BookSet
 from itertools import chain
 from catalog.utils.normalization import normalize_sort_title
 from catalog.views import CatalogBaseView
+
+
+class WorkCreateView(CreateView):
+    model = Work
+    context_object_name = "work"
+    template_name = "catalog/work_create_update.html"
+    fields = "__all__"
+
+
+class WorkUpdateView(UpdateView):
+    model = Work
+    context_object_name = "work"
+    template_name = "catalog/work_create_update.html"
+    fields = "__all__"
 
 
 class WorkListView(CatalogBaseView):

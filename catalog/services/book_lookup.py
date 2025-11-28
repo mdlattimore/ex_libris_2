@@ -51,7 +51,9 @@ def resolve_work(title: str):
 def perform_isbn_lookup(isbn):
     result = GoogleBooksProvider.lookup(isbn)
 
-    author_name = result.get("author")
+    author_name = result.get("author", "Unknown Author")
+    if not author_name:
+        author_name = "Unknown Author"
     title = result.get("title")
 
     if not (author_name and title):

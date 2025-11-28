@@ -4,7 +4,7 @@
 
 {% block content %}
     <br>
-    <h1 class="display-5 text-center">{{ author.full_name }}</h1>
+    <h1 class="text-center">{{ author.full_name }}</h1>
     <h1 class="display-8 text-center mb-0">({{ author.dob.year }} - {{ author.dod.year }})</h1>
     <h1 class="display-8 text-center">{{ author.nationality|default:"" }}</h1>
     <br>
@@ -21,6 +21,11 @@
             </div>
         </div>
     </div>
+    {% if user.is_authenticated %}
+        <a href="{% url 'author_update' author.pk %}" class="btn btn-primary">Update</a>
+    {% endif %}
+    <br>
+    <br>
 
 
 

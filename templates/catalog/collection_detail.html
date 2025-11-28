@@ -3,31 +3,10 @@
 {% block content %}
 
     <br><br>
-    <h1 class="text-center display-6">{{ collection.name }} Collection</h1><br>
-{#    <div class="container mt-3 list-container">#}
-{#        {% for volume in collection.volumes.all %}#}
-{#            <a href="{% url 'volume_detail' volume.pk %}" class="fw-light text-italic text-decoration-none"#}
-{#               style="color:black;">#}
-{#                <div class="d-flex justify-content-between align-items-center border-bottom py-1 catalog-item mb-2">#}
-{#                    <div>#}
-{##}
-{#                        <i>{{ volume.title }}</i>&nbsp; <span#}
-{#                            class="fw-lighter small"> by {{ volume.works.first.author }}</span>#}
-{#                    </div>#}
-{#                    <div class="text-muted small text-end">#}
-{#                        <i class="bi bi-chevron-right ms-1 fw-light">#}
-{#                            {% if volume.edition %}#}
-{#                                {{ volume.edition }} |#}
-{#                            {% endif %}#}
-{#                            {{ volume.publisher }}#}
-{#                            ({{ volume.publication_year }})#}
-{#                        </i>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </a>#}
-{#        {% endfor %}#}
-{#    </div>#}
-    
+    <h1 class="text-center display-6">{{ collection.name }} Collection</h1>
+    <p class="text-center">{{ collection.description }}</p>
+   
+
     <div class="list-group shadow-sm">
         {% for volume in collection.volumes.all %}
             <a href="{% url 'volume_detail' volume.pk %}"
@@ -50,22 +29,12 @@
             </a>
         {% endfor %}
     </div>
+    <br>
+    {% if user.is_authenticated %}
+        <a href="{% url 'collection_update' collection.pk %}" class="btn btn-primary">Update</a>
+    {% endif %}
+    <br><br>
 
-{#    <div class="list-group shadow-sm">#}
-{#        {% for volume in collection.volumes.all %}#}
-{#            <a href="{{ volume.get_absolute_url }}"#}
-{#               class="list-group-item list-group-item-action d-flex align-items-center py-3">#}
-{#                <div class="flex-fill">#}
-{#                    <div class="d-flex justify-content-between align-items-center">#}
-{#                        <h6 class="mb-0 fw-semibold">#}
-{#                            {{ volume.title }}<small class="fw-normal">&nbsp;by {{ volume.works.first.author }}</small></h6>#}
-{#                        <i class="bi bi-chevron-right text-muted"></i>#}
-{#                    </div>#}
-{##}
-{#                </div>#}
-{#            </a>#}
-{#        {% endfor %}#}
-{#    </div>#}
 
 
 

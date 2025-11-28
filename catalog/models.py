@@ -22,6 +22,7 @@ class Author(models.Model):
     dob = models.DateField(blank=True, null=True)
     dod = models.DateField(blank=True, null=True)
     nationality = models.CharField(max_length=100, blank=True, null=True)
+    author_image_url = models.URLField(blank=True, null=True)
     bio = MarkdownxField(blank=True, null=True)
     sort_name = models.CharField(max_length=150, blank=True, null=True)
     match_name = models.CharField(max_length=150, blank=True, null=True,
@@ -51,7 +52,14 @@ class Author(models.Model):
         else:
             self.sort_name = full_sort_name
         self.match_name = normalize_name(self.full_name)
+
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("author_detail", args=[self.id])
+
+    class Meta:
+        ordering = ['sort_name']
 
     def __str__(self):
         return self.full_name
@@ -91,23 +99,41 @@ class Genre(models.Model):
 # -------- 2. Work -----------------------------------------
 
 class Work(models.Model):
-    class WorkType(models.TextChoices):
-        NOVEL = "NOVEL", "Novel"
-        NOVELLA = "NOVELLA", "Novella"
-        SHORT_STORY = "SHORT_STORY", "Short Story"
-        STORY_COLLECTION = "STORY_COLLECTION", "Story Collection"
-        POEM = "POEM", "Poem"
-        POETRY_COLLECTION = "POETRY_COLLECTION", "Poetry Collection"
-        PLAY = "PLAY", "Play / Drama"
-        ESSAY = "ESSAY", "Essay"
-        ESSAY_COLLECTION = "ESSAY_COLLECTION", "Essay Collection"
-        NONFICTION_BOOK = "NONFICTION_BOOK", "Non-Fiction Book"
-        LETTER = "LETTER", "Letter / Correspondence"
-        SPEECH = "SPEECH", "Speech / Lecture"
-        TRANSLATION = "TRANSLATION", "Translation"
-        ANTHOLOGY = "ANTHOLOGY", "Anthology / Edited Volume"
-        CRITICISM = "CRITICISM", "Criticism / Commentary"
-        OTHER = "OTHER", "Other"
+    # class WorkType(models.TextChoices):
+    #     NOVEL = "NOVEL", "Novel"
+    #     NOVELLA = "NOVELLA", "Novella"
+    #     SHORT_STORY = "SHORT_STORY", "Short Story"
+    #     STORY_COLLECTION = "STORY_COLLECTION", "Story Collection"
+    #     POEM = "POEM", "Poem"
+    #     POETRY_COLLECTION = "POETRY_COLLECTION", "Poetry Collection"
+    #     PLAY = "PLAY", "Play / Drama"
+    #     ESSAY = "ESSAY", "Essay"
+    #     ESSAY_COLLECTION = "ESSAY_COLLECTION", "Essay Collection"
+    #     NONFICTION_BOOK = "NONFICTION_BOOK", "Non-Fiction Book"
+    #     LETTER = "LETTER", "Letter / Correspondence"
+    #     SPEECH = "SPEECH", "Speech / Lecture"
+    #     TRANSLATION = "TRANSLATION", "Translation"
+    #     ANTHOLOGY = "ANTHOLOGY", "Anthology / Composite Work"
+    #     CRITICISM = "CRITICISM", "Criticism / Commentary"
+    #     OTHER = "OTHER", "Other"
+    WORK_TYPE_CHOICES = [
+        ("NOVEL", "Novel"),
+        ("NOVELLA", "Novella"),
+        ("SHORT_STORY", "Short Story"),
+        ("STORY_CYCLE", "Story Cycle"),
+        ("POEM", "Poem"),
+        ("POETRY_COLLECTION", "Poetry Collection"),
+        ("PLAY", "Play / Drama"),
+        ("ESSAY", "Essay"),
+        ("ESSAY_COLLECTION", "Essay Collection"),
+        ("NONFICTION", "Non-Fiction Work"),
+        ("TRANSLATION", "Translation"),
+        ("COMPOSITE", "Composite / Edited Work"),
+        ("ANTHOLOGY", "Anthology (Multiple Authors)"),
+        ("CRITICISM", "Criticism / Commentary"),
+        ("REFERENCE_WORK", "Reference Work"),
+        ("OTHER", "Other"),
+    ]
 
     title = models.CharField(max_length=200)
     sort_title = models.CharField(max_length=150, blank=True, null=True)
@@ -116,8 +142,10 @@ class Work(models.Model):
     first_published = models.IntegerField(blank=True, null=True)
     work_type = models.CharField(
         max_length=50,
-        choices=WorkType.choices,
-        default=WorkType.NOVEL
+        # choices=WorkType.choices,
+        # default=WorkType.NOVEL
+        choices=WORK_TYPE_CHOICES,
+        blank=True, null=True
     )
     genre = models.ManyToManyField(Genre, related_name="works", blank=True)
 
@@ -159,6 +187,7 @@ class BookSet(models.Model):
     illustrator = models.CharField(max_length=255, blank=True)
     total_volumes = models.IntegerField(blank=True, null=True)
     is_box_set = models.BooleanField(default=False)
+    description = MarkdownxField(blank=True, null=True)
     notes = MarkdownxField(blank=True, null=True)
     sort_title = models.CharField(max_length=150, blank=True, null=True)
 
@@ -168,6 +197,10 @@ class BookSet(models.Model):
     @property
     def kind(self):
         return "BookSet"
+
+    @property
+    def bookset_description_html(self):
+        return markdownify(self.description)
 
     def save(self, *args, **kwargs):
         self.sort_title = normalize_sort_title(self.title)
@@ -195,7 +228,8 @@ class Collection(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-
+    def get_absolute_url(self):
+        return reverse("collection_detail", args=[self.id])
 
     def __str__(self):
         return self.name
@@ -220,14 +254,29 @@ class Volume(models.Model):
         ("FA", "Fair"),
         ("RC", "Reading Copy")
     ]
-    VOLUME_TYPE_CHOICES = [
+    VOLUME_CONTENT_TYPE_CHOICES = [
         ("SINGLE", "Single Work"),
-        ("COLLECTION", "Collection of One Author"),
+        ("COLLECTION_SINGLE_AUTHOR", "Collection (One Author)"),
         ("ANTHOLOGY", "Anthology (Multiple Authors)"),
-        ("EDITED", "Edited Edition"),
-        ("COMMENTARY", "Commentary or Critical Edition"),
+        ("COMPOSITE", "Composite / Edited Volume"),
+        ("CRITICAL", "Critical / Commentary Edition"),
+        ("REFERENCE", "Reference Work"),
         ("OTHER", "Other"),
     ]
+    VOLUME_EDITION_TYPE_CHOICES = [
+        ("STANDARD", "Standard Edition"),
+        ("COLLECTOR", "Collector's Edition"),
+        ("DELUXE", "Deluxe Edition"),
+        ("ILLUSTRATED", "Illustrated Edition"),
+        ("FACSIMILE", "Facsimile Edition"),
+        ("REVISED", "Revised Edition"),
+        ("LIMITED", "Limited Edition"),
+        ("TEXTBOOK", "Textbook / Academic Edition"),
+        ("POCKET", "Pocket Edition"),
+        ("TRANSLATION", "Translation"),
+        ("OTHER", "Other"),
+    ]
+
     # Bibliographic Information
     title = models.CharField(max_length=200)
     collection = models.ManyToManyField(Collection, related_name="volumes",
@@ -252,8 +301,10 @@ class Volume(models.Model):
         null=True,
         help_text="10-digit ISBN (legacy, optional)."
     )
-    volume_type = models.CharField(max_length=50,
-                                   choices=VOLUME_TYPE_CHOICES, blank=True, null=True)
+    volume_content_type = models.CharField(max_length=50,
+                                           choices=VOLUME_CONTENT_TYPE_CHOICES, blank=True, null=True)
+    volume_edition_type = models.CharField(max_length=50,
+                                           choices=VOLUME_EDITION_TYPE_CHOICES, blank=True, null=True)
     volume_url = models.URLField(blank=True, null=True, help_text="URL to "
                                                                   "ebook")
     illustrator = models.CharField(max_length=200, blank=True, null=True)

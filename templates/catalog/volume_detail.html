@@ -85,7 +85,11 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-4">Volume Type:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.get_volume_type_display }}</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.get_volume_content_type_display }}</div>
+                    </div>
+                <div class="row">
+                        <div class="col-sm-4">Edition Type:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.get_volume_edition_type_display }}</div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">Genre(s):</div>
@@ -213,4 +217,10 @@
         <div class="col-md-6">
             <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"></div>
     </div>
+    <br>
+    {% if user.is_authenticated %}
+        <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>
+    {% endif %}
+    <br>
+    <br>
 {% endblock content %}

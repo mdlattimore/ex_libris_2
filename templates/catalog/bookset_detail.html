@@ -3,6 +3,7 @@
 {% block content %}
     <br>
     <h1 class="display-6 text-center">{{ bookset.title }} Set</h1>
+    <p class="lead text-justify" style="font-size: 1em;">{{ bookset.description }}</p>
     <br>
     <div class="list-group shadow-sm">
         {% for volume in sorted_bookset %}
@@ -28,4 +29,5 @@
             </a>
         {% endfor %}
     </div>
+    <p>{{ bookset.notes|linebreaks }}</p>
 {% endblock %}

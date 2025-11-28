@@ -17,7 +17,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">First Published:</div>
-                        <div class="col-md-8">{{ work.first_published }}</div>
+                        <div class="col-md-8">{{ work.first_published|default:"" }}</div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">Work Type:</div>
@@ -28,7 +28,7 @@
                         <div class="col-sm-8">
                             {% for genre in work.genre.all %}
                                 {{ genre }}{% if not forloop.last %}<br>
-                            {% endif %}
+                                {% endif %}
                             {% empty %}
                                 <span class="text-muted">No associated genre</span>
                             {% endfor %}
@@ -66,6 +66,10 @@
         <div class="col-md-2"></div>
     {% endif %}
 
+    {% if user.is_authenticated %}
+        <a href="{% url 'work_update' work.pk %}" class="btn btn-primary">Update</a>
+    {% endif %}
+    <br>
 </div>
 {% endblock content %}
 
