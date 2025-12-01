@@ -165,6 +165,8 @@ class Work(models.Model):
 
     @property
     def work_notes_html(self):
+        if not self.notes:
+            return ""
         return markdownify(self.notes)
 
     @property

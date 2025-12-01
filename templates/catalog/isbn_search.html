@@ -3,7 +3,7 @@
 
 {% block content %}
     <br>
-            <h1 class="text-center">Add Book/Volume</h1>
+    <h1 class="text-center">Add Book/Volume</h1>
 
     <div class="container mt-5">
         <h2 class="mb-4">Book Lookup / Entry</h2>
@@ -33,6 +33,13 @@
                         >
                             Manually Enter Book
                         </button>
+                         <button
+            class="btn btn-outline-primary"
+            hx-get="{% url 'work_create_modal' %}"
+            hx-target="#modal-area"
+            hx-swap="innerHTML">
+        + Add Work
+    </button>
                     </div>
 
                 </div>
@@ -43,4 +50,8 @@
             {% include "partials/lookup_result.html" %}
         </div>
     </div>
+
+   
+
+    <div id="modal-area"></div>
 {% endblock content %}

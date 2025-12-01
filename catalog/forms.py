@@ -2,7 +2,7 @@
 from django import forms
 from django_json_widget.widgets import JSONEditorWidget
 
-from .models import Volume
+from .models import Volume, Work
 
 
 class VolumeForm(forms.ModelForm):
@@ -50,6 +50,14 @@ class VolumeForm(forms.ModelForm):
                 }
             ),
         }
+
+
+class WorkCreateForm(forms.ModelForm):
+    class Meta:
+        model = Work
+        fields = [
+            'title', 'author'
+        ]
 
 
 class ISBNSearchForm(forms.Form):

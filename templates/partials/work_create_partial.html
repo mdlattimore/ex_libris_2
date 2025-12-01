@@ -1,0 +1,53 @@
+{% load crispy_forms_tags %}
+
+<div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Work</h5>
+                <button type="button" class="close" onclick="closeWorkModal()">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="work-form"
+                      method="post"
+                      hx-post="{% url 'work_create_modal' %}"
+                      hx-target="#work-form-container"
+                      hx-swap="outerHTML"
+                      hx-on::after-request="handleWorkResponse(event)">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Save Work</button>
+                </form>
+                <div id="work-form-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function handleWorkResponse(event) {
+        try {
+            let data = JSON.parse(event.detail.xhr.responseText);
+
+            // select field for ManyToMany
+            let dropdown = document.getElementById("id_works");
+
+            // create new <option>
+            let newOption = new Option(data.title, data.id, true, true);
+
+            dropdown.add(newOption);
+            newOption.selected = true;
+
+            closeWorkModal();
+        } catch (err) {
+            console.error("Failed to process new work:", err);
+        }
+    }
+
+    function closeWorkModal() {
+        document.getElementById("modal-area").innerHTML = "";
+    }
+</script>

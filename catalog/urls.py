@@ -11,6 +11,8 @@ urlpatterns = [
     path('author_detail/<int:pk>/', views.AuthorDetailView.as_view(),
          name='author_detail'),
     path('work_create/', views.WorkCreateView.as_view(), name='work_create'),
+    path('work_create_modal/', views.WorkCreateModalView.as_view(),
+         name='work_create_modal'),
     path('work_update/<int:pk>/', views.WorkUpdateView.as_view(),
          name='work_update'),
     path('work_list/', views.WorkListView.as_view(), name='work_list'),

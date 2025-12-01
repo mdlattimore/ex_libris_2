@@ -1,10 +1,13 @@
 import re
 
+from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.models import Work, BookSet
 from itertools import chain
 from catalog.utils.normalization import normalize_sort_title
 from catalog.views import CatalogBaseView
+from catalog.forms import WorkCreateForm
+from django.shortcuts import redirect
 
 
 class WorkCreateView(CreateView):
@@ -12,6 +15,28 @@ class WorkCreateView(CreateView):
     context_object_name = "work"
     template_name = "catalog/work_create_update.html"
     fields = "__all__"
+
+
+class WorkCreateModalView(CreateView):
+    model = Work
+    form_class = WorkCreateForm
+
+    def get_template_names(self):
+        if self.request.headers.get("HX-Request"):
+            return ["partials/work_create_partial.html"]
+        return ["catalog/work_create_update.html"]
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        if self.request.headers.get("HX-Request"):
+            return JsonResponse({"id": self.object.id, "title": self.object.title})
+
+        return redirect(self.object.get_absolute_url())
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
 
 
 class WorkUpdateView(UpdateView):
