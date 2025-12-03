@@ -1,53 +1,96 @@
 {% load crispy_forms_tags %}
 
-<div class="modal fade show d-block" tabindex="-1">
+<div id="work-modal" class="modal fade show d-block" tabindex="-1"
+     style="background: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" id="work-modal-content">
+
             <div class="modal-header">
                 <h5 class="modal-title">Add Work</h5>
-                <button type="button" class="close" onclick="closeWorkModal()">
-                    <span>&times;</span>
-                </button>
+                <button type="button" class="btn-close" onclick="closeWorkModal()"></button>
             </div>
 
             <div class="modal-body">
-                <form id="work-form"
-                      method="post"
-                      hx-post="{% url 'work_create_modal' %}"
-                      hx-target="#work-form-container"
-                      hx-swap="outerHTML"
+                <form id="work-form" method="post"
+                      hx-post="{% url 'work_create' %}"
+                      hx-target="this"
+                      hx-swap="none"
                       hx-on::after-request="handleWorkResponse(event)">
+
+
                     {% csrf_token %}
-                    {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Save Work</button>
+
+
+                    {{ form.title.label_tag }}<br>
+                    {{ form.title }}<br><br>
+
+                    {{ form.notes.label_tag }}<br>
+                    {{ form.notes }}<br>
+
+                    {{ form.author.label_tag }}
+                    <div class="d-flex gap-2 mb-3">
+                        {{ form.author }}
+                        <button
+                                type="button"
+                                hx-get="{% url 'author_create' %}"
+                                hx-target="#author-modal"
+                                hx-swap="innerHTML"
+                                class="btn btn-outline-secondary">
+                            + Add Author
+                        </button>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary mt-3">Save Work</button>
+
                 </form>
+
                 <div id="work-form-container"></div>
+                <div id="author-modal"></div>
             </div>
+
         </div>
     </div>
 </div>
 
 <script>
-    function handleWorkResponse(event) {
-        try {
-            let data = JSON.parse(event.detail.xhr.responseText);
-
-            // select field for ManyToMany
-            let dropdown = document.getElementById("id_works");
-
-            // create new <option>
-            let newOption = new Option(data.title, data.id, true, true);
-
-            dropdown.add(newOption);
-            newOption.selected = true;
-
-            closeWorkModal();
-        } catch (err) {
-            console.error("Failed to process new work:", err);
+    function closeWorkModal() {
+        const modal = document.getElementById("work-modal");
+        if (modal) {
+            modal.innerHTML = "";
         }
     }
 
-    function closeWorkModal() {
-        document.getElementById("modal-area").innerHTML = "";
+    function handleWorkResponse(event) {
+        let xhr = event.detail.xhr;
+
+        // If the server returned a validation HTML fragment
+        if (xhr.status === 400) {
+            const data = JSON.parse(xhr.responseText);
+            document.querySelector("#work-modal-content").innerHTML = data.html;
+            return;
+        }
+
+        // Otherwise valid JSON
+        const data = JSON.parse(xhr.responseText);
+
+        const select = document.getElementById("id_works");
+        if (select) {
+            let opt = new Option(data.title, data.id, true, true);
+            select.add(opt);
+        }
+
+        closeWorkModal();
+    }
+
+</script>
+
+<script>
+    function closeAuthorModal() {
+        const modal = document.getElementById("author-modal");
+        if (modal) {
+            modal.innerHTML = "";
+        }
     }
 </script>
+

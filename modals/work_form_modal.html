@@ -1,0 +1,47 @@
+<div class="modal fade show" style="display:block;" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" id="work-modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Add Work</h5>
+                <button type="button" class="btn-close"
+                        onclick="htmx.find('#work-modal-content').closest('.modal').remove()"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form
+                    hx-post="{% url 'work_create_modal' %}"
+                    hx-target="#work-modal-content"
+                    hx-swap="outerHTML">
+
+                    {% csrf_token %}
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                    </div>
+
+                    <!-- Author + Add Author -->
+                    <div class="mb-3">
+                        {{ form.author.label_tag }}
+                        <div class="d-flex gap-2">
+                            {{ form.author }}
+                            <button
+                                class="btn btn-outline-secondary"
+                                hx-get="{% url 'author_create_modal' %}"
+                                hx-target="#modal-area"
+                                hx-swap="innerHTML">
+                                + Add
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">Save Work</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

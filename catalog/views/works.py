@@ -1,6 +1,8 @@
 import re
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.template.loader import render_to_string
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.models import Work, BookSet
 from itertools import chain
@@ -10,32 +12,98 @@ from catalog.forms import WorkCreateForm
 from django.shortcuts import redirect
 
 
+# class WorkCreateView(CreateView):
+#     model = Work
+#     context_object_name = "work"
+#     template_name = "catalog/work_create_update.html"
+#     fields = "__all__"
+
+from django.views.generic import CreateView
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.template.loader import render_to_string
+
+from catalog.models import Work, Author
+from catalog.forms import WorkCreateForm, AuthorCreateForm  # or whatever your
+# forms are called
+
+
 class WorkCreateView(CreateView):
     model = Work
-    context_object_name = "work"
-    template_name = "catalog/work_create_update.html"
-    fields = "__all__"
+    form_class = WorkCreateForm
+    success_url = reverse_lazy("work_list")
 
+    def get_template_names(self):
+        if self.request.headers.get("HX-Request"):
+            return ["partials/work_create_partial.html"]
+        return ["catalog/work_create_update.html"]  # normal full-page create if desired
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        # HTMX POST → return JSON, NOT HTML
+        if self.request.headers.get("HX-Request"):
+            return JsonResponse(
+                {"id": self.object.id, "title": self.object.title}
+            )
+
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        if self.request.headers.get("HX-Request"):
+            html = render_to_string(
+                "partials/work_create_partial.html",
+                {"form": form},
+                request=self.request,
+            )
+            return JsonResponse({"html": html}, status=400)
+
+        return super().form_invalid(form)
+
+
+
+# class WorkCreateModalView(View):
+#     template_name = "modals/work_form_modal.html"
+#
+#     def post(self, request, *args, **kwargs):
+#         form = WorkCreateForm(request.POST)
+#         if form.is_valid():
+#             work = form.save()
+#
+#             # Render the new option for the select field with out-of-band swap
+#             option_html = render_to_string(
+#                 "partials/work_option.html",
+#                 {"work": work},
+#                 request=request
+#             )
+#
+#             return HttpResponse(option_html)
+#
+#         # If form is not valid, re-render the modal with errors
+#         html = render_to_string(self.template_name, {"form": form}, request=request)
+#         return HttpResponse(html)
 
 class WorkCreateModalView(CreateView):
     model = Work
     form_class = WorkCreateForm
 
     def get_template_names(self):
-        if self.request.headers.get("HX-Request"):
-            return ["partials/work_create_partial.html"]
-        return ["catalog/work_create_update.html"]
+        return ["partials/work_create_partial.html"]
 
     def form_valid(self, form):
         self.object = form.save()
-
-        if self.request.headers.get("HX-Request"):
-            return JsonResponse({"id": self.object.id, "title": self.object.title})
-
-        return redirect(self.object.get_absolute_url())
+        return JsonResponse({"id": self.object.id, "title": self.object.title})
 
     def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
+        html = render_to_string(
+            "partials/work_create_partial.html",
+            {"form": form},
+            request=self.request
+        )
+        return JsonResponse({"html": html}, status=400)
+
+
 
 
 

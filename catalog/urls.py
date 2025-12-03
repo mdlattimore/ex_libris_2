@@ -5,6 +5,8 @@ from . import views
 urlpatterns = [
     path('author_create/', views.AuthorCreateView.as_view(),
          name='author_create'),
+    path('author_create_modal/', views.AuthorCreateModalView.as_view(),
+         name='author_create_modal'),
     path('author_update/<int:pk>/', views.AuthorUpdateView.as_view(),
          name='author_update'),
     path('author_list/', views.AuthorListView.as_view(), name='author_list'),

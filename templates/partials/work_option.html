@@ -1,0 +1,8 @@
+<option value="{{ work.id }}" selected hx-swap-oob="true">
+    {{ work.title }}
+</option>
+
+<script>
+    const modal = document.querySelector('#work-modal-content').closest('.modal');
+    if (modal) modal.remove();
+</script>

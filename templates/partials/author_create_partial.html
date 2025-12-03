@@ -1,0 +1,100 @@
+{% load crispy_forms_tags %}
+
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+        <div class="modal-content" id="author-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Author</h5>
+                <button type="button" class="btn-close" onclick="closeAuthorModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="author-form" method="post"
+                      hx-post="{% url 'author_create' %}"
+                      hx-target="this"
+                      hx-swap="none"
+                      hx-on::after-request="handleAuthorResponse(event)">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <button type="submit" class="btn btn-primary">Save Author</button>
+                </form>
+                <div id="author-form-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="author-modal"></div>
+{#<script>#}
+{#    function handleAuthorResponse(event) {#}
+{#        if (event.detail.xhr.status === 400) {#}
+{#            try {#}
+{#                const data = JSON.parse(event.detail.xhr.responseText);#}
+{#                if (data.html) {#}
+{#                    document.querySelector("#author-modal-content .modal-body").innerHTML = data.html;#}
+{#                }#}
+{#            } catch (e) {#}
+{#                console.error("Error handling invalid Author form:", e);#}
+{#            }#}
+{#            return;#}
+{#        }#}
+{##}
+{#        try {#}
+{#            const data = JSON.parse(event.detail.xhr.responseText);#}
+{#            const select = document.getElementById("id_author");#}
+{#            if (!select) {#}
+{#                console.error("No #id_author select found");#}
+{#                return;#}
+{#            }#}
+{##}
+{#            let existingOption = select.querySelector(`option[value="${data.id}"]`);#}
+{#            if (!existingOption) {#}
+{#                existingOption = new Option(data.name, data.id, true, true);#}
+{#                select.add(existingOption);#}
+{#            } else {#}
+{#                existingOption.selected = true;#}
+{#            }#}
+{##}
+{#            closeAuthorModal();#}
+{#        } catch (e) {#}
+{#            console.error("Error processing Author response:", e);#}
+{#        }#}
+{#    }#}
+{##}
+{#    function closeAuthorModal() {#}
+{#        const container = document.getElementById("author-modal");#}
+{#        if (container) {#}
+{#            container.innerHTML = "";#}
+{#        } else {#}
+{#            // Fallback: remove the topmost author modal#}
+{#            const modal = document.getElementById("author-modal-content");#}
+{#            if (modal) {#}
+{#                modal.closest(".modal").remove();#}
+{#            }#}
+{#        }#}
+{#    }#}
+{#</script>#}
+<script>
+function handleAuthorResponse(event) {
+    const xhr = event.detail.xhr;
+
+    // invalid === HTML returning
+    if (xhr.status === 400) {
+        const data = JSON.parse(xhr.responseText);
+        document.getElementById("author-modal").innerHTML = data.html;
+        return;
+    }
+
+    // valid JSON
+    const data = JSON.parse(xhr.responseText);
+
+    // 1. UPDATE THE AUTHOR SELECT FIELD
+    const select = document.getElementById("id_author");
+    if (select) {
+        let opt = new Option(data.name, data.id, true, true);
+        select.add(opt);
+    }
+
+    // 2. CLOSE THE AUTHOR MODAL
+    document.getElementById("author-modal").innerHTML = "";
+}
+</script>

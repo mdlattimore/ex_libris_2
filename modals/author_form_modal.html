@@ -1,0 +1,28 @@
+{% load crispy_forms_tags %}
+
+<div class="modal fade show" style="display:block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" id="author-modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Author</h5>
+        <button type="button" class="btn-close"
+                onclick="htmx.find('#author-modal-content').closest('.modal').remove()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form
+          hx-post="{% url 'author_create_modal' %}"
+          hx-target="#author-modal-content"
+          hx-swap="outerHTML">
+
+          {% csrf_token %}
+          {{ form|crispy }}
+
+          <button class="btn btn-primary" type="submit">Save Author</button>
+            <button type="button" class="btn-close" onclick="closeAuthorModal()">Cancel</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

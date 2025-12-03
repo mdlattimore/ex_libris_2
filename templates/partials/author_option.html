@@ -1,0 +1,13 @@
+<option 
+    value="{{ author.id }}" 
+    selected 
+    hx-swap-oob="true"
+>
+    {{ author.name }}
+</option>
+
+<script>
+document.querySelector('#author-modal-content')
+        .closest('.modal')
+        .remove();
+</script>
