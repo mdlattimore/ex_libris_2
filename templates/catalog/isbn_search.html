@@ -8,98 +8,104 @@
     <div class="container mt-5">
         <h2 class="mb-4">Book Lookup / Entry</h2>
 
-{#        <form#}
-{#                method="post"#}
-{#                hx-post="{% url 'isbn_lookup' %}"#}
-{#                hx-target="#lookup-result"#}
-{#                hx-swap="innerHTML"#}
-{#                class="mb-3"#}
-{#        >#}
-{#            {% csrf_token %}#}
-{#            <div class="row g-2 align-items-end">#}
-{#                <div class="col-md-3">#}
-{#                    {{ form|crispy }}#}
-{##}
-{#                    <!-- Stack buttons, left-aligned -->#}
-{#                    <div class="d-flex flex-column align-items-start gap-2 mt-2">#}
-{#                        <button type="submit" class="btn btn-primary">#}
-{#                            Search by ISBN#}
-{#                        </button>#}
-{#                        <button#}
-{#                                class="btn btn-outline-secondary"#}
-{#                                hx-get="{% url 'manual_volume_form' %}"#}
-{#                                hx-target="#lookup-result"#}
-{#                                hx-swap="innerHTML"#}
-{#                        >#}
-{#                            Manually Enter Book#}
-{#                        </button>#}
-{#                        <button#}
-{#                                class="btn btn-outline-primary"#}
-{#                                hx-get="{% url 'work_create_modal' %}"#}
-{#                                hx-target="#modal-area"#}
-{#                                hx-swap="innerHTML">#}
-{#                            + Add Work#}
-{#                        </button>#}
-{#                    </div>#}
-{##}
-{#                </div>#}
-{#            </div>#}
-{#        </form>#}
-{##}
-{#        <div id="lookup-result" class="mt-4">#}
-{#            {% include "partials/lookup_result.html" %}#}
-{#        </div>#}
-{#    </div>#}
-{##}
-{##}
-{##}
-{#    <div id="modal-area"></div>#}
+        {#        <form#}
+        {#                method="post"#}
+        {#                hx-post="{% url 'isbn_lookup' %}"#}
+        {#                hx-target="#lookup-result"#}
+        {#                hx-swap="innerHTML"#}
+        {#                class="mb-3"#}
+        {#        >#}
+        {#            {% csrf_token %}#}
+        {#            <div class="row g-2 align-items-end">#}
+        {#                <div class="col-md-3">#}
+        {#                    {{ form|crispy }}#}
+        {##}
+        {#                    <!-- Stack buttons, left-aligned -->#}
+        {#                    <div class="d-flex flex-column align-items-start gap-2 mt-2">#}
+        {#                        <button type="submit" class="btn btn-primary">#}
+        {#                            Search by ISBN#}
+        {#                        </button>#}
+        {#                        <button#}
+        {#                                class="btn btn-outline-secondary"#}
+        {#                                hx-get="{% url 'manual_volume_form' %}"#}
+        {#                                hx-target="#lookup-result"#}
+        {#                                hx-swap="innerHTML"#}
+        {#                        >#}
+        {#                            Manually Enter Book#}
+        {#                        </button>#}
+        {#                        <button#}
+        {#                                class="btn btn-outline-primary"#}
+        {#                                hx-get="{% url 'work_create_modal' %}"#}
+        {#                                hx-target="#modal-area"#}
+        {#                                hx-swap="innerHTML">#}
+        {#                            + Add Work#}
+        {#                        </button>#}
+        {#                    </div>#}
+        {##}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </form>#}
+        {##}
+        {#        <div id="lookup-result" class="mt-4">#}
+        {#            {% include "partials/lookup_result.html" %}#}
+        {#        </div>#}
+        {#    </div>#}
+        {##}
+        {##}
+        {##}
+        {#    <div id="modal-area"></div>#}
 
-    <form method="post"
-      hx-post="{% url 'isbn_lookup' %}"
-      hx-target="#lookup-result"
-      hx-swap="innerHTML"
-      class="mb-3">
+        <form method="post"
+              hx-post="{% url 'isbn_lookup' %}"
+              hx-target="#lookup-result"
+              hx-swap="innerHTML"
+              class="mb-3">
 
-    {% csrf_token %}
-<div class="col-md-4">
-    {{ form|crispy }}
-    </div>
-    
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">
+                        Search by ISBN
+                    </button>
+                </div>
 
-    <div class="d-flex flex-column align-items-start gap-2 mt-2">
-        <button type="submit" class="btn btn-primary">
-            Search by ISBN
-        </button>
-        <label for="id_works">Works</label>
-        <div class="d-flex gap-2">
-            {{ form.works }}
+                <div class="col-md-4">
+                    <div class="d-flex flex-column align-items-start gap-2 mt-2">
 
-            <button
-                type="button"
-                class="btn btn-outline-primary"
-                hx-get="{% url 'work_create' %}"
-                hx-target="#work-modal"
-                hx-swap="innerHTML">
-                + Add Work
-            </button>
+
+                        <label for="id_works">Works</label>
+                        <div class="d-flex gap-2">
+                            {{ form.works }}
+
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-primary"
+                                    hx-get="{% url 'work_create' %}"
+                                    hx-target="#work-modal"
+                                    hx-swap="innerHTML">
+                                + Add Work
+                            </button>
+                        </div>
+                        <button class="btn btn-outline-secondary"
+                                type="button"
+                                hx-get="{% url 'manual_volume_form' %}"
+                                hx-target="#lookup-result"
+                                hx-swap="innerHTML">
+                            Manually Enter Book
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+
+        <div id="lookup-result" class="mt-4">
+            {% include "partials/lookup_result.html" %}
         </div>
-        <button class="btn btn-outline-secondary"
-                type="button"
-                hx-get="{% url 'manual_volume_form' %}"
-                hx-target="#lookup-result"
-                hx-swap="innerHTML">
-            Manually Enter Book
-        </button>
     </div>
-
-</form>
-
-<div id="lookup-result" class="mt-4">
-    {% include "partials/lookup_result.html" %}
-</div>
-
-<!-- modal container (like company-modal in the other app) -->
-<div id="work-modal"></div>
+    <!-- modal container (like company-modal in the other app) -->
+    <div id="work-modal"></div>
 
 {% endblock content %}

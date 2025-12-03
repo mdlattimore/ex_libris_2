@@ -1,38 +1,45 @@
 {% load crispy_forms_tags %}
 
 {% if result %}
-  <div class="card mb-4">
-    <div class="card-body">
-      <h3 class="card-title">{{ result.result.title }}</h3>
-      {% if result.result.subtitle %}
-        <h5 class="card-subtitle text-muted">{{ result.result.subtitle }}</h5>
-      {% endif %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="card-title">{{ result.result.title }}</h3>
+                    {% if result.result.subtitle %}
+                        <h5 class="card-subtitle text-muted">{{ result.result.subtitle }}</h5>
+                    {% endif %}
 
-      <p><strong>Author:</strong> {{ result.author.full_name }}</p>
-      <p><strong>Work:</strong> {{ result.work.title }}</p>
+                    <p><strong>Author:</strong> {{ result.author.full_name }}</p>
+                    <p><strong>Work:</strong> {{ result.work.title }}</p>
 
-      {% if result.result.publisher %}
-        <p><strong>Publisher:</strong> {{ result.result.publisher }}</p>
-      {% endif %}
-      {% if result.result.published_date %}
-        <p><strong>Publication date:</strong> {{ result.result.published_date }}</p>
-      {% endif %}
+                    {% if result.result.publisher %}
+                        <p><strong>Publisher:</strong> {{ result.result.publisher }}</p>
+                    {% endif %}
+                    {% if result.result.published_date %}
+                        <p><strong>Publication date:</strong> {{ result.result.published_date }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6" style="text-align: right;">
+                    <img src="{{ result.result.cover_url }}" class="rounded mx-auto d-block" alt="Cover"></div>
+
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div id="manual-form" class="card p-3 shadow-sm">
-    <h5>Review & Save Volume</h5>
-    <form
-      method="post"
-      hx-post="{% url 'volume_create' %}"
-      hx-target="#manual-result"
-      hx-swap="innerHTML"
-    >
-      {% csrf_token %}
-      {{ volume_form|crispy }}
-      <button type="submit" class="btn btn-success mt-2">Save Volume</button>
-    </form>
-    <div id="manual-result" class="mt-3"></div>
-  </div>
+    <div id="manual-form" class="card p-3 shadow-sm">
+        <h5>Review & Save Volume</h5>
+        <form
+                method="post"
+                hx-post="{% url 'volume_create' %}"
+                hx-target="#manual-result"
+                hx-swap="innerHTML"
+        >
+            {% csrf_token %}
+            {#      {{ volume_form|crispy }}#}
+            {% crispy volume_form %}
+        </form>
+        <div id="manual-result" class="mt-3"></div>
+    </div>
 {% endif %}
 {{ volume_form.media }}

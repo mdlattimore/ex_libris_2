@@ -53,26 +53,98 @@ class VolumeForm(forms.ModelForm):
             ),
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.helper = FormHelper()
-    #     self.helper.layout = Layout(
-    #         Row(
-    #             Column("title", css_class="form-group col-md-4 mb-0")
-    #         ),
-    #         Row(
-    #             Column("collection", css_class="form-group col-md-4 mb-0"),
-    #             Column("works", css_class="form-group col-md-4 mb-0"),
-    #         ),
-    #         Row(
-    #             Submit(
-    #                 "submit",
-    #                 "Save",
-    #                 css_class="form-group btn btn-primary col-md-1 mb-0",
-    #             ),
-    #             HTML('<span class="form-group col-md-3 mb-0"></span>'),
-    #
-    #     ))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['works'].label = "Works (Add Work Button Above)"
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                HTML("""<h5 class="fw-light 
+                text-decoration-underline">Bibliographic 
+                Information</h5>""")
+            ),
+            Row(
+                Column("title", css_class="form-group col-md-4 mb-0")
+            ),
+            Row(
+                Column("collection", css_class="form-group col-md-3 mb-0"),
+                Column("works", css_class="form-group col-md-4 mb-0"),
+                Column("book_set", css_class="form-group col-md-3 mb-0"),
+                Column("volume_number", css_class="form-group col-md-2 mb-0"),
+            ),
+
+            Row(
+                Column("publisher", css_class="form-group col-md-4 mb-0"),
+                Column("publication_date", css_class="form-group col-md-4 "
+                                                     "mb-0"),
+                Column("publication_year", css_class="form-group col-md-4 "),
+            ),
+            Row(
+                Column("isbn13", css_class="form-group col-md-4 mb-0"),
+                Column("isbn10", css_class="form-group col-md-4 "),
+            ),
+            Row(
+                Column("volume_content_type", css_class="form-group col-md-4 mb-0"),
+                Column("volume_edition_type", css_class="form-group col-md-4 mb-0"),
+                Column("volume_url", css_class="form-group col-md-4 mb-0"),
+            ),
+            Row(
+                Column("edition", css_class="form-group col-md-4 mb-0"),
+                Column("illustrator", css_class="form-group col-md-4 mb-0"),
+            ),
+            Row(
+                Column("description", css_class="form-group col-md-6 mb-0"),
+            ),
+            Row(
+                HTML("""<h5 class="fw-light 
+                        text-decoration-underline">Description and 
+                        Condition</h5>""")
+            ),
+            Row(
+                Column("binding", css_class="form-group col-md-3 mb-0"),
+                Column("condition", css_class="form-group col-md-3 mb-0"),
+                Column("dust_jacket", css_class="form-group col-md-3 mb-0"),
+                Column("dust_jacket_condition", css_class="form-group "
+                                                          "col-md-3 mb-0"),
+            ),
+            Row(
+                Column("notes", css_class="form-group col-md-6 mb-0"),
+                Column("cover_url", css_class="form-group col-md-6 mb-0"),
+            ),
+            Row(
+                HTML("""<h5 class="fw-light">Collection Data<h5> """)
+            ),
+            Row(
+                Column("acquisition_date", css_class="form-group col-md-4 mb-0"),
+                Column(
+                    "acquisition_year", css_class="form-group col-md-4 mb-0"
+                ),
+                Column("source", css_class="form-group col-md-4 mb-0"),
+            ),
+            Row(
+                Column("price", css_class="form-group col-md-4 mb-0"),
+                Column("estimated_value", css_class="form-group col-md-4 mb-0"),
+            ),
+            Row(
+                Column("edition_notes", css_class="form-group col-md-5 mb-0"),
+                Column("volume_json", css_class="form-group col-md-7 mb-0"),
+            ),
+
+
+
+
+
+
+            Row(
+                Submit(
+                    "submit",
+                    "Save",
+                    css_class="form-group btn btn-primary col-md-1 mb-0",
+                ),
+                HTML('<span class="form-group col-md-3 mb-0"></span>'),
+
+        ))
 
 
 class WorkCreateForm(forms.ModelForm):
