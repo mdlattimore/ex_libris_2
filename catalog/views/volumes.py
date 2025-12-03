@@ -58,3 +58,4 @@ def manual_volume_form(request):
     form = VolumeForm()
     context = {"volume_form": form}
     return render(request, "partials/manual_form.html", context)
+

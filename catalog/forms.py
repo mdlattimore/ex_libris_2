@@ -53,6 +53,27 @@ class VolumeForm(forms.ModelForm):
             ),
         }
 
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.helper = FormHelper()
+    #     self.helper.layout = Layout(
+    #         Row(
+    #             Column("title", css_class="form-group col-md-4 mb-0")
+    #         ),
+    #         Row(
+    #             Column("collection", css_class="form-group col-md-4 mb-0"),
+    #             Column("works", css_class="form-group col-md-4 mb-0"),
+    #         ),
+    #         Row(
+    #             Submit(
+    #                 "submit",
+    #                 "Save",
+    #                 css_class="form-group btn btn-primary col-md-1 mb-0",
+    #             ),
+    #             HTML('<span class="form-group col-md-3 mb-0"></span>'),
+    #
+    #     ))
+
 
 class WorkCreateForm(forms.ModelForm):
     class Meta:
