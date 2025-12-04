@@ -1,32 +1,17 @@
-import re
-
-from django.http import JsonResponse, HttpResponse
-from django.template.loader import render_to_string
-from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from catalog.models import Work, BookSet
 from itertools import chain
-from catalog.utils.normalization import normalize_sort_title
-from catalog.views import CatalogBaseView
-from catalog.forms import WorkCreateForm
-from django.shortcuts import redirect
 
-
-# class WorkCreateView(CreateView):
-#     model = Work
-#     context_object_name = "work"
-#     template_name = "catalog/work_create_update.html"
-#     fields = "__all__"
-
-from django.views.generic import CreateView
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from django.views.generic import DetailView, UpdateView
 
-from catalog.models import Work, Author
-from catalog.forms import WorkCreateForm, AuthorCreateForm  # or whatever your
-# forms are called
+from catalog.forms import WorkCreateForm  # or whatever your
+from catalog.models import BookSet
+from catalog.models import Work
+from catalog.utils.normalization import normalize_sort_title
+from catalog.views import CatalogBaseView
 
 
 class WorkCreateView(CreateView):
@@ -37,7 +22,8 @@ class WorkCreateView(CreateView):
     def get_template_names(self):
         if self.request.headers.get("HX-Request"):
             return ["partials/work_create_partial.html"]
-        return ["catalog/work_create_update.html"]  # normal full-page create if desired
+        return [
+            "catalog/work_create_update.html"]  # normal full-page create if desired
 
     def form_valid(self, form):
         self.object = form.save()
@@ -62,28 +48,6 @@ class WorkCreateView(CreateView):
         return super().form_invalid(form)
 
 
-
-# class WorkCreateModalView(View):
-#     template_name = "modals/work_form_modal.html"
-#
-#     def post(self, request, *args, **kwargs):
-#         form = WorkCreateForm(request.POST)
-#         if form.is_valid():
-#             work = form.save()
-#
-#             # Render the new option for the select field with out-of-band swap
-#             option_html = render_to_string(
-#                 "partials/work_option.html",
-#                 {"work": work},
-#                 request=request
-#             )
-#
-#             return HttpResponse(option_html)
-#
-#         # If form is not valid, re-render the modal with errors
-#         html = render_to_string(self.template_name, {"form": form}, request=request)
-#         return HttpResponse(html)
-
 class WorkCreateModalView(CreateView):
     model = Work
     form_class = WorkCreateForm
@@ -104,14 +68,11 @@ class WorkCreateModalView(CreateView):
         return JsonResponse({"html": html}, status=400)
 
 
-
-
-
 class WorkUpdateView(UpdateView):
     model = Work
+    form_class = WorkCreateForm
     context_object_name = "work"
     template_name = "catalog/work_create_update.html"
-    fields = "__all__"
 
 
 class WorkListView(CatalogBaseView):
