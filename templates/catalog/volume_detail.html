@@ -176,6 +176,26 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-sm-4">Acquisition Cost:</div>
+                        <div class="col-sm-8 fw-bolder">
+                            {% if volume.acquisition_cost %}
+                                ${{ volume.acquisition_cost|intcomma }}
+                            {% else %}
+                                <span class="text-muted fst-italic">—</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Total Cost:</div>
+                        <div class="col-sm-8 fw-bolder">
+                            {% if volume.total_cost %}
+                                ${{ volume.total_cost|intcomma }}
+                            {% else %}
+                                <span class="text-muted fst-italic">—</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-4">Estimated Value:</div>
                         <div class="col-sm-8 fw-bolder">
                             {% if volume.estimated_value %}

@@ -38,6 +38,7 @@ class VolumeForm(forms.ModelForm):
             'acquisition_year',
             'source',
             'price',
+            'acquisition_cost',
             'estimated_value',
             'edition_notes',
             'volume_json',
@@ -124,6 +125,9 @@ class VolumeForm(forms.ModelForm):
             ),
             Row(
                 Column("price", css_class="form-group col-md-4 mb-0"),
+                Column("acquisition_cost", css_class="form-group col-md-4 "
+                                                     "mb-0"),
+
                 Column("estimated_value", css_class="form-group col-md-4 mb-0"),
             ),
             Row(

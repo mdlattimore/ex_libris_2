@@ -43,6 +43,11 @@ class VolumeUpdateView(UpdateView):
     fields = "__all__"
     exclude_fields = ("volume_json",)
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['total_cost'].disabled = True   # prevents editing and POSTing
+        return form
+
 
 
 def volume_create_view(request):

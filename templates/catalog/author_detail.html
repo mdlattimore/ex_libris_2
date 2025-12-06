@@ -4,23 +4,46 @@
 
 {% block content %}
     <br>
-    <h1 class="text-center">{{ author.full_name }}</h1>
-    <h1 class="display-8 text-center mb-0">({{ author.dob.year }} - {{ author.dod.year }})</h1>
-    <h1 class="display-8 text-center">{{ author.nationality|default:"" }}</h1>
-    <br>
     <div class="row">
         <div class="col-md-3">
+{#            <h1 class="text-start">&nbsp;</h1>#}
+{#            <h1 class="display-8 text-start mb-0">&nbsp;</h1>#}
+{#            <h1 class="display-8 text-start">&nbsp;</h1>#}
+            <div class="row mb-3" style="height: 150px;"></div>
+
             <h1 class="display-7">Works</h1>
             {% for work in author.works.all %}
                 <p><a href="{% url 'work_detail' work.pk %}">{{ work.title }}</a></p>
             {% endfor %}
         </div>
         <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 class="text-start">{{ author.full_name }}</h1>
+                    <h1 class="display-8 text-start mb-0">({{ author.dob.year }} - {{ author.dod.year }})</h1>
+                    <h1 class="display-8 text-start">{{ author.nationality|default:"" }}</h1>
+                </div>
+                <div class="col-md-4">
+                    {% if author.author_image_url %}
+                    <img src="{{ author.author_image_url }}" alt="{{ author.full_name }}" class="float-end mb-3"
+                         style="max-height:150px; width:auto;">
+                    {% else %}
+                    <div style="height: 150px;" class="mb-3"></div>
+                    {% endif %}
+                </div>
+            </div>
+
             <div style="text-align: justify;">
                 {{ author.bio_html|safe }}
             </div>
         </div>
     </div>
+
+
+
+    <br>
+
+
     {% if user.is_authenticated %}
         <a href="{% url 'author_update' author.pk %}" class="btn btn-primary">Update</a>
     {% endif %}

@@ -4,6 +4,9 @@
     <br>
     <h1 class="display-6 text-center">{{ bookset.title }} Set</h1>
     <p class="lead text-justify" style="font-size: 1em;">{{ bookset.description }}</p>
+    {% if bookset.cover_url %}
+        <img src="{{ bookset.cover_url }}" alt="Book Set" class="d-block mx-auto" style="max-height:150px; width:auto;">
+    {% endif %}
     <br>
     <div class="list-group shadow-sm">
         {% for volume in sorted_bookset %}
@@ -20,8 +23,8 @@
                 {% endif %}
                 <div class="flex-fill">
                     <h6 class="mb-0">{% if volume.volume_number %}
-                                Vol {{ volume.volume_number }} -
-                            {% endif %}{{ volume.title }}</h6>
+                        Vol {{ volume.volume_number }} -
+                    {% endif %}{{ volume.title }}</h6>
                     <small class="text-muted">{{ volume.works.first.author }}</small><br>
                     <small>{{ volume.publisher }} ({{ volume.publication_year }})</small><br>
                     {% if volume.edition %}<small>{{ volume.edition }}</small>{% endif %}

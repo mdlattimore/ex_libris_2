@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from catalog.utils.fuzzy_matching import normalize_name
 from catalog.utils.normalization import normalize_sort_title
+from catalog.integrations.google_books_provider import GoogleBooksProvider
 
 parser = NameParser()
 parse_name = parser.parse_name
@@ -186,10 +187,23 @@ class BookSet(models.Model):
     title = models.CharField(max_length=200)
     publisher = models.CharField(max_length=200, blank=True, null=True)
     publication_year = models.IntegerField(blank=True, null=True)
+    isbn13 = models.CharField(
+        max_length=13,
+        blank=True,
+        null=True,
+        help_text="13-digit ISBN (normalized)."
+    )
+    isbn10 = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True,
+        help_text="10-digit ISBN (legacy, optional)."
+    )
     illustrator = models.CharField(max_length=255, blank=True)
     total_volumes = models.IntegerField(blank=True, null=True)
     is_box_set = models.BooleanField(default=False)
     description = MarkdownxField(blank=True, null=True)
+    cover_url = models.URLField(blank=True, null=True)
     notes = MarkdownxField(blank=True, null=True)
     sort_title = models.CharField(max_length=150, blank=True, null=True)
 
@@ -205,8 +219,49 @@ class BookSet(models.Model):
         return markdownify(self.description)
 
     def save(self, *args, **kwargs):
+        if not self.cover_url and (self.isbn13 or self.isbn10):
+            set_lookup = GoogleBooksProvider()
+            if self.isbn13:
+                book = set_lookup.lookup(self.isbn13)
+            else:
+                book = set_lookup.lookup(self.isbn10)
+            self.cover_url = book["cover_url"]
+            print(self.cover_url)
+
         self.sort_title = normalize_sort_title(self.title)
         super().save(*args, **kwargs)
+
+        if self.isbn10 and not self.isbn13:
+            self.isbn13 = self.convert_isbn10_to_13(self.isbn10)
+        elif self.isbn13 and not self.isbn10:
+            maybe10 = self.convert_isbn13_to_10(self.isbn13)
+            if maybe10:
+                self.isbn10 = maybe10
+        self.sort_title = normalize_sort_title(self.title)
+        super().save(*args, **kwargs)
+
+    # ISBN conversion functions ISBN10 to 13 and ISBN13 to 10
+    @staticmethod
+    def convert_isbn10_to_13(isbn10: str) -> str:
+        """Return ISBN-13 string given a 10-digit ISBN."""
+        isbn10 = isbn10.replace("-", "").strip()
+        core = "978" + isbn10[:-1]
+        total = sum(
+            (1 if i % 2 == 0 else 3) * int(x) for i, x in enumerate(core))
+        check = (10 - (total % 10)) % 10
+        return core + str(check)
+
+    @staticmethod
+    def convert_isbn13_to_10(isbn13: str) -> str | None:
+        """Return ISBN-10 string given a 13-digit ISBN (if prefix 978)."""
+        isbn13 = isbn13.replace("-", "").strip()
+        if not isbn13.startswith("978"):
+            return None
+        core = isbn13[3:-1]
+        total = sum((10 - i) * int(x) for i, x in enumerate(core))
+        check = 11 - (total % 11)
+        check_digit = "X" if check == 10 else "0" if check == 11 else str(check)
+        return core + check_digit
 
     def get_absolute_url(self):
         return reverse("bookset_detail", args=[self.id])
@@ -336,6 +391,11 @@ class Volume(models.Model):
     )
     price = models.DecimalField(decimal_places=2, max_digits=10, blank=True,
                                 null=True, default=0)
+    acquisition_cost = models.DecimalField(decimal_places=2, max_digits=10,
+                                           blank=True, null=True,
+                                           default=0)
+    total_cost = models.DecimalField(decimal_places=2, max_digits=10,
+                                     blank=True, null=True,)
     estimated_value = models.DecimalField(decimal_places=2, max_digits=10,
                                           blank=True, null=True)
     edition_notes = MarkdownxField(blank=True, null=True)
@@ -364,6 +424,10 @@ class Volume(models.Model):
             if maybe10:
                 self.isbn10 = maybe10
         self.sort_title = normalize_sort_title(self.title)
+        # handle volumes already existing when acquisition_cost added to model
+        if self.acquisition_cost is None:
+            self.acquisition_cost = 0
+        self.total_cost = self.price + self.acquisition_cost
         super().save(*args, **kwargs)
 
     # ISBN conversion functions ISBN10 to 13 and ISBN13 to 10
