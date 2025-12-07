@@ -184,6 +184,15 @@ class Work(models.Model):
 # -------- 3. BookSet -------------------------------------
 
 class BookSet(models.Model):
+    CONDITION_CHOICES = [
+        ("AN", "As New"),
+        ("FI", "Fine"),
+        ("NF", "Near Fine"),
+        ("VG", "Very Good"),
+        ("GO", "Good"),
+        ("FA", "Fair"),
+        ("RC", "Reading Copy")
+    ]
     title = models.CharField(max_length=200)
     publisher = models.CharField(max_length=200, blank=True, null=True)
     publication_year = models.IntegerField(blank=True, null=True)
@@ -202,7 +211,17 @@ class BookSet(models.Model):
     illustrator = models.CharField(max_length=255, blank=True)
     total_volumes = models.IntegerField(blank=True, null=True)
     is_box_set = models.BooleanField(default=False)
+    boxset_case_condition = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        choices=CONDITION_CHOICES,
+    )
     description = MarkdownxField(blank=True, null=True)
+    acquisition_date = models.DateField(blank=True, null=True)
+    acquisition_year = models.IntegerField(blank=True, null=True)
+    source = models.CharField(max_length=100, blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     cover_url = models.URLField(blank=True, null=True)
     notes = MarkdownxField(blank=True, null=True)
     sort_title = models.CharField(max_length=150, blank=True, null=True)
@@ -328,6 +347,8 @@ class Volume(models.Model):
         ("FACSIMILE", "Facsimile Edition"),
         ("REVISED", "Revised Edition"),
         ("LIMITED", "Limited Edition"),
+        ("BOOK_CLUB", "Book Club"),
+        ("SLIPCASED", "Slipcased Edition"),
         ("TEXTBOOK", "Textbook / Academic Edition"),
         ("POCKET", "Pocket Edition"),
         ("TRANSLATION", "Translation"),

@@ -37,11 +37,7 @@
                 </div>
 
             </div>
-            <div class="row">
-                <div class="col-md-11">
-                    <p>{{ work.work_notes_html|safe }}</p>
-                </div>
-            </div>
+
         </div>
         <div class="col-md-6">
             <div class="card">
@@ -54,6 +50,12 @@
                 </div>
             </div>
         </div>
+    <div class="row">
+        <div class="row">
+                    <p>{{ work.work_notes_html|safe }}</p>
+            </div>
+    </div>
+    <div class="row">{{ work.work_text_html|safe}}</div>
 
     </div>
 {% if user.is_authenticated %}

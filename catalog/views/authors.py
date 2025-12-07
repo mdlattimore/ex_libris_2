@@ -73,17 +73,69 @@ class AuthorUpdateView(UpdateView):
     fields = "__all__"
 
 
+# class AuthorListView(ListView):
+#     model = Author
+#     context_object_name = 'authors'
+#     template_name = "catalog/author_list.html"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(AuthorListView, self).get_context_data(**kwargs)
+#         all_authors = Author.objects.all()
+#         authors_sorted = sorted(all_authors,
+#                                 key=lambda author: author.sort_name)
+#         context['authors_display'] = authors_sorted
+#         return context
+
+from django.views.generic import ListView
+from django.db.models import Prefetch
+from catalog.models import Author, Work
+
+
 class AuthorListView(ListView):
     model = Author
-    context_object_name = 'authors'
+    context_object_name = "authors"
     template_name = "catalog/author_list.html"
 
+    def get_queryset(self):
+        """
+        Prefetch works and volumes so the template doesn't hit the database
+        repeatedly, and attach unique_volumes to each author.
+        """
+        qs = (
+            Author.objects
+            .prefetch_related(
+                Prefetch(
+                    "works",
+                    queryset=Work.objects.prefetch_related("volumes")
+                )
+            )
+        )
+
+        # Attach deduplicated volume list to each author
+        for author in qs:
+            seen = set()
+            unique_volumes = []
+            for work in author.works.all():
+                for vol in work.volumes.all():
+                    if vol.pk not in seen:
+                        seen.add(vol.pk)
+                        unique_volumes.append(vol)
+            author.unique_volumes = unique_volumes
+
+        return qs
+
     def get_context_data(self, **kwargs):
-        context = super(AuthorListView, self).get_context_data(**kwargs)
-        all_authors = Author.objects.all()
-        authors_sorted = sorted(all_authors,
-                                key=lambda author: author.sort_name)
-        context['authors_display'] = authors_sorted
+        """
+        Preserve your existing sorting by sort_name
+        and expose authors as authors_display.
+        """
+        context = super().get_context_data(**kwargs)
+
+        authors_sorted = sorted(
+            self.object_list, key=lambda author: author.sort_name
+        )
+        context["authors_display"] = authors_sorted
+
         return context
 
 
