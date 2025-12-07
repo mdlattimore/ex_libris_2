@@ -423,6 +423,8 @@ class Volume(models.Model):
 
     # Disposition
 
+    slug = models.SlugField(max_length=255, blank=True, unique=True)
+
     class Meta:
         ordering = ["sort_title"]
 
@@ -449,6 +451,18 @@ class Volume(models.Model):
         if self.acquisition_cost is None:
             self.acquisition_cost = 0
         self.total_cost = self.price + self.acquisition_cost
+
+        if not self.slug:
+            base = slugify(self.title)
+            slug = base
+            counter = 1
+
+            while Volume.objects.filter(slug=slug).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
         super().save(*args, **kwargs)
 
     # ISBN conversion functions ISBN10 to 13 and ISBN13 to 10
@@ -483,7 +497,7 @@ class Volume(models.Model):
         return markdownify(self.edition_notes)
 
     def get_absolute_url(self):
-        return reverse("volume_detail", kwargs={"pk": self.pk})
+        return reverse("volume_detail", args=[self.slug])
 
 
 

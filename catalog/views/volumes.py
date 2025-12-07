@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, UpdateView
 
 from catalog.forms import VolumeForm
@@ -64,3 +64,6 @@ def manual_volume_form(request):
     context = {"volume_form": form}
     return render(request, "partials/manual_form.html", context)
 
+def volume_redirect_by_id(request, pk):
+    vol = get_object_or_404(Volume, pk=pk)
+    return redirect("volume_detail", slug=vol.slug)
