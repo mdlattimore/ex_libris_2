@@ -30,7 +30,7 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             {% for collection in collections %}
                 <div class="col">
-                    <a href="{% url 'collection_detail' collection.pk %}" class="text-decoration-none text-dark">
+                    <a href="{{ collection.get_absolute_url }}" class="text-decoration-none text-dark">
                         <div class="card h-100 shadow-sm">
                             <div class="card-header text-center">
                                 {{ collection.name }}

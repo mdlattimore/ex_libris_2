@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.models import Collection
 
@@ -29,3 +30,8 @@ class CollectionDetailView(DetailView):
     model = Collection
     context_object_name = 'collection'
     template_name = "catalog/collection_detail.html"
+
+
+def collection_redirect_by_id(request, pk):
+    collection = get_object_or_404(Collection, pk=pk)
+    return redirect("collection_detail", slug=collection.slug)

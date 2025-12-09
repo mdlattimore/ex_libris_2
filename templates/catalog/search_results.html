@@ -10,7 +10,7 @@
         <h3 class="mt-4 mb-3">Authors</h3>
         <div class="list-group shadow-sm mb-5">
             {% for author in authors %}
-                <a href="{% url 'author_detail' author.pk %}"
+                <a href="{{ author.get_absolute_url }}"
                    class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">
 
                     {% if author.author_image_url %}

@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
@@ -143,3 +143,7 @@ class AuthorDetailView(DetailView):
     model = Author
     context_object_name = 'author'
     template_name = "catalog/author_detail.html"
+
+def author_redirect_by_id(request, pk):
+    vol = get_object_or_404(Author, pk=pk)
+    return redirect("volume_detail", slug=vol.slug)

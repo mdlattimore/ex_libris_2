@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="col-md-4">Author:</div>
                         <div class="col-md-8"><a
-                                href="{% url 'author_detail' work.author.pk %}">{{ work.author }}</a></div>
+                                href="{{ work.author.get_absolute_url }}">{{ work.author }}</a></div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">First Published:</div>
@@ -44,7 +44,7 @@
                 <div class="card-body">
                     Appears In:<br>
                     {% for volume in work.volumes.all %}
-                        <a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }}</a>
+                        <a href="{{ volume.get_absolute_url }}">{{ volume.title }}</a>
                         ({{ volume.publication_year }}) {{ volume.edition|default:"" }}<br>
                     {% endfor %}
                 </div>

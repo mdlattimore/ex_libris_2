@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from catalog.models import BookSet
 from catalog.utils.normalization import normalize_sort_title
@@ -27,3 +28,7 @@ class BookSetDetailView(DetailView):
         context["sorted_bookset"] = self.object.volumes.order_by(
             'volume_number', normalize_sort_title('title'))
         return context
+
+def bookset_redirect_by_id(request, pk):
+    bookset = get_object_or_404(BookSet, pk=pk)
+    return redirect("bookset_detail", slug=bookset.slug)

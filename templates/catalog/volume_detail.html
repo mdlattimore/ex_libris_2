@@ -20,7 +20,7 @@
                             <div class="col-sm-4">Collection:</div>
                             <div class="col-sm-8 fw-bolder">
                                 {% for coll in volume.collection.all %}
-                                    <a href="{% url 'collection_detail' coll.pk %}">{{ coll.name }}</a>
+                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>
                                     {% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </div>
@@ -33,7 +33,7 @@
                             <div class="row">
                                 <div class="col-sm-4">Author:</div>
                                 <div class="col-sm-8 fw-bolder"><a
-                                        href="{% url 'author_detail' first_work.author.pk %}">{{ first_work.author }}</a>
+                                        href="{{ first_work.author.get_absolute_url }}">{{ first_work.author }}</a>
                                 </div>
                             </div>
                         {% endif %}
@@ -225,7 +225,8 @@
 
         </div>
         <div class="col-md-6">
-            <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover" style="max-height: 300px; width:auto;"></div>
+            <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"
+                 style="max-height: 300px; width:auto;"></div>
     </div>
     <br>
     {% if user.is_authenticated %}

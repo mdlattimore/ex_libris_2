@@ -1,7 +1,7 @@
 from itertools import chain
 
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -107,3 +107,8 @@ class WorkDetailView(DetailView):
     model = Work
     context_object_name = "work"
     template_name = "catalog/work_detail.html"
+
+
+def work_redirect_by_id(request, pk):
+    work = get_object_or_404(Work, pk=pk)
+    return redirect("work_detail", slug=work.slug)

@@ -28,6 +28,7 @@ class Author(models.Model):
     sort_name = models.CharField(max_length=150, blank=True, null=True)
     match_name = models.CharField(max_length=150, blank=True, null=True,
                                   unique=True)
+    slug = models.SlugField(max_length=255, blank=True, unique=True)
 
     @property
     def bio_html(self):
@@ -53,11 +54,20 @@ class Author(models.Model):
         else:
             self.sort_name = full_sort_name
         self.match_name = normalize_name(self.full_name)
+        if not self.slug:
+            base = slugify(self.full_name)
+            slug = base
+            counter = 1
 
+            while Author.objects.filter(slug=slug).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("author_detail", args=[self.id])
+        return reverse("author_detail", args=[self.slug])
 
     class Meta:
         ordering = ['sort_name']
@@ -152,9 +162,20 @@ class Work(models.Model):
 
     notes = MarkdownxField(blank=True, null=True)
     text = MarkdownxField(blank=True, null=True)
+    slug = models.SlugField(max_length=120, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.sort_title = normalize_sort_title(self.title)
+        if not self.slug:
+            base = slugify(self.title)
+            slug = base
+            counter = 1
+
+            while Work.objects.filter(slug=slug).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+
+            self.slug = slug
         super().save(*args, **kwargs)
 
     class Meta:
@@ -175,7 +196,7 @@ class Work(models.Model):
         return markdownify(self.text)
 
     def get_absolute_url(self):
-        return reverse("work_detail", args=[self.id])
+        return reverse("work_detail", args=[self.slug])
 
     def __str__(self):
         return self.title
@@ -225,6 +246,7 @@ class BookSet(models.Model):
     cover_url = models.URLField(blank=True, null=True)
     notes = MarkdownxField(blank=True, null=True)
     sort_title = models.CharField(max_length=150, blank=True, null=True)
+    slug = models.SlugField(max_length=150, blank=True, null=True)
 
     class Meta:
         ordering = ['title']
@@ -248,6 +270,7 @@ class BookSet(models.Model):
             print(self.cover_url)
 
         self.sort_title = normalize_sort_title(self.title)
+
         super().save(*args, **kwargs)
 
         if self.isbn10 and not self.isbn13:
@@ -257,6 +280,17 @@ class BookSet(models.Model):
             if maybe10:
                 self.isbn10 = maybe10
         self.sort_title = normalize_sort_title(self.title)
+        if not self.slug:
+            base = slugify(self.title)
+            slug = base
+            counter = 1
+
+            while BookSet.objects.filter(slug=slug).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
         super().save(*args, **kwargs)
 
     # ISBN conversion functions ISBN10 to 13 and ISBN13 to 10
@@ -283,7 +317,7 @@ class BookSet(models.Model):
         return core + check_digit
 
     def get_absolute_url(self):
-        return reverse("bookset_detail", args=[self.id])
+        return reverse("bookset_detail", args=[self.slug])
 
     def __str__(self):
         return self.title
@@ -301,11 +335,19 @@ class Collection(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base = slugify(self.name)
+            slug = base
+            counter = 1
+
+            while Collection.objects.filter(slug=slug).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("collection_detail", args=[self.id])
+        return reverse("collection_detail", args=[self.slug])
 
     def __str__(self):
         return self.name

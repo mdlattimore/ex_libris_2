@@ -47,7 +47,7 @@
     {% for author in authors_display %}
 
         <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start gap-3 catalog-item position-relative outer-link"
-             data-url="{% url 'author_detail' author.pk %}"
+             data-url="{{ author.get_absolute_url }}"
              style="min-height: 107px;">
 
             <!-- LEFT SIDE: Author image + metadata -->
