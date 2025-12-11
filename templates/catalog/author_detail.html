@@ -6,9 +6,7 @@
     <br>
     <div class="row">
         <div class="col-md-3">
-{#            <h1 class="text-start">&nbsp;</h1>#}
-{#            <h1 class="display-8 text-start mb-0">&nbsp;</h1>#}
-{#            <h1 class="display-8 text-start">&nbsp;</h1>#}
+
             <div class="row mb-3" style="height: 150px;"></div>
 
             <h1 class="display-7">Works</h1>
@@ -25,10 +23,10 @@
                 </div>
                 <div class="col-md-4">
                     {% if author.author_image_url %}
-                    <img src="{{ author.author_image_url }}" alt="{{ author.full_name }}" class="float-end mb-3"
-                         style="max-height:150px; width:auto;">
+                        <img src="{{ author.author_image_url }}" alt="{{ author.full_name }}" class="float-end mb-3"
+                             style="max-height:150px; width:auto;">
                     {% else %}
-                    <div style="height: 150px;" class="mb-3"></div>
+                        <div style="height: 150px;" class="mb-3"></div>
                     {% endif %}
                 </div>
             </div>

@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
-from catalog.book_retrieval import get_book
-from catalog.forms import ISBNSearchForm, VolumeForm
 from pprint import pprint
-from catalog.models import Author
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+from catalog.forms import ISBNSearchForm, VolumeForm
 from catalog.services.book_lookup import perform_isbn_lookup
 from catalog.utils.date_parser import parse_published_date
-from django.contrib.auth.decorators import login_required
 
 
 @login_required(login_url="account_login")

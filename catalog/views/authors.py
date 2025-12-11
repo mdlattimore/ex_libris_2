@@ -1,12 +1,14 @@
+from django.db.models import Prefetch
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import DetailView, CreateView, UpdateView
+from django.views.generic import ListView
 
 from catalog.forms import AuthorCreateForm
-from catalog.models import Author
+from catalog.models import Author, Work
 
 
 class AuthorCreateView(CreateView):
@@ -73,24 +75,6 @@ class AuthorUpdateView(UpdateView):
     fields = "__all__"
 
 
-# class AuthorListView(ListView):
-#     model = Author
-#     context_object_name = 'authors'
-#     template_name = "catalog/author_list.html"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(AuthorListView, self).get_context_data(**kwargs)
-#         all_authors = Author.objects.all()
-#         authors_sorted = sorted(all_authors,
-#                                 key=lambda author: author.sort_name)
-#         context['authors_display'] = authors_sorted
-#         return context
-
-from django.views.generic import ListView
-from django.db.models import Prefetch
-from catalog.models import Author, Work
-
-
 class AuthorListView(ListView):
     model = Author
     context_object_name = "authors"
@@ -143,6 +127,7 @@ class AuthorDetailView(DetailView):
     model = Author
     context_object_name = 'author'
     template_name = "catalog/author_detail.html"
+
 
 def author_redirect_by_id(request, pk):
     vol = get_object_or_404(Author, pk=pk)

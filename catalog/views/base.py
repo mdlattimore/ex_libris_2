@@ -1,6 +1,6 @@
-from catalog.models import Work, BookSet
-
 from django.views.generic import TemplateView
+
+from catalog.models import Work, BookSet
 
 
 class CatalogBaseView(TemplateView):

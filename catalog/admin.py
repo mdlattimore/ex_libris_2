@@ -4,7 +4,7 @@ from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 
 from .models import (Author, Work, BookSet, Volume, AuthorAlias, Collection,
-                     Genre)
+                     Genre, Bibliography, VolumeBibliographyReference)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -47,11 +47,26 @@ class WorkAdmin(admin.ModelAdmin):
 class BookSetAdmin(admin.ModelAdmin):
     list_display = ['title']
 
+@admin.register(Bibliography)
+class BibliographyAdmin(admin.ModelAdmin):
+    list_display = ['title']
+
+@admin.register(VolumeBibliographyReference)
+class VolumeBibliographyReferenceAdmin(admin.ModelAdmin):
+    list_display = ['volume', 'bibliography', 'reference_detail']
+
+class VolumeBibliographyReferenceInline(admin.TabularInline):
+    model = VolumeBibliographyReference
+    extra = 1
+
+
 
 @admin.register(Volume)
 class VolumeAdmin(admin.ModelAdmin):
     list_display = ['title', 'edition']
     ordering = ('sort_title',)
+    inlines = [VolumeBibliographyReferenceInline]
+    search_fields = ['title', 'edition']
 
     formfield_overrides = {
         models.JSONField: {"widget": JSONEditorWidget(attrs={"class": "json-wide-editor"})},

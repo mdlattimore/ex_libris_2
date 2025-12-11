@@ -40,28 +40,17 @@
     <br>
     <h1 class="display-6 text-center">All Books</h1>
     <br>
-    <div class="list-group shadow-sm">
-        {% for volume in volumes %}
-            <a href="{{ volume.get_absolute_url }}"
-               class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">
-                {% if volume.cover_url %}
-                    <img src="{{ volume.cover_url }}" alt="{{ volume.title }}" style="width:80px;height:auto;"
-                         class="rounded shadow-sm">
-                {% else %}
-                    <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                         style="width:80px;height:120px;">
-                        <i class="bi bi-book text-muted fs-2"></i>
-                    </div>
-                {% endif %}
-                <div class="flex-fill">
-                    <h6 class="mb-0"><i>{{ volume.title }}</i></h6>
-                    <small class="text-muted">{{ volume.works.first.author }}</small><br>
-                    <small>{{ volume.publisher }} ({{ volume.publication_year }})</small><br>
-                    {% if volume.edition %}<small>{{ volume.edition }}</small>{% endif %}
-                </div>
+
+    <div class="row g-3">
+
+    {% for volume in volumes %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
+                {% include "partials/volume_card.html" %}
             </a>
-        {% endfor %}
-    </div>
+        </div>
+    {% endfor %}
+</div>
 
 
 

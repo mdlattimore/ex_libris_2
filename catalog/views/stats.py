@@ -1,5 +1,6 @@
 from django.db.models import Sum, Avg, Max, Count
 from django.views.generic import TemplateView
+
 from catalog.models import Volume, Author, Collection
 
 
@@ -19,8 +20,10 @@ class StatsView(TemplateView):
             .aggregate(Avg("price"))
             ["price__avg"]
         )
-        context["max_cost"] = Volume.objects.aggregate(Max("price"))["price__max"]
-        context["max_cost_volume"] = Volume.objects.filter(price=Volume.objects.aggregate(Max("price"))["price__max"])
+        context["max_cost"] = Volume.objects.aggregate(Max("price"))[
+            "price__max"]
+        context["max_cost_volume"] = Volume.objects.filter(
+            price=Volume.objects.aggregate(Max("price"))["price__max"])
         # subtract 1 from total_authors to account for Unknown Author row
         context["total_authors"] = Author.objects.count() - 1
         context["authors_by_nationality"] = (

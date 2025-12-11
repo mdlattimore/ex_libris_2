@@ -24,7 +24,8 @@ urlpatterns = [
     path('work_list/', views.WorkListView.as_view(), name='work_list'),
     path('work_detail/<int:pk>/', views.work_redirect_by_id,
          name='work_detail_old'),
-    path('work_detail/<slug:slug>/', views.WorkDetailView.as_view(), name='work_detail'),
+    path('work_detail/<slug:slug>/', views.WorkDetailView.as_view(),
+         name='work_detail'),
 
     path('volume_list/', views.VolumeListView.as_view(), name='volume_list'),
     # OLD URL — keep it above the slug pattern

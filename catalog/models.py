@@ -1,12 +1,13 @@
 from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from simple_name_parser import NameParser
-from django.utils.text import slugify
-from django.urls import reverse
+
+from catalog.integrations.google_books_provider import GoogleBooksProvider
 from catalog.utils.fuzzy_matching import normalize_name
 from catalog.utils.normalization import normalize_sort_title
-from catalog.integrations.google_books_provider import GoogleBooksProvider
 
 parser = NameParser()
 parse_name = parser.parse_name
@@ -88,7 +89,7 @@ class AuthorAlias(models.Model):
         return f"{self.alias} = {self.author.full_name}"
 
 
-#--------- 1.5 Genre ----------------------------------
+# --------- 1.5 Genre ----------------------------------
 class Genre(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True)
@@ -106,27 +107,10 @@ class Genre(models.Model):
         return self.name
 
 
-
 # -------- 2. Work -----------------------------------------
 
 class Work(models.Model):
-    # class WorkType(models.TextChoices):
-    #     NOVEL = "NOVEL", "Novel"
-    #     NOVELLA = "NOVELLA", "Novella"
-    #     SHORT_STORY = "SHORT_STORY", "Short Story"
-    #     STORY_COLLECTION = "STORY_COLLECTION", "Story Collection"
-    #     POEM = "POEM", "Poem"
-    #     POETRY_COLLECTION = "POETRY_COLLECTION", "Poetry Collection"
-    #     PLAY = "PLAY", "Play / Drama"
-    #     ESSAY = "ESSAY", "Essay"
-    #     ESSAY_COLLECTION = "ESSAY_COLLECTION", "Essay Collection"
-    #     NONFICTION_BOOK = "NONFICTION_BOOK", "Non-Fiction Book"
-    #     LETTER = "LETTER", "Letter / Correspondence"
-    #     SPEECH = "SPEECH", "Speech / Lecture"
-    #     TRANSLATION = "TRANSLATION", "Translation"
-    #     ANTHOLOGY = "ANTHOLOGY", "Anthology / Composite Work"
-    #     CRITICISM = "CRITICISM", "Criticism / Commentary"
-    #     OTHER = "OTHER", "Other"
+
     WORK_TYPE_CHOICES = [
         ("NOVEL", "Novel"),
         ("NOVELLA", "Novella"),
@@ -242,7 +226,8 @@ class BookSet(models.Model):
     acquisition_date = models.DateField(blank=True, null=True)
     acquisition_year = models.IntegerField(blank=True, null=True)
     source = models.CharField(max_length=100, blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True,
+                                null=True)
     cover_url = models.URLField(blank=True, null=True)
     notes = MarkdownxField(blank=True, null=True)
     sort_title = models.CharField(max_length=150, blank=True, null=True)
@@ -353,6 +338,19 @@ class Collection(models.Model):
         return self.name
 
 
+# ----- 3.75 ----------------------------------------------
+
+class Bibliography(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    title = models.CharField(max_length=200)
+    authors = models.CharField(max_length=200, blank=True, null=True)
+    edition = models.CharField(max_length=200, blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.code} - {self.title}"
+
+
 # ------ 4. Volume ----------------------------------------
 
 class Volume(models.Model):
@@ -396,6 +394,16 @@ class Volume(models.Model):
         ("TRANSLATION", "Translation"),
         ("OTHER", "Other"),
     ]
+    STATUS_CHOICES = [
+        ("Catalog", "Catalog"),
+        ("Inventory", "Inventory"),
+    ]
+    DISPOSITION_CHOICES = [
+        ("Sold", "Sold"),
+        ("Donated", "Donated"),
+        ("Gifted", "Gifted"),
+        ("Discarded", "Discarded"),
+    ]
 
     # Bibliographic Information
     title = models.CharField(max_length=200)
@@ -422,14 +430,21 @@ class Volume(models.Model):
         help_text="10-digit ISBN (legacy, optional)."
     )
     volume_content_type = models.CharField(max_length=50,
-                                           choices=VOLUME_CONTENT_TYPE_CHOICES, blank=True, null=True)
+                                           choices=VOLUME_CONTENT_TYPE_CHOICES,
+                                           blank=True, null=True)
     volume_edition_type = models.CharField(max_length=50,
-                                           choices=VOLUME_EDITION_TYPE_CHOICES, blank=True, null=True)
+                                           choices=VOLUME_EDITION_TYPE_CHOICES,
+                                           blank=True, null=True)
     volume_url = models.URLField(blank=True, null=True, help_text="URL to "
                                                                   "ebook")
     illustrator = models.CharField(max_length=200, blank=True, null=True)
     edition = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    bibliographies = models.ManyToManyField(
+        Bibliography,
+        through="VolumeBibliographyReference",
+        related_name="volumes",
+        blank=True)
 
     # Description and Condition
     binding = models.CharField(choices=BINDING_CHOICES, max_length=30,
@@ -445,6 +460,8 @@ class Volume(models.Model):
     volume_json = models.JSONField(blank=True, null=True)
 
     # Collection Data
+    status = models.CharField(choices=STATUS_CHOICES, max_length=30,
+                              default="Catalog", blank=True, null=True)
     acquisition_date = models.DateField(blank=True, null=True)
     acquisition_year = models.IntegerField(blank=True, null=True)
     source = models.CharField(
@@ -457,14 +474,24 @@ class Volume(models.Model):
     acquisition_cost = models.DecimalField(decimal_places=2, max_digits=10,
                                            blank=True, null=True,
                                            default=0)
-    total_cost = models.DecimalField(decimal_places=2, max_digits=10,
-                                     blank=True, null=True,)
+
     estimated_value = models.DecimalField(decimal_places=2, max_digits=10,
                                           blank=True, null=True)
     edition_notes = MarkdownxField(blank=True, null=True)
 
     # Disposition
+    disposition = models.CharField(choices=DISPOSITION_CHOICES,
+                                   max_length=30, blank=True, null=True)
+    recipient = models.CharField(max_length=150, blank=True, null=True)
+    sales_price = models.DecimalField(decimal_places=2, max_digits=10,
+                                      blank=True, null=True)
+    shipping_charged = models.DecimalField(decimal_places=2, max_digits=10,
+                                           blank=True, null=True)
+    shipping_cost = models.DecimalField(decimal_places=2, max_digits=10,
+                                        blank=True, null=True)
+    disposition_date = models.DateField(blank=True, null=True)
 
+    # Utility
     slug = models.SlugField(max_length=255, blank=True, unique=True)
 
     class Meta:
@@ -480,6 +507,33 @@ class Volume(models.Model):
         else:
             return f"{self.title}"
 
+    @property
+    def total_cost(self):
+        if self.price and self.acquisition_cost:
+            return self.price + self.acquisition_cost
+        elif self.price:
+            return self.price
+        else:
+            return ""
+
+    @property
+    def total_sold_price(self):
+        if self.sales_price and self.shipping_charged:
+            return self.sales_price + self.shipping_charged
+        elif self.sales_price:
+            return self.sales_price
+        else:
+            return ""
+
+    @property
+    def total_profit(self):
+        if self.total_cost and self.total_sold_price:
+            return (self.sales_price - self.price) + (self.shipping_charged -
+                                                      self.acquisition_cost
+                                                      - self.shipping_cost
+                                                      )
+        else:
+            return ""
 
     def save(self, *args, **kwargs):
         if self.isbn10 and not self.isbn13:
@@ -492,7 +546,6 @@ class Volume(models.Model):
         # handle volumes already existing when acquisition_cost added to model
         if self.acquisition_cost is None:
             self.acquisition_cost = 0
-        self.total_cost = self.price + self.acquisition_cost
 
         if not self.slug:
             base = slugify(self.title)
@@ -542,7 +595,18 @@ class Volume(models.Model):
         return reverse("volume_detail", args=[self.slug])
 
 
+# ----- 5 Bibliography Reference ----------------------------
+class VolumeBibliographyReference(models.Model):
+    volume = models.ForeignKey(Volume, on_delete=models.CASCADE,
+                               related_name="bibliography_refs")
+    bibliography = models.ForeignKey(Bibliography, on_delete=models.CASCADE)
+    reference_detail = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text="e.g. page 56, entry A2b, plate VIII, etc."
+    )
 
+    class Meta:
+        unique_together = ("volume", "bibliography", "reference_detail")
 
-
-
+    def __str__(self):
+        return f"{self.bibliography.code}: {self.reference_detail}"

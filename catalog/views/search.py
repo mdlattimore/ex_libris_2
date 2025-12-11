@@ -1,5 +1,6 @@
-from django.views.generic import TemplateView
 from django.db.models import Q
+from django.views.generic import TemplateView
+
 from catalog.models import Author, Work, Volume, BookSet
 
 
@@ -55,7 +56,8 @@ class SearchResultsView(TemplateView):
             Q(works__title__icontains=q) |
             Q(works__author__full_name__icontains=q) |
             Q(works__genre__name__icontains=q)
-        ).select_related("book_set").prefetch_related("works").distinct().order_by("sort_title")
+        ).select_related("book_set").prefetch_related(
+            "works").distinct().order_by("sort_title")
 
         context.update({
             "authors": authors,

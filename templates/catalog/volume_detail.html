@@ -14,7 +14,11 @@
             <div class="card">
                 <div class="card-header fw-semibold text-center">Bibliographic Info</div>
                 <div class="card-body">
-
+                    {% if volume.disposition %}
+                        <div class="row">
+                        <span class="text-center" style="color:red">THIS VOLUME NO LONGER IN COLLECTION</span>
+                        </div>
+                {% endif %}
                     {% if volume.collection.exists %}
                         <div class="row">
                             <div class="col-sm-4">Collection:</div>
@@ -113,6 +117,17 @@
                             {% endfor %}
                         </div>
                     </div>
+                    {% if volume.bibliography_refs.all %}
+                        <div class="row">
+                            <div class="col-sm-4">Bibliography:</div>
+                            <div class="col-sm-8 fw-bolder">
+                                {% for ref in volume.bibliography_refs.all %}
+                                    {{ ref.bibliography.code }}:
+                                    {{ ref.reference_detail }}{% if not forloop.last %}<br>{% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
 
                 </div>
             </div>
@@ -165,46 +180,48 @@
                         <div class="col-sm-4">Source:</div>
                         <div class="col-sm-8 fw-bolder">{{ volume.source }}</div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-4">Price:</div>
-                        <div class="col-sm-8 fw-bolder">
-                            {% if volume.price %}
-                                ${{ volume.price|intcomma }}
-                            {% else %}
-                                <span class="text-muted fst-italic">—</span>
-                            {% endif %}
+                    {% if user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-sm-4">Price:</div>
+                            <div class="col-sm-8 fw-bolder">
+                                {% if volume.price %}
+                                    ${{ volume.price|intcomma }}
+                                {% else %}
+                                    <span class="text-muted fst-italic">—</span>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Acquisition Cost:</div>
-                        <div class="col-sm-8 fw-bolder">
-                            {% if volume.acquisition_cost %}
-                                ${{ volume.acquisition_cost|intcomma }}
-                            {% else %}
-                                <span class="text-muted fst-italic">—</span>
-                            {% endif %}
+                        <div class="row">
+                            <div class="col-sm-4">Acquisition Cost:</div>
+                            <div class="col-sm-8 fw-bolder">
+                                {% if volume.acquisition_cost %}
+                                    ${{ volume.acquisition_cost|intcomma }}
+                                {% else %}
+                                    <span class="text-muted fst-italic">—</span>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Total Cost:</div>
-                        <div class="col-sm-8 fw-bolder">
-                            {% if volume.total_cost %}
-                                ${{ volume.total_cost|intcomma }}
-                            {% else %}
-                                <span class="text-muted fst-italic">—</span>
-                            {% endif %}
+                        <div class="row">
+                            <div class="col-sm-4">Total Cost:</div>
+                            <div class="col-sm-8 fw-bolder">
+                                {% if volume.total_cost %}
+                                    ${{ volume.total_cost|intcomma }}
+                                {% else %}
+                                    <span class="text-muted fst-italic">—</span>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Estimated Value:</div>
-                        <div class="col-sm-8 fw-bolder">
-                            {% if volume.estimated_value %}
-                                ${{ volume.estimated_value|intcomma }}
-                            {% else %}
-                                <span class="text-muted fst-italic">—</span>
-                            {% endif %}
+                        <div class="row">
+                            <div class="col-sm-4">Estimated Value:</div>
+                            <div class="col-sm-8 fw-bolder">
+                                {% if volume.estimated_value %}
+                                    ${{ volume.estimated_value|intcomma }}
+                                {% else %}
+                                    <span class="text-muted fst-italic">—</span>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                     {% if volume.edition_notes %}
                         <div class="row">
                             <div class="col-sm-4">Edition Notes:</div>
@@ -213,16 +230,66 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header fw-semibold text-center">Disposition</div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-4">Coming</div>
-                        <div class="col-sm-8 fw-bolder">Soon</div>
+            {% if user.is_authenticated %}
+                <div class="card">
+                    <div class="card-header fw-semibold text-center">Disposition</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">Disposition:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.disposition }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">Disposition date:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.disposition_date }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">Recipient:</div>
+                            <div class="col-sm-8 fw-bolder">{{ volume.recipient }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">Sales Price:</div>
+                            {% if volume.sales_price %}
+                                <div class="col-sm-8 fw-bolder">${{ volume.sales_price }}</div>
+                            {% else %}
+                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">Shipping Charged:</div>
+                            {% if volume.shipping_charged %}
+                                <div class="col-sm-8 fw-bolder">${{ volume.shipping_charged }}</div>
+                            {% else %}
+                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">Shipping Cost:</div>
+                            {% if volume.shipping_cost %}
+                                <div class="col-sm-8 fw-bolder">${{ volume.shipping_cost }}</div>
+                            {% else %}
+                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">Total Sold Price:</div>
+                            {% if volume.total_sold_price %}
+                                <div class="col-sm-8 fw-bolder">${{ volume.total_sold_price }}</div>
+                            {% else %}
+                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-4">Profit/Loss:</div>
+                            {% if volume.total_profit %}
+                                <div class="col-sm-8 fw-bolder">${{ volume.total_profit }}</div>
+                            {% else %}
+                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            {% endif %}
         </div>
         <div class="col-md-6">
             <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"

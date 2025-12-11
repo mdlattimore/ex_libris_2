@@ -43,11 +43,9 @@ class VolumeUpdateView(UpdateView):
     fields = "__all__"
     exclude_fields = ("volume_json",)
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['total_cost'].disabled = True   # prevents editing and POSTing
-        return form
-
+    # def get_form(self, form_class=None):
+    #     form = super().get_form(form_class)
+    #     return form
 
 
 def volume_create_view(request):
@@ -63,6 +61,7 @@ def manual_volume_form(request):
     form = VolumeForm()
     context = {"volume_form": form}
     return render(request, "partials/manual_form.html", context)
+
 
 def volume_redirect_by_id(request, pk):
     vol = get_object_or_404(Volume, pk=pk)

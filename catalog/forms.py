@@ -86,8 +86,10 @@ class VolumeForm(forms.ModelForm):
                 Column("isbn10", css_class="form-group col-md-4 "),
             ),
             Row(
-                Column("volume_content_type", css_class="form-group col-md-4 mb-0"),
-                Column("volume_edition_type", css_class="form-group col-md-4 mb-0"),
+                Column("volume_content_type",
+                       css_class="form-group col-md-4 mb-0"),
+                Column("volume_edition_type",
+                       css_class="form-group col-md-4 mb-0"),
                 Column("volume_url", css_class="form-group col-md-4 mb-0"),
             ),
             Row(
@@ -117,7 +119,8 @@ class VolumeForm(forms.ModelForm):
                 HTML("""<h5 class="fw-light">Collection Data<h5> """)
             ),
             Row(
-                Column("acquisition_date", css_class="form-group col-md-4 mb-0"),
+                Column("acquisition_date",
+                       css_class="form-group col-md-4 mb-0"),
                 Column(
                     "acquisition_year", css_class="form-group col-md-4 mb-0"
                 ),
@@ -135,11 +138,6 @@ class VolumeForm(forms.ModelForm):
                 Column("volume_json", css_class="form-group col-md-7 mb-0"),
             ),
 
-
-
-
-
-
             Row(
                 Submit(
                     "submit",
@@ -148,7 +146,7 @@ class VolumeForm(forms.ModelForm):
                 ),
                 HTML('<span class="form-group col-md-3 mb-0"></span>'),
 
-        ))
+            ))
 
 
 class WorkCreateForm(forms.ModelForm):
@@ -165,10 +163,8 @@ class WorkCreateForm(forms.ModelForm):
             Row(
                 Column("title", css_class="form-group col-md-4 mb-0"),
 
-
-
-                    Column("author", css_class="form-group col-md-4 mb-0"),
-                    HTML("""
+                Column("author", css_class="form-group col-md-4 mb-0"),
+                HTML("""
                     <div class="form-group col-md-4 mb-0 d-flex 
                     align-items-center">
                     <a href="#"
@@ -179,7 +175,7 @@ class WorkCreateForm(forms.ModelForm):
                                 + Add Author
                     </a>
                     </div>""")
-                ),
+            ),
             Row(
                 Column("first_published", css_class="form-group col-md-4 mb-0"),
                 Column("work_type", css_class="form-group col-md-4 mb-0"),
@@ -188,10 +184,10 @@ class WorkCreateForm(forms.ModelForm):
 
             Row(
                 Column("notes", css_class="form-group col-md-4 "
-                                                    "mb-0"),
+                                          "mb-0"),
 
                 Column("text", css_class="form-group col-md-8 "
-                                          "mb-0"),
+                                         "mb-0"),
             ),
             Row(
                 HTML('<span class="form-group col-md-3 mb-0"></span>'),
@@ -206,7 +202,6 @@ class WorkCreateForm(forms.ModelForm):
                 ),
             ),
             Div(id="author-modal"))
-
 
 
 class AuthorCreateForm(forms.ModelForm):

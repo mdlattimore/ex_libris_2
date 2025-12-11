@@ -1,11 +1,10 @@
 # using google books api
 
-import requests
+import os
 import time
 from pprint import pprint
-import os
 
-
+import requests
 
 
 def lookup_book(isbn: str) -> dict:
@@ -35,9 +34,6 @@ def lookup_book(isbn: str) -> dict:
                 return book['volumeInfo']
     else:
         return "Book not found"
-
-
-
 
 
 def get_book(isbn: str) -> dict:
@@ -80,6 +76,8 @@ if "__main__" == __name__:
         Categories: {categories_display}
         Page Count: {page_count}
         Images: {image}""")
+
+
     isbn = input("Enter ISBN: ")
     start = time.perf_counter()
     book = get_book(isbn)
@@ -87,4 +85,3 @@ if "__main__" == __name__:
     # print(type(book))
     print(f"{stop - start} seconds")
     display_book(book)
-

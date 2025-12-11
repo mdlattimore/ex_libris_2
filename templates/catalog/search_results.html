@@ -141,7 +141,10 @@
                             {{ volume.publisher }} ({{ volume.publication_year }})
                         </small><br>
                         {% if volume.edition %}
-                            <small>{{ volume.edition }}</small>
+                            <small>{{ volume.edition }}</small><br>
+                        {% endif %}
+                        {% if volume.disposition %}
+                            <small><span style="color:red">THIS VOLUME NO LONGER IN COLLECTION</span></small>
                         {% endif %}
                     </div>
                 </a>
