@@ -230,7 +230,6 @@
                     {% endif %}
                 </div>
             </div>
-            {% if user.is_authenticated %}
                 <div class="card">
                     <div class="card-header fw-semibold text-center">Disposition</div>
                     <div class="card-body">
@@ -242,6 +241,8 @@
                             <div class="col-sm-4">Disposition date:</div>
                             <div class="col-sm-8 fw-bolder">{{ volume.disposition_date }}</div>
                         </div>
+                                {% if user.is_authenticated %}
+
                         <div class="row">
                             <div class="col-sm-4">Recipient:</div>
                             <div class="col-sm-8 fw-bolder">{{ volume.recipient }}</div>
@@ -287,9 +288,9 @@
                                 <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
                             {% endif %}
                         </div>
+                    {% endif %}
                     </div>
                 </div>
-            {% endif %}
         </div>
         <div class="col-md-6">
             <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"

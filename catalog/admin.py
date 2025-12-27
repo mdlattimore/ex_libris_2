@@ -116,7 +116,7 @@ class VolumeAdmin(admin.ModelAdmin):
         ("Description & Condition", {
             "fields": (
                 "binding", "condition", "dust_jacket",
-                "dust_jacket_condition", "cover_url", "notes",
+                "dust_jacket_condition", "ex_library", "cover_url", "notes",
                 "volume_json",
             ),
         }),

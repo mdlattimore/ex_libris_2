@@ -126,6 +126,7 @@ class Work(models.Model):
         ("COMPOSITE", "Composite / Edited Work"),
         ("ANTHOLOGY", "Anthology (Multiple Authors)"),
         ("CRITICISM", "Criticism / Commentary"),
+        ("SONG_CYCLE", "Song Cycle"),
         ("REFERENCE_WORK", "Reference Work"),
         ("OTHER", "Other"),
     ]
@@ -392,6 +393,7 @@ class Volume(models.Model):
         ("TEXTBOOK", "Textbook / Academic Edition"),
         ("POCKET", "Pocket Edition"),
         ("TRANSLATION", "Translation"),
+        ("MUSIC", "Music Notation with Lyrics"),
         ("OTHER", "Other"),
     ]
     STATUS_CHOICES = [
@@ -407,6 +409,7 @@ class Volume(models.Model):
 
     # Bibliographic Information
     title = models.CharField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     collection = models.ManyToManyField(Collection, related_name="volumes",
                                         blank=True)
     sort_title = models.CharField(max_length=255, editable=False, blank=True)
@@ -455,6 +458,7 @@ class Volume(models.Model):
     dust_jacket_condition = models.CharField(choices=CONDITION_CHOICES,
                                              max_length=30, blank=True,
                                              null=True)
+    ex_library = models.BooleanField(default=False)
     cover_url = models.URLField(blank=True, null=True)
     notes = MarkdownxField(blank=True, null=True)
     volume_json = models.JSONField(blank=True, null=True)
