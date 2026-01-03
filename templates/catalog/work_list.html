@@ -10,8 +10,8 @@
                class="btn btn-sm btn-outline-primary {% if view_type == 'works' %}active{% endif %}">Works</a>
             <a href="{% url 'bookset_list' %}"
                class="btn btn-sm btn-outline-primary {% if view_type == 'booksets' %}active{% endif %}">Book Sets</a>
-            <a href="{% url 'catalog_all' %}"
-               class="btn btn-sm btn-outline-primary {% if view_type == 'all' %}active{% endif %}">All</a>
+            {#            <a href="{% url 'catalog_all' %}"#}
+            {#               class="btn btn-sm btn-outline-primary {% if view_type == 'all' %}active{% endif %}">All</a>#}
         </div>
         <div class="container mt-3 list-container">
 
@@ -34,37 +34,83 @@
                                     </span>
                                 </h6>
 
+                                {#                                <div><span class="small fw-light">{{ item.author }}</span></div>#}
+                                {##}
+                                {##}
+                                {#                                {% with vols=item.volumes.all %}#}
+                                {#                                    {% if view_type == "booksets" or vols %}#}
+                                {#                                        <small class="text-muted">#}
+                                {#                                            {{ vols|length }} volume{{ vols|length|pluralize }}#}
+                                {#                                        </small>#}
+                                {#                                    {% endif %}#}
+                                {#                                {% endwith %}#}
+                                {##}
+                                {#                            </div>#}
+                                {##}
+                                {##}
+                                {#                            <!-- RIGHT: VOLUME LINKS -->#}
+                                {#                            {% with vols=item.volumes.all %}#}
+                                {#                                <div class="d-flex flex-nowrap overflow-auto">#}
+                                {##}
+                                {#                                    {% for vol in vols %}#}
+                                {#                                        {% if vol.cover_url %}#}
+                                {#                                            <a href="{{ vol.get_absolute_url }}">#}
+                                {#                                                <img src="{{ vol.cover_url }}"#}
+                                {#                                                     alt="Vol cover"#}
+                                {#                                                     loading="lazy"#}
+                                {#                                                     decoding="async"#}
+                                {#                                                     class="rounded ms-1"#}
+                                {#                                                     style="height:100px; width:auto; object-fit:cover;">#}
+                                {#                                            </a>#}
+                                {#                                        {% else %}#}
+                                {#                                            <a href="{{ vol.get_absolute_url }}" style="margin-left:5px">#}
+                                {#                                                <div class="me-3 d-flex align-items-center justify-content-center bg-light border rounded text-muted p-1"#}
+                                {#                                                     style="width:78px; height:100px; font-size:.8em; object-fit:cover; overflow:hidden;">#}
+                                {#                                                    {{ vol.title|truncatechars:20 }}#}
+                                {#                                                </div>#}
+                                {#                                            </a>#}
+                                {#                                        {% endif %}#}
+                                {#                                    {% endfor %}#}
+                                {##}
+                                {#                                </div>#}
+                                {#                            {% endwith %}#}
                                 <div><span class="small fw-light">{{ item.author }}</span></div>
 
-                                {% if view_type == "booksets" or item.volumes.exists %}
-                                    <small class="text-muted">
-                                        {{ item.volumes.count }} volume{{ item.volumes.count|pluralize }}
-                                    </small>
-                                {% endif %}
-                            </div>
-
-                            <!-- RIGHT: VOLUME LINKS -->
-                            {#                            <div class="d-flex align-items-start flex-wrap ms-3">#}
-                            <div class="d-flex flex-nowrap overflow-auto">
-
-                                {% for vol in item.volumes.all %}
-                                    {% if vol.cover_url %}
-                                        <a href="{{ vol.get_absolute_url }}">
-                                            <img src="{{ vol.cover_url }}"
-                                                 alt="Vol cover"
-                                                 class="rounded ms-1"
-                                                 style="height:100px; width:auto; object-fit:cover;">
-                                        </a>
-                                    {% else %}
-                                        <a href="{{ vol.get_absolute_url }}" style="margin-left:5px">
-                                            <div class="me-3 d-flex align-items-center justify-content-center bg-light border rounded text-muted p-1"
-                                                 style="width:78px; height:100px; font-size:.8em; object-fit:cover; overflow:hidden;">
-                                                {{ vol.title|truncatechars:20 }}
-                                            </div>
-                                        </a>
+                                {% with vols=item.volumes.all %}
+                                    {% if view_type == "booksets" or vols %}
+                                        <small class="text-muted">
+                                            {{ vols|length }} volume{{ vols|length|pluralize }}
+                                        </small>
                                     {% endif %}
-                                {% endfor %}
-                            </div>
+
+                                    </div>
+
+                                    <!-- RIGHT: VOLUME LINKS -->
+                                    <div class="d-flex flex-nowrap overflow-auto">
+
+                                        {% for vol in vols %}
+                                            {% if vol.cover_url %}
+                                                <a href="{{ vol.get_absolute_url }}">
+                                                    <img src="{{ vol.cover_url }}"
+                                                         alt="Vol cover"
+                                                         loading="lazy"
+                                                         decoding="async"
+                                                         class="rounded ms-1"
+                                                         style="height:100px; width:auto; object-fit:cover;">
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ vol.get_absolute_url }}" style="margin-left:5px">
+                                                    <div class="me-3 d-flex align-items-center justify-content-center bg-light border rounded text-muted p-1"
+                                                         style="width:78px; height:100px; font-size:.8em; object-fit:cover; overflow:hidden;">
+                                                        {{ vol.title|truncatechars:20 }}
+                                                    </div>
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                    </div>
+                                {% endwith %}
+
 
                         </div>
 

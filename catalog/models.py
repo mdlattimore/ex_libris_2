@@ -131,8 +131,8 @@ class Work(models.Model):
         ("OTHER", "Other"),
     ]
 
-    title = models.CharField(max_length=200)
-    sort_title = models.CharField(max_length=150, blank=True, null=True)
+    title = models.CharField(max_length=255)
+    sort_title = models.CharField(max_length=255, blank=True, null=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE,
                                related_name='works')
     first_published = models.IntegerField(blank=True, null=True)
@@ -408,7 +408,7 @@ class Volume(models.Model):
     ]
 
     # Bibliographic Information
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=255)
     date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     collection = models.ManyToManyField(Collection, related_name="volumes",
                                         blank=True)

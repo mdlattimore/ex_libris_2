@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "markdownx",
     "django_json_widget",
-    # "debug_toolbar",
+    "debug_toolbar",
     # Local
     "accounts",
     "pages",
@@ -68,7 +68,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # WhiteNoise
-    # "debug_toolbar.middleware.DebugToolbarMiddleware",  # Django Debug Toolbar
+    "debug_toolbar.middleware.DebugToolbarMiddleware",  # Django Debug Toolbar
     "django.middleware.csrf.CsrfViewMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -107,9 +107,19 @@ TEMPLATES = [
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+# DATABASES = {
+#     "default": env.dj_db_url("DATABASE_URL", default="sqlite:///db.sqlite3"),
+# }
+
 DATABASES = {
-    "default": env.dj_db_url("DATABASE_URL", default="sqlite:///db.sqlite3"),
+    "default": env.dj_db_url(
+        "DATABASE_URL",
+        default="sqlite:///db.sqlite3",
+        conn_max_age=600,          # keep DB connections open
+        conn_health_checks=True,   # avoid stale connections
+    ),
 }
+
 
 # For Docker/PostgreSQL usage uncomment this and comment the DATABASES config above
 # DATABASES = {

@@ -15,8 +15,13 @@
     <div class="flex-fill">
         <h6 class="mb-0">{{ volume.title }}</h6>
 
+
         <small class="text-muted">
-            <span>{{ volume.works.first.author }}</span>
+            {% with w=volume.works.all|first %}
+                {% if w %}
+                    <span>{{ w.author }}</span>
+                {% endif %}
+            {% endwith %}
         </small><br>
 
         <small>

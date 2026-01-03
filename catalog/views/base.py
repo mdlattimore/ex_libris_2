@@ -1,33 +1,39 @@
 from django.views.generic import TemplateView
 
 from catalog.models import Work, BookSet
+from django.views.generic import ListView
+from catalog.utils.normalization import normalize_sort_title
 
 
-class CatalogBaseView(TemplateView):
+class CatalogBaseView(ListView):
     template_name = "catalog/work_list.html"
+    context_object_name = "items"
+    view_type = "all"  # default
+
+    def get_queryset(self):
+        # sensible default; subclasses can override
+        from itertools import chain
+        items = list(Work.objects.all()) + list(BookSet.objects.all())
+        return sorted(items, key=lambda i: normalize_sort_title(i.title))
 
     def get_context_data(self, **kwargs):
-        context = super(CatalogBaseView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         view_type = getattr(self, "view_type", "all")
 
         if view_type == "works":
-            context["items"] = Work.objects.all().order_by("sort_title")
             context["heading"] = "Works"
-            context["sub_heading"] = ("Creative texts (novels, poems, essays, "
-                                      "or stories) independent of any "
-                                      "particular edition or printing.")
+            context["sub_heading"] = (
+                "Creative texts (novels, poems, essays, or stories) independent of any "
+                "particular edition or printing."
+            )
         elif view_type == "booksets":
-            context["items"] = BookSet.objects.all().order_by("title")
             context["heading"] = "Book Sets"
-            context["sub_heading"] = ("A group of volumes published or "
-                                      "packaged as a unit. May or may not be "
-                                      "'boxed.'")
+            context["sub_heading"] = (
+                "A group of volumes published or packaged as a unit. May or may not be 'boxed.'"
+            )
         else:
-            # Combine both - combine QuerySets to lists so they're concatenable
-            items_list = list(Work.objects.all()) + list(BookSet.objects.all())
-            items_sorted = sorted(items_list, key=lambda i: i.sort_title)
-            context["items"] = items_sorted
             context["heading"] = "All Works and Book Sets"
+            context["sub_heading"] = ""
 
         context["view_type"] = view_type
         return context

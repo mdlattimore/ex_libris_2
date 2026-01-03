@@ -16,23 +16,30 @@
                 <div class="card-body">
                     {% if volume.disposition %}
                         <div class="row">
-                        <span class="text-center" style="color:red">THIS VOLUME NO LONGER IN COLLECTION</span>
+                            <span class="text-center" style="color:red">THIS VOLUME NO LONGER IN COLLECTION</span>
                         </div>
-                {% endif %}
+                    {% endif %}
                     {% if volume.collection.exists %}
                         <div class="row">
                             <div class="col-sm-4">Collection:</div>
                             <div class="col-sm-8 fw-bolder">
+                                {#                                {% for coll in volume.collection.all %}#}
+                                {#                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>#}
+                                {#                                    {% if not forloop.last %}, {% endif %}#}
+                                {#                                {% endfor %}#}
                                 {% for coll in volume.collection.all %}
-                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>
-                                    {% if not forloop.last %}, {% endif %}
+                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>{% if not forloop.last %},
+                                {% endif %}
+                                {% empty %}
                                 {% endfor %}
+
                             </div>
                         </div>
                     {% endif %}
 
 
-                    {% with first_work=volume.works.first %}
+                    {#                    {% with first_work=volume.works.first %}#}
+                    {% with first_work=volume.works.all|first %}
                         {% if first_work %}
                             <div class="row">
                                 <div class="col-sm-4">Author:</div>
@@ -117,17 +124,31 @@
                             {% endfor %}
                         </div>
                     </div>
-                    {% if volume.bibliography_refs.all %}
-                        <div class="row">
-                            <div class="col-sm-4">Bibliography:</div>
-                            <div class="col-sm-8 fw-bolder">
-                                {% for ref in volume.bibliography_refs.all %}
-                                    {{ ref.bibliography.code }}:
-                                    {{ ref.reference_detail }}{% if not forloop.last %}<br>{% endif %}
-                                {% endfor %}
+                    {#                    {% if volume.bibliography_refs.all %}#}
+                    {#                        <div class="row">#}
+                    {#                            <div class="col-sm-4">Bibliography:</div>#}
+                    {#                            <div class="col-sm-8 fw-bolder">#}
+                    {#                                {% for ref in volume.bibliography_refs.all %}#}
+                    {#                                    {{ ref.bibliography.code }}:#}
+                    {#                                    {{ ref.reference_detail }}{% if not forloop.last %}<br>{% endif %}#}
+                    {#                                {% endfor %}#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    {% endif %}#}
+                    {% with refs=volume.bibliography_refs.all %}
+                        {% if refs %}
+                            <div class="row">
+                                <div class="col-sm-4">Bibliography:</div>
+                                <div class="col-sm-8 fw-bolder">
+                                    {% for ref in refs %}
+                                        {{ ref.bibliography.code }}:
+                                        {{ ref.reference_detail }}{% if not forloop.last %}<br>{% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    {% endwith %}
+
 
                 </div>
             </div>
@@ -230,18 +251,18 @@
                     {% endif %}
                 </div>
             </div>
-                <div class="card">
-                    <div class="card-header fw-semibold text-center">Disposition</div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-4">Disposition:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.disposition }}</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Disposition date:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.disposition_date }}</div>
-                        </div>
-                                {% if user.is_authenticated %}
+            <div class="card">
+                <div class="card-header fw-semibold text-center">Disposition</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">Disposition:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.disposition }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Disposition date:</div>
+                        <div class="col-sm-8 fw-bolder">{{ volume.disposition_date }}</div>
+                    </div>
+                    {% if user.is_authenticated %}
 
                         <div class="row">
                             <div class="col-sm-4">Recipient:</div>
@@ -289,8 +310,8 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                    </div>
                 </div>
+            </div>
         </div>
         <div class="col-md-6">
             <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"
