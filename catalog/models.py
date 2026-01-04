@@ -144,7 +144,8 @@ class Work(models.Model):
         blank=True, null=True
     )
     genre = models.ManyToManyField(Genre, related_name="works", blank=True)
-
+    work_ebook_url = models.URLField(blank=True, null=True, help_text="URL to "
+                                                                  "ebook")
     notes = MarkdownxField(blank=True, null=True)
     text = MarkdownxField(blank=True, null=True)
     slug = models.SlugField(max_length=120, null=True, blank=True)
@@ -438,8 +439,7 @@ class Volume(models.Model):
     volume_edition_type = models.CharField(max_length=50,
                                            choices=VOLUME_EDITION_TYPE_CHOICES,
                                            blank=True, null=True)
-    volume_url = models.URLField(blank=True, null=True, help_text="URL to "
-                                                                  "ebook")
+
     illustrator = models.CharField(max_length=200, blank=True, null=True)
     edition = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
