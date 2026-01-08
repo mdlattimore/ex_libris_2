@@ -1,99 +1,120 @@
-1: The Adventures of Tom Bombadil 
-2: The Adventures of Tom Bombadil 
-3: The Atlas of Middle-earth 
-4: The Battle of Maldon 
-5: Beowulf 
-6: Beowulf 
-7: Beren and Lúthien 
-8: The Book of Lost Tales Part I 
-9: The Book of Lost Tales Part I 
-10: The Book of Lost Tales Part I 
-11: The Book of Lost Tales Part II 
-12: The Book of Lost Tales Part II 
-13: The Book of Lost Tales Part One 
-14: The Book of Lost Tales Part Two 
-15: The Children of Hurin 
-16: The Complete Guide to Middle-Earth 
-17: The Fall of Arthur 
-18: The Fall of Gondolin 
-19: The Fall of Númenor 
-20: Farmer Giles of Ham 
-21: The Fellowship of the Ring 
-22: The Fellowship of the Ring 
-23: The Fellowship of the Ring 
-24: The Fellowship of the Ring: The Return of the King 
-25: The History of Middle-earth Index 
-26: The History of the Hobbit 
-27: The Hobbit 
-28: The Hobbit 
-29: The Hobbit 
-30: The Hobbit Illustrated by the Author 
-31: A Hobbit, a Wardrobe, and a Great War 
-32: The Hobbit, Or, There and Back Again 
-33: The Hobbit, Or, There and Back Again 
-34: The J.R.R. Tolkien Handbook 
-35: J.R.R. Tolkien: A Biography 
-36: J.R.R. Tolkien: A Biography 
-37: The Lays of Beleriand 
-38: The Lays of Beleriand 
-39: The Legend of Sigurd and Gudron 
-40: The Letters of J.R.R. Tolkien 
-41: The Letters of J.R.R. Tolkien 
-42: Lord of the Elves and Eldils 
-43: The Lord of the Rings Illustrated 
-44: The Lord of the Rings: A Reader's Companion 
-45: The Lord of the Rings: The Fellowship of the Ring 
-46: The Lord of the Rings: The Return of The King 
-47: The Lost Road and Other Writings 
-48: The Lost Road and Other Writings 
-49: The Maps of Middle-Earth 
-50: Morgoth's Ring 
-51: Morgoth's Ring: The Later Silmarillion Part One 
-52: The Nature of Middle-earth 
-53: The Peoples of Middle-earth 
-54: The Peoples of Middle-earth 
-55: The Return of the King 
-56: The Return of the King 
-57: The Return of the King 
-58: The Return of the King 
-59: The Return of the Shadow 
-60: The Return of the Shadow 
-61: Roverandom 
-62: Sauron Defeated 
-63: Sauron Defeated 
-64: The Shaping of Middle-earth 
-65: The Shaping of Middle-earth 
-66: The Shaping of Middle-earth 
-67: The Silmarillion 
-68: The Silmarillion 
-69: The Silmarillion 
-70: The Silmarillion 
-71: The Silmarillion 
-72: The Silmarillion Collector's Edition 
-73: Silmarillion Ed. by Christopher Tolkien 
-74: Silmarillion Ed. by Christopher Tolkien 
-75: The Silmarillion: Illustrated by the Author 
-76: Sir Gawain and the Green Knight with Pearl and Sir Orfeo 
-77: Sir Gawain and the Green Knight, Pearl, Sir Orfeo 
-78: Smith of Wootton Major 
-79: The Story of Kullervo 
-80: Tales from the Perilous Realm 
-81: Tolkien and C.S. Lewis 
-82: The Tolkien Companion 
-83: The Tolkien Reader 
-84: Tolkien: a Look Behind "The Lord of the Rings" 
-85: The Treason of Isengard 
-86: The Treason of Isengard 
-87: The Two Towers 
-88: The Two Towers 
-89: The Two Towers 
-90: The Two Towers 
-91: Unfinished Tales Illustrated Edition 
-92: Unfinished Tales of Numenor and Middle-earth 
-93: Unfinished Tales of Numenor and Middle-earth 
-94: Unfinished Tales of Númenor and Middle-earth 
-95: The War of the Jewels 
-96: The War of the Jewles 
-97: The War of the Ring 
-98: The War of the Ring 
-99: The War of the Ring 
+The Adventures of Tom Bombadil (2014, Tolkien Treasury Volume)
+The Adventures of Tom Bombadil (2024, William Morrow Paperback)
+The Atlas of Middle-earth (1991, None)
+The Battle of Maldon (2023, None)
+Beowulf (2014, Tolkien Translation)
+Beowulf (2025, Tolkien Myths and Legends)
+Beren and Lúthien (2017, None)
+Beren and Lúthien (2017, Slipcased Illustrated)
+The Book of Lost Tales Part I (1984, American 1st/1st (2nd Copy))
+The Book of Lost Tales Part I (1984, Book Club Edition)
+The Book of Lost Tales Part I (1984, American 1st/1st)
+The Book of Lost Tales Part II (1984, American 1st/2nd)
+The Book of Lost Tales Part II (1984, American 1st/1st)
+The Book of Lost Tales Part One (2023, History of Middle Earth Box Set)
+The Book of Lost Tales Part Two (2023, History of Middle Earth Box Set)
+The Children of Hurin (2007, None)
+The Complete Guide to Middle-Earth (2022, None)
+The Fall of Arthur (2025, Tolkien Myths and Legends)
+The Fall of Gondolin (2018, None)
+The Fall of Númenor (2022, None)
+Farmer Giles of Ham (2014, Tolkien Treasury Volume)
+The Fellowship of the Ring (1965, Ace Books "Pirated" Edition)
+The Fellowship of the Ring (1993, Lord of the Rings Box Set (1988))
+The Fellowship of the Ring (1975, 1975 54th Printing of 1965 edition)
+The Fellowship of the Ring (1986, None)
+The Fellowship of the Ring (1954, None)
+The Fellowship of the Ring: The Return of the King (2001, Illustrated)
+The History of Middle-earth Index (2024, History of Middle Earth Box Set)
+The History of the Hobbit (2023, None)
+The Hobbit (2012, 75th Anniversary Pocket Edition)
+The Hobbit (1965, American 1st/3rd ("Lion Hobbit"))
+The Hobbit (1974, 47th Printing (February, 1974) of 1965 reset edition)
+The hobbit (1994, None)
+The Hobbit Illustrated by the Author (2023, Illustrated by the Author)
+A Hobbit, a Wardrobe, and a Great War (2017, None)
+The Hobbit, Or, There and Back Again (1997, Illustrated)
+The Hobbit, Or, There and Back Again (2013, First US Edition / 13th Printing)
+The Hobbit, Or, There and Back Again (1990, None)
+The Hobbit, Or, There and Back Again (1978, None)
+The J.R.R. Tolkien Handbook (1992, None)
+J.R.R. Tolkien: A Biography (2000, None)
+J.R.R. Tolkien: A Biography (1977, American 1st/1st)
+The Lays of Beleriand (1985, American 1st/1st)
+The Lays of Beleriand (1985, American 1st/1st (2nd Copy))
+The Lays of Beleriand (2024, History of Middle Earth Box Set)
+The Legend of Sigurd and Gudron (2025, Tolkien Myths and Legends)
+The Letters of J.R.R. Tolkien (2023, Expanded Edition)
+The Letters of J.R.R. Tolkien (1981, American 1st/1st)
+Lord of the Elves and Eldils (1974, None)
+The Lord of the Rings Illustrated (2021, None)
+The Lord of the Rings: A Reader's Companion (2014, None)
+The Lord of the Rings: The Fellowship of the Ring (1969, Lord of the Rings Box Set (1969))
+The Lord of the Rings: The Return of The King (1993, Lord of the Rings Box Set (1988))
+The Lord of the Rings: The return of the king (1967, None)
+The Lost Road and Other Writings (1987, American 1st/1st)
+The Lost Road and Other Writings (2024, History of Middle Earth Box Set)
+The Maps of Middle-Earth (2024, None)
+Morgoth's Ring (2024, History of Middle Earth Box Set)
+Morgoth's Ring: The Later Silmarillion Part One (1993, American 1st/1st)
+The Nature of Middle-earth (2021, None)
+The Peoples of Middle-earth (1996, American 1st/1st)
+The Peoples of Middle-earth (2024, History of Middle Earth Box Set)
+The Return of the King (1966, Ace Books "Pirated" Edition)
+The Return of the King (1969, Lord of the Rings Box Set (1969))
+The Return of the King (2002, Illustrated)
+The Return of the King (1979, 1979 63rd printing of 1965 edition)
+The Return of the King (1994, None)
+The Return of the King (1977, Canadian)
+The Return of the Shadow (1988, American 1st/1st)
+The Return of the Shadow (2024, History of Middle Earth Box Set)
+The Road Goes Ever On: A Song Cycle (1967, American 1st/1st)
+The Road to Middle-Earth (2003, None)
+Roverandom (2013, Tolkien Treasury Volume)
+Sauron Defeated (1992, American 1st/1st)
+Sauron Defeated (2024, History of Middle Earth Box Set)
+The Shaping of Middle-earth (1986, American 1st/1st (2nd Copy))
+The Shaping of Middle-earth (2024, History of Middle Earth Box Set)
+The Shaping of Middle-earth (1986, American 1st/1st)
+The Silmarillion (1977, UK (export) 1st/1st/(2nd?))
+The Silmarillion (2023, History of Middle Earth Box Set)
+The Silmarillion (1977, UK (domestic) 1st/1st (Likely 2nd state or later))
+The Silmarillion (2004, 2004 Edition/2nd Printing)
+The Silmarillion (1977, UK (export) 1st/1st/1st)
+The Silmarillion (2001, None)
+The Silmarillion (2023, Deluxe Illustrated)
+The Silmarillion Collector's Edition (2024, None)
+Silmarillion Ed. by Christopher Tolkien (1977, American 1st/12th)
+Silmarillion Ed. by Christopher Tolkien (1977, American 1st/1st (1st State))
+The Silmarillion: Illustrated by the Author (2022, Illustrated by the Author)
+Sir Gawain and the Green Knight with Pearl and Sir Orfeo (2025, Tolkien Myths and Legends)
+Sir Gawain and the Green Knight, Pearl, Sir Orfeo (1979, Tolkien Translation)
+Smith of Wootton Major (2015, Tolkien Treasury Volume)
+The Story of Kullervo (2015, None)
+Tales from the Perilous Realm (2008, None)
+Tolkien and C.S. Lewis (2003, None)
+The Tolkien Companion (2000, None)
+The Tolkien Reader (1966, Jan 1978 29th Printing of 1966 edition)
+The Tolkien Reader (1966, American 1st/1st)
+Tolkien's World (1998, None)
+Tolkien: a Look Behind "The Lord of the Rings" (1972, None)
+Tolkien: Maker of Middle-earth (2018, None)
+The Treason of Isengard (1989, American 1st/1st)
+The Treason of Isengard (2024, History of Middle Earth Box Set)
+The Two Towers (1965, Ace Books "Pirated" Edition)
+The Two Towers (1969, Lord of the Rings Box Set (1969))
+The Two Towers (2002, Illustrated)
+The Two Towers (1978, Nov 1978 63rd printing of 1965 edition)
+The two towers (1993, None)
+The Two Towers (1994, None)
+The Two Towers (1993, Lord of the Rings Box Set (1988))
+Unfinished Tales (1988, American 1st/1st (PB))
+Unfinished Tales Illustrated Edition (2020, None)
+Unfinished Tales of Numenor and Middle-earth (1980, American 1st/1st (2nd Copy))
+Unfinished Tales of Numenor and Middle-earth (1980, American 1st/1st)
+Unfinished Tales of Númenor and Middle-earth (2023, History of Middle Earth Box Set)
+The War of the Jewels (1994, American 1st/1st)
+The War of the Jewels (2024, History of Middle Earth Box Set)
+The War of the Ring (1990, American 1st/1st)
+The War of the Ring (1990, American 1st/1st)
+The War of the Ring (2024, History of Middle Earth Box Set)

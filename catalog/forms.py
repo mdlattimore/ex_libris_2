@@ -181,11 +181,14 @@ class WorkCreateForm(forms.ModelForm):
             ),
 
             Row(
-                Column("notes", css_class="form-group col-md-4 "
+                Column("notes", css_class="form-group col-md-6 "
                                           "mb-0"),
 
-                Column("text", css_class="form-group col-md-8 "
+                Column("text", css_class="form-group col-md-6 "
                                          "mb-0"),
+            ),
+            Row(
+                Column("work_ebook_url", css_class="form-group col-md-4 mb-0"),
             ),
             Row(
                 HTML('<span class="form-group col-md-3 mb-0"></span>'),

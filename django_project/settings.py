@@ -9,6 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = Env()
 env.read_env()
 
+print("CWD:", os.getcwd())
+print("DEBUG raw:", os.environ.get("DEBUG"))
+print("DEBUG environs:", env.bool("DEBUG", default=None))
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
@@ -24,7 +29,16 @@ SECRET_KEY = env.str(
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = env.bool("DEBUG", default=False)  # new
+# DEBUG = env.bool("DEBUG", default=False)  # new
+
+# Environment
+DJANGO_PRODUCTION = env.bool("DJANGO_PRODUCTION", default=False)
+
+# DEBUG is derived from environment, but production ALWAYS wins.
+DEBUG = env.bool("DEBUG", default=not DJANGO_PRODUCTION)
+if DJANGO_PRODUCTION:
+    DEBUG = False
+
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["*"]
@@ -53,7 +67,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "markdownx",
     "django_json_widget",
-    "debug_toolbar",
+    # "debug_toolbar",
     # Local
     "accounts",
     "pages",
@@ -68,7 +82,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # WhiteNoise
-    "debug_toolbar.middleware.DebugToolbarMiddleware",  # Django Debug Toolbar
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",  # Django Debug Toolbar
     "django.middleware.csrf.CsrfViewMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -76,6 +90,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",  # django-allauth
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE.insert(1, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = ["127.0.0.1"]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
 ROOT_URLCONF = "django_project.urls"
@@ -346,11 +365,7 @@ if os.environ.get("ON_FLYIO"):
     #   here may not.
     import dj_database_url
 
-    # Use secret, if set, to update DEBUG value.
-    if os.environ.get("DEBUG") == "FALSE":
-        DEBUG = False
-    elif os.environ.get("DEBUG") == "TRUE":
-        DEBUG = True
+
 
     # Set a Fly.io-specific allowed host.
     ALLOWED_HOSTS.append("ex-libris.fly.dev")
