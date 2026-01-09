@@ -1,10 +1,11 @@
 from django.db.models import Sum, Avg, Max, Count
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from catalog.models import Volume, Author, Collection
 
 
-class StatsView(TemplateView):
+class StatsView(LoginRequiredMixin, TemplateView):
     template_name = "catalog/stats.html"
 
     def get_context_data(self, **kwargs):

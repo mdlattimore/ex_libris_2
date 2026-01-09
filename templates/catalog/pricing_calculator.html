@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Calculate</button>
+            </form>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+            <br>
+            {% if error %}
+                <h1 style="color: red;"><strong>{{ error }}</strong></h1>
+            {% endif %}
+
+            {% if result is not None %}
+                <h1>{{ result_label }}: ${{ result|floatformat:2 }}</h1>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock content %}

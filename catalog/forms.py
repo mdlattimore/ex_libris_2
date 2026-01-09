@@ -6,6 +6,31 @@ from django_json_widget.widgets import JSONEditorWidget
 
 from .models import Volume, Work, Author
 
+from crispy_forms.layout import Submit, Layout, Row, Column, HTML, Field
+
+
+class PricingForm(forms.Form):
+    MODE_NET = "net"
+    MODE_PRICE = "price"
+    MODE_CHOICES = [
+        (MODE_NET, "Calculate net proceeds from listing price"),
+        (MODE_PRICE, "Calculate listing price from desired net proceeds"),
+    ]
+
+    mode = forms.ChoiceField(choices=MODE_CHOICES, widget=forms.RadioSelect,
+                             label="Calculator Mode")
+
+    input_number = forms.FloatField(
+        label="Input",
+        help_text="Enter listing price (if calculating net) OR desired net proceeds (if calculating price)."
+    )
+
+    tax_rate = forms.FloatField(label="Sales tax (%)", initial=7.5)
+    shipping = forms.FloatField(label="Shipping ($)", initial=6.72)
+    ebay_comm = forms.FloatField(label="eBay fee (%)", initial=15.3)
+    xaction_fee = forms.FloatField(label="Transaction fee ($)", initial=0.30)
+
+
 
 class VolumeForm(forms.ModelForm):
     class Meta:

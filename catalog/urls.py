@@ -60,5 +60,6 @@ urlpatterns = [
     path("manual-form/", views.manual_volume_form, name="manual_volume_form"),
     path("search/", views.SearchResultsView.as_view(), name="search_results"),
     path('stats/', views.StatsView.as_view(), name='stats'),
+    path('pricing_calculator/', views.pricing_view, name='pricing_calculator'),
 
 ]
