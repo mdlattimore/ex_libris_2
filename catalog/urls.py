@@ -2,6 +2,8 @@ from django.urls import path
 
 from . import views
 from .views import work_redirect_by_id
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('author_create/', views.AuthorCreateView.as_view(),
@@ -35,6 +37,8 @@ urlpatterns = [
          name='volume_detail'),
     path('volume_update/<int:pk>/', views.VolumeUpdateView.as_view(),
          name='volume_update'),
+    path( "volume_detail/<slug:slug>/images/add/",
+          views.VolumeImageUploadView.as_view(), name="volume_image_add"),
 
     path('bookset_list/', views.BookSetListView.as_view(), name='bookset_list'),
     path('bookset_detail/<int:pk>/', views.bookset_redirect_by_id,
@@ -61,5 +65,6 @@ urlpatterns = [
     path("search/", views.SearchResultsView.as_view(), name="search_results"),
     path('stats/', views.StatsView.as_view(), name='stats'),
     path('pricing_calculator/', views.pricing_view, name='pricing_calculator'),
-
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

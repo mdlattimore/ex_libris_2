@@ -4,7 +4,8 @@ from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 
 from .models import (Author, Work, BookSet, Volume, AuthorAlias, Collection,
-                     Genre, Bibliography, VolumeBibliographyReference)
+                     Genre, Bibliography, VolumeBibliographyReference,
+                     VolumeImage)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -61,11 +62,25 @@ class VolumeBibliographyReferenceInline(admin.TabularInline):
 
 
 
+class VolumeImageInline(admin.TabularInline):
+    model = VolumeImage
+    extra = 0
+    fields = ("preview", "kind", "caption", "sort_order", "image_thumb", "image_display", "image_detail")
+    readonly_fields = ("preview",)
+    ordering = ("sort_order", "created_at")
+
+    def preview(self, obj):
+        return thumb_preview(obj, "image_thumb", size=60)
+    preview.short_description = "Thumb"
+
+
+
+
 @admin.register(Volume)
 class VolumeAdmin(admin.ModelAdmin):
     list_display = ['title', 'edition']
     ordering = ('sort_title',)
-    inlines = [VolumeBibliographyReferenceInline]
+    inlines = [VolumeBibliographyReferenceInline, VolumeImageInline]
     search_fields = ['title', 'edition']
 
     formfield_overrides = {
@@ -99,6 +114,34 @@ class VolumeAdmin(admin.ModelAdmin):
             return f"Error formatting JSON: {e}"
 
     pretty_volume_json.short_description = "Volume JSON"
+
+    def cover_admin_preview(self, obj):
+        if obj.cover_image_id:
+            return thumb_preview(obj.cover_image, "image_thumb", size=45)
+        # fall back to stock cover_url if you want
+        return "—"
+
+    cover_admin_preview.short_description = "Cover"
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+        if db_field.name == "cover_image":
+            # When editing an existing Volume, limit cover choices to its images
+            # URL will look like /admin/catalog/volume/<id>/change/
+            try:
+                object_id = request.resolver_match.kwargs.get("object_id")
+            except Exception:
+                object_id = None
+
+            if object_id:
+                field.queryset = VolumeImage.objects.filter(volume_id=object_id).order_by("sort_order", "created_at")
+            else:
+                field.queryset = VolumeImage.objects.none()
+
+        return field
+
+
     # display name
     # 🧭 Jazzmin tabs configuration
     # Define your sections as normal Django fieldsets
@@ -126,8 +169,46 @@ class VolumeAdmin(admin.ModelAdmin):
         }),
         ("Disposition", {
             "fields": ()
-        })
+        }),
     ]
 
     # 👇 THIS is the key line that tells Jazzmin to render tabs
     tabs = True
+
+
+def thumb_preview(obj, field_name="image_thumb", size=80):
+    f = getattr(obj, field_name, None)
+    if not f:
+        return "—"
+    try:
+        return format_html(
+            '<img src="{}" style="height:{}px;width:auto;border-radius:6px;" />',
+            f.url,
+            size,
+        )
+    except Exception:
+        return "—"
+
+@admin.register(VolumeImage)
+class VolumeImageAdmin(admin.ModelAdmin):
+    list_display = ("id", "volume", "kind", "sort_order", "preview_small", "created_at")
+    list_filter = ("kind",)
+    search_fields = ("volume__title", "caption")
+    ordering = ("volume", "sort_order", "created_at")
+    readonly_fields = ("preview_large",)
+
+    def preview_small(self, obj):
+        return thumb_preview(obj, "image_thumb", size=45)
+    preview_small.short_description = "Thumb"
+
+    def preview_large(self, obj):
+        return thumb_preview(obj, "image_display", size=250)
+    preview_large.short_description = "Preview"
+
+
+
+
+
+
+
+

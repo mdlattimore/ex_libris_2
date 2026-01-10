@@ -9,3 +9,4 @@ from .base import *
 from .collections import *
 from .search import *
 from .pricing import *
+from .view_images import *

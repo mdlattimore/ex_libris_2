@@ -716,3 +716,21 @@ p.text-muted {
 }
 
 .w-lg-33 { width: 40% !important; }
+
+.carousel-center {
+  height: 90vh;                 /* fixed “viewport” height */
+  display: flex;
+  align-items: center;          /* vertical center */
+  justify-content: center;      /* horizontal center */
+}
+
+/* Dark translucent backdrop behind carousel content */
+.modal-content {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-body {
+  background-color: transparent;
+}
+
+

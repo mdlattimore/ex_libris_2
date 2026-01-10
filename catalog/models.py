@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -460,6 +462,13 @@ class Volume(models.Model):
                                              null=True)
     ex_library = models.BooleanField(default=False)
     cover_url = models.URLField(blank=True, null=True)
+    cover_image = models.ForeignKey(
+        "VolumeImage",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+"
+    )
     notes = MarkdownxField(blank=True, null=True)
     volume_json = models.JSONField(blank=True, null=True)
 
@@ -597,6 +606,38 @@ class Volume(models.Model):
 
     def get_absolute_url(self):
         return reverse("volume_detail", args=[self.slug])
+
+
+#--------- 4.5 Image Upload ---------------------
+def volume_image_upload_to(instance, filename: str) -> str:
+    base, _ = os.path.splitext(filename)
+    return f"images/volume/{instance.volume_id}/{base}"
+
+class VolumeImage(models.Model):
+    KIND_CHOICES = [
+        ("COVER", "Cover"),
+        ("COPYRIGHT", "Copyright page"),
+        ("TITLE", "Title page"),
+        ("SPINE", "Spine"),
+        ("OTHER", "Other"),
+    ]
+    volume = models.ForeignKey(Volume, on_delete=models.CASCADE, related_name="images")
+    kind = models.CharField(choices=KIND_CHOICES, max_length=20,
+                            default="OTHER")
+    caption = models.CharField(max_length=255, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    image_thumb = models.ImageField(upload_to=volume_image_upload_to)
+    image_display = models.ImageField(upload_to=volume_image_upload_to)
+    image_detail = models.ImageField(upload_to=volume_image_upload_to)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["sort_order", "created_at"]
+
+    def __str__(self):
+        return f"{self.volume} [{self.kind}]"
 
 
 # ----- 5 Bibliography Reference ----------------------------
