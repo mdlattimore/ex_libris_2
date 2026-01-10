@@ -35,7 +35,7 @@ def process_upload(uploaded_file, *, sizes=IMAGE_SIZES, quality=WEBP_QUALITY):
     img = ImageOps.exif_transpose(img)
     img = _to_rgb(img)
 
-    base = str(uuid.uuid4())
+    base = uuid.uuid4().hex[:12]  # 48 bits; scoped per-volume
 
     detail = _resize_by_width(img, sizes["detail"])
     display = _resize_by_width(img, sizes["display"])

@@ -327,23 +327,26 @@
 
             {# Cover area #}
             <div class="text-center mb-3">
-                {% if volume.cover_image %}
-                    <img src="{{ volume.cover_image.image_display.url }}"
-                         class="rounded mx-auto d-block img-fluid"
-                         alt="Cover"
-                         style="max-height: 300px; width:auto;">
-                {% elif volume.cover_url %}
-                    <div class="position-relative d-inline-block">
-                        <img src="{{ volume.cover_url }}"
-                             class="rounded mx-auto d-block img-fluid"
-                             alt="Stock cover"
-                             style="max-height: 300px; width:auto;">
-                        <span class="badge bg-secondary position-absolute top-0 end-0 m-2">Stock image</span>
+
+                {% if volume.cover_src %}
+                    <div class="position-relative d-inline-block mx-auto">
+                        <img
+                                src="{{ volume.cover_src }}"
+                                class="rounded mx-auto d-block img-fluid"
+                                alt="Cover"
+                                style="max-height: 300px; width: auto;">
+                        {% if volume.cover_is_stock %}
+                            <span class="badge position-absolute bottom-0 end-0 m-1"
+                                  style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">
+  Stock Image
+</span>
+                        {% endif %}
                     </div>
                 {% else %}
                     <span class="text-muted fst-italic">No cover image</span>
                 {% endif %}
             </div>
+
 
             {# Upload button #}
             {% if user.is_authenticated %}
@@ -390,8 +393,9 @@
                                                 </div>
 
                                                 {% if img.caption %}
-                                                    <div class="carousel-caption d-none d-md-block">
-                                                        <p class="mb-0">{{ img.caption }}</p>
+                                                    <div class="carousel-caption d-none d-md-block text-dark text-bold
+                                                    bg-light bg-opacity-75 rounded px-2 w-50 mx-auto">
+                                                        <p class="mb-0" style="font-size:1.25em;">{{ img.caption }}</p>
                                                     </div>
                                                 {% endif %}
                                             </div>

@@ -548,6 +548,26 @@ class Volume(models.Model):
         else:
             return ""
 
+    @property
+    def cover_src(self) -> str | None:
+        """
+        Preferred cover image source for display.
+        - uploaded cover_image if present
+        - else stock cover_url
+        - else None
+        """
+        if self.cover_image_id and getattr(self.cover_image, "image_display",
+                                           None):
+            try:
+                return self.cover_image.image_display.url
+            except Exception:
+                pass
+        return self.cover_url or None
+
+    @property
+    def cover_is_stock(self) -> bool:
+        return not bool(self.cover_image_id) and bool(self.cover_url)
+
     def save(self, *args, **kwargs):
         if self.isbn10 and not self.isbn13:
             self.isbn13 = self.convert_isbn10_to_13(self.isbn10)
