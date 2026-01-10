@@ -68,7 +68,7 @@
                         <div class="row">
                             <div class="col-sm-4">Book Set:</div>
                             <div class="col-sm-8 fw-bolder"><a
-                                    href="{% url 'bookset_detail' volume.book_set.pk %}">{{ volume.book_set }}</a></div>
+                                    href="{{ volume.book_set.get_absolute_url }}">{{ volume.book_set }}</a></div>
                         </div>
                         {% if volume.volume_number %}
                             <div class="row">
