@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (Author, Work, BookSet, Volume, AuthorAlias, Collection,
                      Genre, Bibliography, VolumeBibliographyReference,
-                     VolumeImage)
+                     VolumeImage, BooksetImage)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -44,9 +44,22 @@ class WorkAdmin(admin.ModelAdmin):
     ordering = ('sort_title',)
 
 
+class BooksetImageInline(admin.TabularInline):
+    model = BooksetImage
+    extra = 0
+    fields = ("preview", "kind", "caption", "sort_order", "image_thumb", "image_display", "image_detail")
+    readonly_fields = ("preview",)
+    ordering = ("sort_order", "created_at")
+
+    def preview(self, obj):
+        return thumb_preview(obj, "image_thumb", size=60)
+    preview.short_description = "Thumb"
+
+
 @admin.register(BookSet)
 class BookSetAdmin(admin.ModelAdmin):
     list_display = ['title']
+    inlines = [BooksetImageInline]
 
 @admin.register(Bibliography)
 class BibliographyAdmin(admin.ModelAdmin):
@@ -72,6 +85,7 @@ class VolumeImageInline(admin.TabularInline):
     def preview(self, obj):
         return thumb_preview(obj, "image_thumb", size=60)
     preview.short_description = "Thumb"
+
 
 
 
@@ -206,6 +220,23 @@ class VolumeImageAdmin(admin.ModelAdmin):
         return thumb_preview(obj, "image_display", size=250)
     preview_large.short_description = "Preview"
 
+
+@admin.register(BooksetImage)
+class BooksetImageAdmin(admin.ModelAdmin):
+    list_display = ("id", "bookset", "kind", "sort_order", "preview_small",
+        "created_at")
+    list_filter = ("kind",)
+    search_fields = ("bookset__title", "caption")
+    ordering = ("bookset", "sort_order", "created_at")
+    readonly_fields = ("preview_large",)
+
+    def preview_small(self, obj):
+        return thumb_preview(obj, "image_thumb", size=45)
+    preview_small.short_description = "Thumb"
+
+    def preview_large(self, obj):
+        return thumb_preview(obj, "image_display", size=250)
+    preview_large.short_description = "Preview"
 
 
 

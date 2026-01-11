@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <br>
+  <h2>Add photos for <i>{{ view.bookset.title }}</i></h2>
+    <div class="row">
+    <div class="col-md-6">
+  <form method="post" enctype="multipart/form-data" class="mt-3">
+    {% csrf_token %}
+
+      {{ form|crispy }}
+
+    <button class="btn btn-primary" type="submit">Upload</button>
+    <a class="btn btn-secondary" href="{{ view.bookset.get_absolute_url }}">Cancel</a>
+  </form>
+    </div>
+    </div>
+{% endblock %}

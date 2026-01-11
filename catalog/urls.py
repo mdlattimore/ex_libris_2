@@ -45,6 +45,8 @@ urlpatterns = [
          name='bookset_detail_old'),
     path('bookset_detail/<slug:slug>/', views.BookSetDetailView.as_view(),
          name='bookset_detail'),
+    path( "bookset_detail/<slug:slug>/images/add/",
+          views.BooksetImageUploadView.as_view(), name="bookset_image_add"),
 
     path('catalog/', views.CatalogAllView.as_view(), name='catalog_all'),
     path('isbn_lookup/', views.isbn_lookup_view, name='isbn_lookup'),

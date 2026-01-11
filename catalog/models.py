@@ -312,6 +312,39 @@ class BookSet(models.Model):
         return self.title
 
 
+#-------- 3.25 Bookset Images ----------------------------
+
+def bookset_image_upload_to(instance, filename: str) -> str:
+    base, _ = os.path.splitext(filename)
+    return f"images/bookset/{instance.bookset_id}/{base}"
+
+class BooksetImage(models.Model):
+    KIND_CHOICES = [
+        ("COVER", "Cover"),
+        ("LEFT", "Left"),
+        ("SPINE", "Spine"),
+        ("RIGHT", "Right"),
+        ("OTHER", "Other"),
+    ]
+    bookset = models.ForeignKey(BookSet, on_delete=models.CASCADE,
+                          related_name="images")
+    kind = models.CharField(choices=KIND_CHOICES, max_length=20,
+                            default="OTHER")
+    caption = models.CharField(max_length=255, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    image_thumb = models.ImageField(upload_to=bookset_image_upload_to)
+    image_display = models.ImageField(upload_to=bookset_image_upload_to)
+    image_detail = models.ImageField(upload_to=bookset_image_upload_to)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["sort_order", "created_at"]
+
+    def __str__(self):
+        return f"{self.bookset} [{self.kind}]"
+
 # ------ 3.5 Collection ----------------------------
 class Collection(models.Model):
     name = models.CharField(max_length=50, unique=True)
