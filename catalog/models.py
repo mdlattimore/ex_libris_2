@@ -233,6 +233,13 @@ class BookSet(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True,
                                 null=True)
     cover_url = models.URLField(blank=True, null=True)
+    cover_image = models.ForeignKey(
+        "BooksetImage",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+"
+    )
     notes = MarkdownxField(blank=True, null=True)
     sort_title = models.CharField(max_length=150, blank=True, null=True)
     slug = models.SlugField(max_length=150, blank=True, null=True)
@@ -247,6 +254,26 @@ class BookSet(models.Model):
     @property
     def bookset_description_html(self):
         return markdownify(self.description)
+
+    @property
+    def cover_src(self) -> str | None:
+        """
+        Preferred cover image source for display.
+        - uploaded cover_image if present
+        - else stock cover_url
+        - else None
+        """
+        if self.cover_image_id and getattr(self.cover_image, "image_display",
+                                           None):
+            try:
+                return self.cover_image.image_display.url
+            except Exception:
+                pass
+        return self.cover_url or None
+
+    @property
+    def cover_is_stock(self) -> bool:
+        return not bool(self.cover_image_id) and bool(self.cover_url)
 
     def save(self, *args, **kwargs):
         if not self.cover_url and (self.isbn13 or self.isbn10):

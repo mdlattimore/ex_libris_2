@@ -4,33 +4,61 @@
     <br>
     <h1 class="display-6 text-center">{{ bookset.title }} Set</h1>
     <p class="lead text-justify" style="font-size: 1em;">{{ bookset.description }}</p>
-    {% if bookset.cover_url %}
-        <img src="{{ bookset.cover_url }}" alt="Book Set" class="d-block mx-auto" style="max-height:150px; width:auto;">
+    {#        {% if bookset.cover_url %}#}
+    {#            <img src="{{ bookset.cover_url }}" alt="Book Set" class="d-block mx-auto" style="max-height:150px; width:auto;">#}
+    {#        {% endif %}#}
+    {% if bookset.cover_src %}
+        <div class="d-block mx-auto">
+            <img
+                    src="{{ bookset.cover_src }}"
+                    class="rounded mx-auto d-block img-fluid"
+                    alt="Cover"
+                    style="max-height:200px; width:auto">
+            {% if bookset.cover_is_stock %}
+                <span class="badge position-absolute bottom-0 end-0 m-1"
+                      style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">
+                        Stock Image
+                </span>
+            {% endif %}
+        </div>
+    {% else %}
+        <span class="text-muted fst-italic">No cover image</span>
     {% endif %}
     <br>
     <div class="list-group shadow-sm">
-        {% for volume in sorted_bookset %}
-            <a href="{% url 'volume_detail' volume.pk %}"
-               class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">
-                {% if volume.cover_url %}
-                    <img src="{{ volume.cover_url }}" alt="{{ volume.title }}" style="width:80px;height:auto;"
-                         class="rounded shadow-sm">
-                {% else %}
-                    <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                         style="width:80px;height:120px;">
-                        <i class="bi bi-book text-muted fs-2"></i>
-                    </div>
-                {% endif %}
-                <div class="flex-fill">
-                    <h6 class="mb-0">{% if volume.volume_number %}
-                        Vol {{ volume.volume_number }} -
-                    {% endif %}{{ volume.title }}</h6>
-                    <small class="text-muted">{{ volume.works.first.author }}</small><br>
-                    <small>{{ volume.publisher }} ({{ volume.publication_year }})</small><br>
-                    {% if volume.edition %}<small>{{ volume.edition }}</small>{% endif %}
+        {#        {% for volume in sorted_bookset %}#}
+        {#            <a href="{% url 'volume_detail' volume.pk %}"#}
+        {#               class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">#}
+        {#                {% if volume.cover_url %}#}
+        {#                    <img src="{{ volume.cover_url }}" alt="{{ volume.title }}" style="width:80px;height:auto;"#}
+        {#                         class="rounded shadow-sm">#}
+        {#                {% else %}#}
+        {#                    <div class="bg-light rounded d-flex align-items-center justify-content-center"#}
+        {#                         style="width:80px;height:120px;">#}
+        {#                        <i class="bi bi-book text-muted fs-2"></i>#}
+        {#                    </div>#}
+        {#                {% endif %}#}
+        {#                <div class="flex-fill">#}
+        {#                    <h6 class="mb-0">{% if volume.volume_number %}#}
+        {#                        Vol {{ volume.volume_number }} -#}
+        {#                    {% endif %}{{ volume.title }}</h6>#}
+        {#                    <small class="text-muted">{{ volume.works.first.author }}</small><br>#}
+        {#                    <small>{{ volume.publisher }} ({{ volume.publication_year }})</small><br>#}
+        {#                    {% if volume.edition %}<small>{{ volume.edition }}</small>{% endif %}#}
+        {#                </div>#}
+        {#            </a>#}
+        {#        {% endfor %}#}
+        <div class="row g-3">
+            {% for volume in sorted_bookset %}
+                <div class="col-md-6 col-lg-4">
+                    <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
+                        {% include "partials/volume_card.html" %}
+                    </a>
                 </div>
-            </a>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
-    <p>{{ bookset.notes|linebreaks }}</p>
+    {% if user.is_authenticated %}
+        <p>{{ bookset.notes|linebreaks }}</p>
+    {% endif %}
 {% endblock %}

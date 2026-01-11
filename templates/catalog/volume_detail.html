@@ -312,6 +312,8 @@
                     {% endif %}
                 </div>
             </div>
+                                <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>
+
         </div>
         {#        <div class="col-md-6">#}
         {#            <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"#}
@@ -323,6 +325,7 @@
         {#    {% endif %}#}
         {#    <br>#}
         {#    <br>#}
+
         <div class="col-md-6">
 
             {# Cover area #}
@@ -419,7 +422,6 @@
                         </div>
                     </div>
                 </div>
-
                 <script>
                     document.querySelectorAll(".volume-thumb").forEach((el) => {
                         el.addEventListener("click", () => {

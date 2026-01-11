@@ -89,9 +89,9 @@
                                     <div class="d-flex flex-nowrap overflow-auto">
 
                                         {% for vol in vols %}
-                                            {% if vol.cover_url %}
+                                            {% if vol.cover_src %}
                                                 <a href="{{ vol.get_absolute_url }}">
-                                                    <img src="{{ vol.cover_url }}"
+                                                    <img src="{{ vol.cover_src }}"
                                                          alt="Vol cover"
                                                          loading="lazy"
                                                          decoding="async"
