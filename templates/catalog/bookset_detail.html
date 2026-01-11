@@ -2,7 +2,7 @@
 
 {% block content %}
     <br>
-    <h1 class="display-6 text-center">{{ bookset.title }} Set</h1>
+    <h1 class="display-5 text-center">{{ bookset.title }} Set</h1>
     <p class="lead text-justify" style="font-size: 1em;">{{ bookset.description }}</p>
     {#        {% if bookset.cover_url %}#}
     {#            <img src="{{ bookset.cover_url }}" alt="Book Set" class="d-block mx-auto" style="max-height:150px; width:auto;">#}
@@ -13,7 +13,7 @@
                     src="{{ bookset.cover_src }}"
                     class="rounded mx-auto d-block img-fluid"
                     alt="Cover"
-                    style="max-height:200px; width:auto">
+                    style="max-height:300px; width:auto">
             {% if bookset.cover_is_stock %}
                 <span class="badge position-absolute bottom-0 end-0 m-1"
                       style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">
@@ -58,7 +58,67 @@
             {% endfor %}
         </div>
     </div>
+    <br><br>
+    {% if bookset.is_box_set %}
+        <div class="row">
+            {% if bookset.left_image %}
+                <div class="col">
+                    <h1 class="display-6">Box Left Image</h1>
+                    <img
+                            src="{{ bookset.left_image.image_display.url }}"
+                            class="img-fluid rounded shadow-sm volume-thumb"
+                            alt="{{ bookset.left_image.caption }}"
+                            style="max-height: 300px; width:auto">
+                </div>
+            {% endif %}
+            {% if bookset.spine_image %}
+                <div class="col">
+                    <h1 class="display-6">Box Spine Image</h1>
+
+                    <img
+                            src="{{ bookset.spine_image.image_display.url }}"
+                            class="img-fluid rounded shadow-sm volume-thumb"
+                            alt="{{ bookset.spine_image.caption }}"
+                            style="max-height: 300px; width:auto">
+                </div>
+            {% endif %}
+            {% if bookset.right_image %}
+                <div class="col">
+                    <h1 class="display-6">Box Right Image</h1>
+                    <img
+                            src="{{ bookset.right_image.image_display.url }}"
+                            class="img-fluid rounded shadow-sm volume-thumb"
+                            alt="{{ bookset.right_image.caption }}"
+                            style="max-height: 300px; width:auto">
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+    <br><br>
+    {% if bookset.other_images %}
+        <h1 class="display-6 text-center">Other Images</h1>
+                <div class="row g-2">
+                    {% for img in bookset.other_images.all %}
+                        <div class="col-6 col-md-3">
+                            <img
+                                    src="{{ img.image_thumb.url }}"
+                                    class="img-fluid rounded shadow-sm volume-thumb"
+                                    alt="{{ img.caption|default:'Image' }}"
+                            >
+                        </div>
+                    {% endfor %}
+                </div>
+    {% endif %}
     {% if user.is_authenticated %}
         <p>{{ bookset.notes|linebreaks }}</p>
     {% endif %}
+    <br>
+    {# Upload button #}
+            {% if user.is_authenticated %}
+                <div class="text-center mb-3">
+                    <a href="{% url 'bookset_image_add' bookset.slug %}" class="btn btn-outline-primary btn-sm">
+                        Add photos
+                    </a>
+                </div>
+            {% endif %}
 {% endblock %}

@@ -332,6 +332,21 @@ class BookSet(models.Model):
         check_digit = "X" if check == 10 else "0" if check == 11 else str(check)
         return core + check_digit
 
+    @property
+    def left_image(self):
+        return self.images.filter(kind="LEFT").last()
+
+    @property
+    def spine_image(self):
+        return self.images.filter(kind="SPINE").last()
+
+    @property
+    def right_image(self):
+        return self.images.filter(kind="RIGHT").last()
+
+    def other_images(self):
+        return self.images.filter(kind="OTHER").all()
+
     def get_absolute_url(self):
         return reverse("bookset_detail", args=[self.slug])
 
