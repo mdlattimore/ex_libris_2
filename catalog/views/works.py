@@ -108,7 +108,8 @@ class WorkListView(CatalogBaseView):
     view_type = "works"
 
     def get_queryset(self):
-        volumes_qs = Volume.objects.only("id", "title", "cover_url", "slug")
+        volumes_qs = Volume.objects.only("id", "title", "cover_url", "slug",
+                                         "cover_image")
         return (
             Work.objects
             .select_related("author")
