@@ -22,8 +22,7 @@ console_command = '/code/manage.py shell'
   PORT = '8000'
 
 [[mounts]]
-#  source = 'media_volume'
-  source="ex-libris-latti_data"
+  source = 'media_volume'
   destination = '/data/media'
 
 [http_service]
@@ -64,5 +63,5 @@ console_command = '/code/manage.py shell'
   memory_mb = 1024
 
 [[statics]]
-  guest_path = '/code/static'
-  url_prefix = '/static/'
+  guest_path = "/data/media"
+  url_prefix = "/media"

@@ -725,7 +725,7 @@ p.text-muted {
 }
 
 /* Dark translucent backdrop behind carousel content */
-.modal-content {
+.modal-carousel-content {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
