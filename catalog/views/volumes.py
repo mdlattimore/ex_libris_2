@@ -102,8 +102,7 @@ class VolumeDetailView(DetailView):
             VolumeImage.objects
             .only(
                 "id", "volume_id", "kind", "caption", "sort_order",
-                "image_thumb", "image_display", "image_detail", "created_at"
-            )
+                "image_thumb", "image_display", "image_detail", "created_at")
             .order_by("sort_order", "created_at")
         )
 
@@ -140,6 +139,18 @@ class VolumeDetailView(DetailView):
         genres.sort(key=str.casefold)
 
         context["genres"] = genres
+
+        imgs = list(volume.images.all())  # uses prefetch if you set it up
+        cover_id = volume.cover_image_id
+
+        # cover first, preserve relative order of the rest
+        if cover_id:
+            imgs.sort(key=lambda im: 0 if im.id == cover_id else 1)
+
+        context["ordered_images"] = imgs
+        context[
+            "cover_slide_index"] = 0 if cover_id else 0  # cover will be 0 when present
+        print(context["ordered_images"])
         return context
 
 

@@ -8,6 +8,41 @@
     <div class="row">
         <div class="col-md-12">
             <div class="accordion" id="detailAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseImage"
+                                aria-expanded="false" aria-controls="collapseImage">
+                            Images ({{ ordered_images|length }} photo{{ ordered_images|length|pluralize }})
+                        </button>
+                    </h2>
+                    <div id="collapseImage" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+
+                            {# Thumbnails grid #}
+                            {% if volume.images.all %}
+                                <div class="row g-2">
+                                    {% for img in ordered_images %}
+                                        <div class="col-6 col-md-3">
+                                            <img
+                                                    src="{{ img.image_thumb.url }}"
+                                                    class="img-fluid rounded shadow-sm volume-thumb"
+                                                    style="cursor:pointer"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#volumeImagesModal"
+                                                    data-slide-index="{{ forloop.counter0 }}"
+                                                    alt="{{ img.caption|default:'Image' }}"
+                                            >
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+
+
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
@@ -297,6 +332,7 @@
                     </div>
                 </div>
 
+                {# Thumbnails grid #}
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
@@ -384,130 +420,89 @@
                     </div>
                 </div>
 
-
-                <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>
-
-                {#        <div class="col-md-6">#}
-                {#            <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"#}
-                {#                 style="max-height: 300px; width:auto;"></div>#}
-                {#    </div>#}
-                {#    <br>#}
-                {#    {% if user.is_authenticated %}#}
-                {#        <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>#}
-                {#    {% endif %}#}
-                {#    <br>#}
-                {#    <br>#}
+                <br>
 
 
-                {# Cover area #}
-                <div class="text-center mb-3">
-
-                    {% if volume.cover_src %}
-                        <div class="position-relative d-inline-block mx-auto">
-                            <img
-                                    src="{{ volume.cover_src }}"
-                                    class="rounded mx-auto d-block img-fluid"
-                                    alt="Cover"
-                                    style="max-height: 300px; width: auto;">
-                            {% if volume.cover_is_stock %}
-                                <span class="badge position-absolute bottom-0 end-0 m-1"
-                                      style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">
-  Stock Image
-</span>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <span class="text-muted fst-italic">No cover image</span>
-                    {% endif %}
-                </div>
-
-
-                {# Upload button #}
-                {% if user.is_authenticated %}
-                    <div class="text-center mb-3">
-                        <a href="{% url 'volume_image_add' volume.slug %}" class="btn btn-outline-primary btn-sm">
-                            Add photos
-                        </a>
-                    </div>
-                {% endif %}
-
-                {# Thumbnails grid #}
-                {% if volume.images.all %}
-                    <div class="row g-2">
-                        {% for img in volume.images.all %}
-                            <div class="col-6 col-md-3">
-                                <img
-                                        src="{{ img.image_thumb.url }}"
-                                        class="img-fluid rounded shadow-sm volume-thumb"
-                                        style="cursor:pointer"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#volumeImagesModal"
-                                        data-slide-index="{{ forloop.counter0 }}"
-                                        alt="{{ img.caption|default:'Image' }}"
-                                >
-                            </div>
-                        {% endfor %}
-                    </div>
-
-                    {# Modal carousel #}
-                    <div class="modal fade" id="volumeImagesModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-xl modal-dialog-centered">
-                            <div class="modal-content modal-carousel-content">
-                                <div class="modal-body p-0">
-                                    <div id="volumeCarousel" class="carousel slide" data-bs-ride="false">
-                                        <div class="carousel-inner">
-                                            {% for img in volume.images.all %}
-                                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                    <div class="carousel-center">
-                                                        <img
-                                                                src="{{ img.image_detail.url }}"
-                                                                alt="{{ img.caption|default:'Image' }}"
-                                                                class="d-block"
-                                                                style="max-height: 100%; max-width: 100%; width: auto; height: auto;">
-                                                    </div>
-
-                                                    {% if img.caption %}
-                                                        <div class="carousel-caption d-none d-md-block text-dark text-bold
-                                                    bg-light bg-opacity-75 rounded px-2 w-50 mx-auto">
-                                                            <p class="mb-0"
-                                                               style="font-size:1.25em;">{{ img.caption }}</p>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-
-                                            {% endfor %}
-                                        </div>
-
-                                        <button class="carousel-control-prev" type="button"
-                                                data-bs-target="#volumeCarousel"
-                                                data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-
-                                        <button class="carousel-control-next" type="button"
-                                                data-bs-target="#volumeCarousel"
-                                                data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <script>
-                        document.querySelectorAll(".volume-thumb").forEach((el) => {
-                            el.addEventListener("click", () => {
-                                const index = parseInt(el.getAttribute("data-slide-index"), 10);
-                                const carouselEl = document.querySelector("#volumeCarousel");
-                                const carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
-                                carousel.to(index);
-                            });
-                        });
-                    </script>
-                {% endif %}
             </div>
         </div>
     </div>
+
+    {# Modal carousel #}
+    <div class="modal fade" id="volumeImagesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content modal-carousel-content">
+                <div class="modal-body p-0">
+                    <div id="volumeCarousel" class="carousel slide" data-bs-ride="false">
+                        <div class="carousel-inner">
+                            {% for img in ordered_images %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <div class="carousel-center">
+                                        <img
+                                                src="{{ img.image_detail.url }}"
+                                                alt="{{ img.caption|default:'Image' }}"
+                                                class="d-block"
+                                                style="max-height: 100%; max-width: 100%; width: auto; height: auto;">
+                                    </div>
+
+                                    {% if img.caption %}
+                                        <div class="carousel-caption d-none d-md-block text-dark text-bold
+                                                    bg-light bg-opacity-75 rounded px-2 w-50 mx-auto">
+                                            <p class="mb-0"
+                                               style="font-size:1.25em;">{{ img.caption }}</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                            {% endfor %}
+                        </div>
+
+                        <button class="carousel-control-prev" type="button"
+                                data-bs-target="#volumeCarousel"
+                                data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"
+                                                              aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+
+                        <button class="carousel-control-next" type="button"
+                                data-bs-target="#volumeCarousel"
+                                data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"
+                                                              aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            function goToSlideFromEl(el) {
+                const index = parseInt(el.getAttribute("data-slide-index") || "0", 10);
+                const carouselEl = document.querySelector("#volumeCarousel");
+                if (!carouselEl) return;
+
+                const carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
+                carousel.to(index);
+            }
+
+            // Thumbnails
+            document.querySelectorAll(".volume-thumb").forEach((el) => {
+                el.addEventListener("click", () => goToSlideFromEl(el));
+            });
+
+            // Top-card cover
+            const topCover = document.querySelector("#topCardCoverTrigger");
+            if (topCover) {
+                topCover.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    goToSlideFromEl(topCover);
+                });
+            }
+
+        });
+    </script>
 {% endblock content %}
