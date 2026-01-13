@@ -1,0 +1,113 @@
+{# templates/catalog/_volume_top_card.html #}
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <div class="row g-3 align-items-start">
+
+      {# Cover #}
+      <div class="col-12 col-md-3 col-lg-2 text-center">
+        {% if volume.cover_src %}
+          <div class="position-relative d-inline-block">
+            <a href="{{ volume.cover_src }}" class="d-block text-decoration-none">
+              <img
+                src="{{ volume.cover_src }}"
+                alt="Cover image for {{ volume.title }}"
+                class="img-fluid rounded"
+                style="max-height: 280px; width:auto;"
+                loading="lazy"
+              >
+            </a>
+
+            {% if volume.cover_is_stock %}
+              <span class="badge position-absolute bottom-0 end-0 m-1"
+                    style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">
+                Stock image
+              </span>
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="text-muted fst-italic">No cover image</div>
+        {% endif %}
+      </div>
+
+      {# Identity #}
+      <div class="col-12 col-md-9 col-lg-10">
+
+        <div class="d-flex flex-wrap align-items-baseline gap-2">
+          <h1 class="h4 mb-0">{{ volume.title }}</h1>
+
+          {% if volume.edition %}
+            <span class="badge text-bg-secondary">{{ volume.edition }}</span>
+          {% endif %}
+        </div>
+
+        <div class="mt-1">
+          {% if volume.display_author %}
+            <a href="{{ volume.display_author.get_absolute_url }}" class="link-primary text-decoration-none">
+              {{ volume.display_author }}
+            </a>
+          {% else %}
+            <span class="text-muted fst-italic">Anonymous</span>
+          {% endif %}
+        </div>
+
+        <div class="text-muted mt-2">
+          {% if volume.publisher %}{{ volume.publisher }}{% endif %}
+          {% if volume.publisher and volume.publication_year %} · {% endif %}
+          {% if volume.publication_year %}{{ volume.publication_year }}{% endif %}
+          {% if volume.book_set %}
+            <span class="mx-2">—</span>
+            <a href="{{ volume.book_set.get_absolute_url }}" class="text-decoration-none">
+              {{ volume.book_set }}
+            </a>
+            {% if volume.volume_number %}
+              <span class="text-muted"> (Vol. {{ volume.volume_number }})</span>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <div class="mt-2">
+          <span class="me-2">
+            <strong>{{ volume.get_binding_display|default:"Binding unknown" }}</strong>
+          </span>
+
+          <span class="text-muted me-2">·</span>
+
+          <span class="me-2">
+            <strong>{{ volume.get_condition_display|default:"Condition unknown" }}</strong>
+          </span>
+
+          <span class="text-muted me-2">·</span>
+
+          <span class="me-2">
+            DJ: <strong>{{ volume.dust_jacket|yesno:"Yes,No" }}</strong>
+          </span>
+
+          {% if volume.dust_jacket %}
+            <span class="text-muted me-2">·</span>
+            <span class="me-2">
+              DJ: <strong>{{ volume.get_dust_jacket_condition_display|default:"—" }}</strong>
+            </span>
+          {% endif %}
+
+          {% if volume.ex_library %}
+            <span class="text-muted me-2">·</span>
+            <span class="badge text-bg-warning">Ex-library</span>
+          {% endif %}
+
+          {% if volume.disposition %}
+            <span class="text-muted me-2">·</span>
+            <span class="badge text-bg-danger">No longer in collection</span>
+          {% endif %}
+        </div>
+
+        <div class="mt-3 d-flex flex-wrap gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'volume_update' volume.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <a href="{% url 'volume_image_add' volume.slug %}" class="btn btn-sm btn-outline-primary">Add photos</a>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

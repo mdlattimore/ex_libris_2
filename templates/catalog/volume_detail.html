@@ -4,435 +4,461 @@
 {% load humanize %}
 {% block content %}
     <br>
-    <h1 class="text-center"><i>{{ volume.title }}</i></h1>
-    {% if volume.description %}
-        <p>{{ volume.description }}</p>
-    {% endif %}
-    <br>
+    {% include "partials/_volume_top_card.html" with volume=volume %}
     <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header fw-semibold text-center">Bibliographic Info</div>
-                <div class="card-body">
-                    {% if volume.disposition %}
-                        <div class="row">
-                            <span class="text-center" style="color:red">THIS VOLUME NO LONGER IN COLLECTION</span>
-                        </div>
-                    {% endif %}
-                    {% if volume.collection.exists %}
-                        <div class="row">
-                            <div class="col-sm-4">Collection:</div>
-                            <div class="col-sm-8 fw-bolder">
-                                {#                                {% for coll in volume.collection.all %}#}
-                                {#                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>#}
-                                {#                                    {% if not forloop.last %}, {% endif %}#}
-                                {#                                {% endfor %}#}
-                                {% for coll in volume.collection.all %}
-                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>{% if not forloop.last %},
+        <div class="col-md-12">
+            <div class="accordion" id="detailAccordion">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Bibliographic Information
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#detailAccordion">
+                       <div class="accordion-body">
+                        <div class="card">
+                            <div class="card-header fw-semibold text-center">Bibliographic Info</div>
+                            <div class="card-body">
+                                {% if volume.disposition %}
+                                    <div class="row">
+                                    <span class="text-center"
+                                          style="color:red">THIS VOLUME NO LONGER IN COLLECTION</span>
+                                    </div>
                                 {% endif %}
-                                {% empty %}
-                                {% endfor %}
-
-                            </div>
-                        </div>
-                    {% endif %}
-
-
-                    {#                    {% with first_work=volume.works.first %}#}
-                    {% with first_work=volume.works.all|first %}
-                        {% if first_work %}
-                            <div class="row">
-                                <div class="col-sm-4">Author:</div>
-                                <div class="col-sm-8 fw-bolder"><a
-                                        href="{{ first_work.author.get_absolute_url }}">{{ first_work.author }}</a>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endwith %}
-
-                    {% if volume.illustrator %}
-                        <div class="row">
-                            <div class="col-sm-4">Illustrator:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.illustrator }}</div>
-                        </div>
-                    {% endif %}
-                    <div class="row">
-                        <div class="col-sm-4">Published:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.publication_year }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Publisher:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.publisher }}</div>
-                    </div>
-                    {% if volume.book_set %}
-                        <div class="row">
-                            <div class="col-sm-4">Book Set:</div>
-                            <div class="col-sm-8 fw-bolder"><a
-                                    href="{{ volume.book_set.get_absolute_url }}">{{ volume.book_set }}</a></div>
-                        </div>
-                        {% if volume.volume_number %}
-                            <div class="row">
-                                <div class="col-sm-4">Volume:</div>
-                                <div class="col-sm-8 fw-bolder">{{ volume.volume_number|default:"" }}</div>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                    {% if volume.edition %}
-                        <div class="row">
-                            <div class="col-sm-4">Edition:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.edition }}</div>
-                        </div>
-                    {% endif %}
-                    <div class="row">
-                        <div class="col-sm-4">ISBN10:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.isbn10 }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">ISBN13:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.isbn13 }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Volume Type:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.get_volume_content_type_display }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Edition Type:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.get_volume_edition_type_display }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Genre(s):</div>
-                        <div class="col-sm-8 fw-bolder">
-                            {% if genres %}
-                                {% for genre in genres %}
-                                    {{ genre }}{% if not forloop.last %}<br>{% endif %}
-                                {% endfor %}
-                            {% else %}
-                                <span class="text-muted">No associated genres</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <hr class="my-2">
-                    <div class="row">
-                        <div class="col-sm-4">Works:</div>
-                        <div class="col-sm-8 fw-bolder">
-                            {% for work in volume.works.all %}
-                                <a href="{% url 'work_detail' work.pk %}">{{ work }}</a>{% if not forloop.last %}<br>
-                            {% endif %}
-                            {% empty %}
-                                <span class="text-muted">No associated works</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {#                    {% if volume.bibliography_refs.all %}#}
-                    {#                        <div class="row">#}
-                    {#                            <div class="col-sm-4">Bibliography:</div>#}
-                    {#                            <div class="col-sm-8 fw-bolder">#}
-                    {#                                {% for ref in volume.bibliography_refs.all %}#}
-                    {#                                    {{ ref.bibliography.code }}:#}
-                    {#                                    {{ ref.reference_detail }}{% if not forloop.last %}<br>{% endif %}#}
-                    {#                                {% endfor %}#}
-                    {#                            </div>#}
-                    {#                        </div>#}
-                    {#                    {% endif %}#}
-                    {% with refs=volume.bibliography_refs.all %}
-                        {% if refs %}
-                            <div class="row">
-                                <div class="col-sm-4">Bibliography:</div>
-                                <div class="col-sm-8 fw-bolder">
-                                    {% for ref in refs %}
-                                        {{ ref.bibliography.code }}:
-                                        {{ ref.reference_detail }}{% if not forloop.last %}<br>{% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endwith %}
-
-
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header fw-semibold text-center">Volume Description and Condition</div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-4">Binding:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.get_binding_display }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Condition:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.get_condition_display }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Dust Jacket:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.dust_jacket|yesno:"Yes,No" }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">DJ Condition:</div>
-                        <div class="col-sm-8 fw-bolder">
-                            {% if volume.get_dust_jacket_condition_display %}
-                                {{ volume.get_dust_jacket_condition_display }}
-                            {% else %}
-                                <span class="text-muted fst-italic">—</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% if volume.notes %}
-                        <div class="row">
-                            <div class="col-sm-4">Notes:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.notes_html|safe }}</div>
-                        </div>
-                    {% endif %}
-
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header fw-semibold text-center">Collection Data</div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-4">Acquisition Date:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.acquisition_date }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Acquisition year:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.acquisition_year }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Source:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.source }}</div>
-                    </div>
-                    {% if user.is_authenticated %}
-                        <div class="row">
-                            <div class="col-sm-4">Price:</div>
-                            <div class="col-sm-8 fw-bolder">
-                                {% if volume.price %}
-                                    ${{ volume.price|intcomma }}
-                                {% else %}
-                                    <span class="text-muted fst-italic">—</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Acquisition Cost:</div>
-                            <div class="col-sm-8 fw-bolder">
-                                {% if volume.acquisition_cost %}
-                                    ${{ volume.acquisition_cost|intcomma }}
-                                {% else %}
-                                    <span class="text-muted fst-italic">—</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Total Cost:</div>
-                            <div class="col-sm-8 fw-bolder">
-                                {% if volume.total_cost %}
-                                    ${{ volume.total_cost|intcomma }}
-                                {% else %}
-                                    <span class="text-muted fst-italic">—</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Estimated Value:</div>
-                            <div class="col-sm-8 fw-bolder">
-                                {% if volume.estimated_value %}
-                                    ${{ volume.estimated_value|intcomma }}
-                                {% else %}
-                                    <span class="text-muted fst-italic">—</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if volume.edition_notes %}
-                        <div class="row">
-                            <div class="col-sm-4">Edition Notes:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.edition_notes_html|safe }}</div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header fw-semibold text-center">Disposition</div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-4">Disposition:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.disposition }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">Disposition date:</div>
-                        <div class="col-sm-8 fw-bolder">{{ volume.disposition_date }}</div>
-                    </div>
-                    {% if user.is_authenticated %}
-
-                        <div class="row">
-                            <div class="col-sm-4">Recipient:</div>
-                            <div class="col-sm-8 fw-bolder">{{ volume.recipient }}</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Sales Price:</div>
-                            {% if volume.sales_price %}
-                                <div class="col-sm-8 fw-bolder">${{ volume.sales_price }}</div>
-                            {% else %}
-                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
-                            {% endif %}
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Shipping Charged:</div>
-                            {% if volume.shipping_charged %}
-                                <div class="col-sm-8 fw-bolder">${{ volume.shipping_charged }}</div>
-                            {% else %}
-                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
-                            {% endif %}
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Shipping Cost:</div>
-                            {% if volume.shipping_cost %}
-                                <div class="col-sm-8 fw-bolder">${{ volume.shipping_cost }}</div>
-                            {% else %}
-                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
-                            {% endif %}
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">Total Sold Price:</div>
-                            {% if volume.total_sold_price %}
-                                <div class="col-sm-8 fw-bolder">${{ volume.total_sold_price }}</div>
-                            {% else %}
-                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
-                            {% endif %}
-                        </div>
-                        <div class="row">
-
-                            <div class="col-sm-4">Profit/Loss:</div>
-                            {% if volume.total_profit %}
-                                <div class="col-sm-8 fw-bolder">${{ volume.total_profit }}</div>
-                            {% else %}
-                                <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span></div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-                                <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>
-
-        </div>
-        {#        <div class="col-md-6">#}
-        {#            <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"#}
-        {#                 style="max-height: 300px; width:auto;"></div>#}
-        {#    </div>#}
-        {#    <br>#}
-        {#    {% if user.is_authenticated %}#}
-        {#        <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>#}
-        {#    {% endif %}#}
-        {#    <br>#}
-        {#    <br>#}
-
-        <div class="col-md-6">
-
-            {# Cover area #}
-            <div class="text-center mb-3">
-
-                {% if volume.cover_src %}
-                    <div class="position-relative d-inline-block mx-auto">
-                        <img
-                                src="{{ volume.cover_src }}"
-                                class="rounded mx-auto d-block img-fluid"
-                                alt="Cover"
-                                style="max-height: 300px; width: auto;">
-                        {% if volume.cover_is_stock %}
-                            <span class="badge position-absolute bottom-0 end-0 m-1"
-                                  style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">
-  Stock Image
-</span>
-                        {% endif %}
-                    </div>
-                {% else %}
-                    <span class="text-muted fst-italic">No cover image</span>
-                {% endif %}
-            </div>
-
-
-            {# Upload button #}
-            {% if user.is_authenticated %}
-                <div class="text-center mb-3">
-                    <a href="{% url 'volume_image_add' volume.slug %}" class="btn btn-outline-primary btn-sm">
-                        Add photos
-                    </a>
-                </div>
-            {% endif %}
-
-            {# Thumbnails grid #}
-            {% if volume.images.all %}
-                <div class="row g-2">
-                    {% for img in volume.images.all %}
-                        <div class="col-6 col-md-3">
-                            <img
-                                    src="{{ img.image_thumb.url }}"
-                                    class="img-fluid rounded shadow-sm volume-thumb"
-                                    style="cursor:pointer"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#volumeImagesModal"
-                                    data-slide-index="{{ forloop.counter0 }}"
-                                    alt="{{ img.caption|default:'Image' }}"
-                            >
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {# Modal carousel #}
-                <div class="modal fade" id="volumeImagesModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content modal-carousel-content">
-                            <div class="modal-body p-0">
-                                <div id="volumeCarousel" class="carousel slide" data-bs-ride="false">
-                                    <div class="carousel-inner">
-                                        {% for img in volume.images.all %}
-                                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                <div class="carousel-center">
-                                                    <img
-                                                            src="{{ img.image_detail.url }}"
-                                                            alt="{{ img.caption|default:'Image' }}"
-                                                            class="d-block"
-                                                            style="max-height: 100%; max-width: 100%; width: auto; height: auto;">
-                                                </div>
-
-                                                {% if img.caption %}
-                                                    <div class="carousel-caption d-none d-md-block text-dark text-bold
-                                                    bg-light bg-opacity-75 rounded px-2 w-50 mx-auto">
-                                                        <p class="mb-0" style="font-size:1.25em;">{{ img.caption }}</p>
-                                                    </div>
+                                {% if volume.collection.exists %}
+                                    <div class="row">
+                                        <div class="col-sm-4">Collection:</div>
+                                        <div class="col-sm-8 fw-bolder">
+                                            {#                                {% for coll in volume.collection.all %}#}
+                                            {#                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>#}
+                                            {#                                    {% if not forloop.last %}, {% endif %}#}
+                                            {#                                {% endfor %}#}
+                                            {% for coll in volume.collection.all %}
+                                                <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>
+                                                {% if not forloop.last %},
                                                 {% endif %}
-                                            </div>
+                                            {% empty %}
+                                            {% endfor %}
 
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+
+                                {% if volume.primary_work %}
+                                    <div class="row">
+                                        <div class="col-sm-4">Author:</div>
+                                        <div class="col-sm-8 fw-bolder">
+                                            <a href="{{ volume.primary_work.author.get_absolute_url }}">
+                                                {{ volume.primary_work.author }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    {% with w=volume.works.all|first %}
+                                        {% if w %}
+                                            <div class="row">
+                                                <div class="col-sm-4">Author:</div>
+                                                <div class="col-sm-8 fw-bolder">
+                                                    <a href="{{ w.author.get_absolute_url }}">
+                                                        {{ w.author }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
+
+
+                                {% if volume.illustrator %}
+                                    <div class="row">
+                                        <div class="col-sm-4">Illustrator:</div>
+                                        <div class="col-sm-8 fw-bolder">{{ volume.illustrator }}</div>
+                                    </div>
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-sm-4">Published:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.publication_year }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Publisher:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.publisher }}</div>
+                                </div>
+                                {% if volume.book_set %}
+                                    <div class="row">
+                                        <div class="col-sm-4">Book Set:</div>
+                                        <div class="col-sm-8 fw-bolder"><a
+                                                href="{{ volume.book_set.get_absolute_url }}">{{ volume.book_set }}</a>
+                                        </div>
+                                    </div>
+                                    {% if volume.volume_number %}
+                                        <div class="row">
+                                            <div class="col-sm-4">Volume:</div>
+                                            <div class="col-sm-8 fw-bolder">{{ volume.volume_number|default:"" }}</div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                                {% if volume.edition %}
+                                    <div class="row">
+                                        <div class="col-sm-4">Edition:</div>
+                                        <div class="col-sm-8 fw-bolder">{{ volume.edition }}</div>
+                                    </div>
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-sm-4">ISBN10:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.isbn10 }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">ISBN13:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.isbn13 }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Volume Type:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.get_volume_content_type_display }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Edition Type:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.get_volume_edition_type_display }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Genre(s):</div>
+                                    <div class="col-sm-8 fw-bolder">
+                                        {% if genres %}
+                                            {% for genre in genres %}
+                                                {{ genre }}{% if not forloop.last %}<br>{% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-muted">No associated genres</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <hr class="my-2">
+                                <div class="row">
+                                    <div class="col-sm-4">Works:</div>
+                                    <div class="col-sm-8 fw-bolder">
+                                        {% for work in volume.works.all %}
+                                            <a href="{% url 'work_detail' work.pk %}">{{ work }}</a>
+                                            {% if not forloop.last %}<br>
+                                            {% endif %}
+                                        {% empty %}
+                                            <span class="text-muted">No associated works</span>
                                         {% endfor %}
                                     </div>
+                                </div>
+                                {% with refs=volume.bibliography_refs.all %}
+                                    {% if refs %}
+                                        <div class="row">
+                                            <div class="col-sm-4">Bibliography:</div>
+                                            <div class="col-sm-8 fw-bolder">
+                                                {% for ref in refs %}
+                                                    {{ ref.bibliography.code }}:
+                                                    {{ ref.reference_detail }}{% if not forloop.last %}<br>{% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                       </div>
+                    </div>
+                    </div>
 
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#volumeCarousel"
-                                            data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
-                                    </button>
 
-                                    <button class="carousel-control-next" type="button" data-bs-target="#volumeCarousel"
-                                            data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </button>
+                <br>
+
+
+                    <div class="card">
+                        <div class="card-header fw-semibold text-center">Volume Description and Condition</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">Binding:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.get_binding_display }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Condition:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.get_condition_display }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Dust Jacket:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.dust_jacket|yesno:"Yes,No" }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">DJ Condition:</div>
+                                <div class="col-sm-8 fw-bolder">
+                                    {% if volume.get_dust_jacket_condition_display %}
+                                        {{ volume.get_dust_jacket_condition_display }}
+                                    {% else %}
+                                        <span class="text-muted fst-italic">—</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if volume.notes %}
+                                <div class="row">
+                                    <div class="col-sm-4">Notes:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.notes_html|safe }}</div>
+                                </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header fw-semibold text-center">Collection Data</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">Acquisition Date:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.acquisition_date }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Acquisition year:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.acquisition_year }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Source:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.source }}</div>
+                            </div>
+                            {% if user.is_authenticated %}
+                                <div class="row">
+                                    <div class="col-sm-4">Price:</div>
+                                    <div class="col-sm-8 fw-bolder">
+                                        {% if volume.price %}
+                                            ${{ volume.price|intcomma }}
+                                        {% else %}
+                                            <span class="text-muted fst-italic">—</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Acquisition Cost:</div>
+                                    <div class="col-sm-8 fw-bolder">
+                                        {% if volume.acquisition_cost %}
+                                            ${{ volume.acquisition_cost|intcomma }}
+                                        {% else %}
+                                            <span class="text-muted fst-italic">—</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Total Cost:</div>
+                                    <div class="col-sm-8 fw-bolder">
+                                        {% if volume.total_cost %}
+                                            ${{ volume.total_cost|intcomma }}
+                                        {% else %}
+                                            <span class="text-muted fst-italic">—</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Estimated Value:</div>
+                                    <div class="col-sm-8 fw-bolder">
+                                        {% if volume.estimated_value %}
+                                            ${{ volume.estimated_value|intcomma }}
+                                        {% else %}
+                                            <span class="text-muted fst-italic">—</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if volume.edition_notes %}
+                                <div class="row">
+                                    <div class="col-sm-4">Edition Notes:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.edition_notes_html|safe }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header fw-semibold text-center">Disposition</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">Disposition:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.disposition }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Disposition date:</div>
+                                <div class="col-sm-8 fw-bolder">{{ volume.disposition_date }}</div>
+                            </div>
+                            {% if user.is_authenticated %}
+
+                                <div class="row">
+                                    <div class="col-sm-4">Recipient:</div>
+                                    <div class="col-sm-8 fw-bolder">{{ volume.recipient }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Sales Price:</div>
+                                    {% if volume.sales_price %}
+                                        <div class="col-sm-8 fw-bolder">${{ volume.sales_price }}</div>
+                                    {% else %}
+                                        <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Shipping Charged:</div>
+                                    {% if volume.shipping_charged %}
+                                        <div class="col-sm-8 fw-bolder">${{ volume.shipping_charged }}</div>
+                                    {% else %}
+                                        <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Shipping Cost:</div>
+                                    {% if volume.shipping_cost %}
+                                        <div class="col-sm-8 fw-bolder">${{ volume.shipping_cost }}</div>
+                                    {% else %}
+                                        <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">Total Sold Price:</div>
+                                    {% if volume.total_sold_price %}
+                                        <div class="col-sm-8 fw-bolder">${{ volume.total_sold_price }}</div>
+                                    {% else %}
+                                        <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-sm-4">Profit/Loss:</div>
+                                    {% if volume.total_profit %}
+                                        <div class="col-sm-8 fw-bolder">${{ volume.total_profit }}</div>
+                                    {% else %}
+                                        <div class="col-sm-8 fw-bolder"><span class="text-muted fst-italic">—</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>
+
+                    {#        <div class="col-md-6">#}
+                    {#            <img src="{{ volume.cover_url }}" class="rounded mx-auto d-block" alt="Cover"#}
+                    {#                 style="max-height: 300px; width:auto;"></div>#}
+                    {#    </div>#}
+                    {#    <br>#}
+                    {#    {% if user.is_authenticated %}#}
+                    {#        <a href="{% url 'volume_update' volume.pk %}" class="btn btn-primary">Update</a>#}
+                    {#    {% endif %}#}
+                    {#    <br>#}
+                    {#    <br>#}
+
+
+                    {# Cover area #}
+                    <div class="text-center mb-3">
+
+                        {% if volume.cover_src %}
+                            <div class="position-relative d-inline-block mx-auto">
+                                <img
+                                        src="{{ volume.cover_src }}"
+                                        class="rounded mx-auto d-block img-fluid"
+                                        alt="Cover"
+                                        style="max-height: 300px; width: auto;">
+                                {% if volume.cover_is_stock %}
+                                    <span class="badge position-absolute bottom-0 end-0 m-1"
+                                          style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">
+  Stock Image
+</span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <span class="text-muted fst-italic">No cover image</span>
+                        {% endif %}
+                    </div>
+
+
+                    {# Upload button #}
+                    {% if user.is_authenticated %}
+                        <div class="text-center mb-3">
+                            <a href="{% url 'volume_image_add' volume.slug %}" class="btn btn-outline-primary btn-sm">
+                                Add photos
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {# Thumbnails grid #}
+                    {% if volume.images.all %}
+                        <div class="row g-2">
+                            {% for img in volume.images.all %}
+                                <div class="col-6 col-md-3">
+                                    <img
+                                            src="{{ img.image_thumb.url }}"
+                                            class="img-fluid rounded shadow-sm volume-thumb"
+                                            style="cursor:pointer"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#volumeImagesModal"
+                                            data-slide-index="{{ forloop.counter0 }}"
+                                            alt="{{ img.caption|default:'Image' }}"
+                                    >
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {# Modal carousel #}
+                        <div class="modal fade" id="volumeImagesModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-xl modal-dialog-centered">
+                                <div class="modal-content modal-carousel-content">
+                                    <div class="modal-body p-0">
+                                        <div id="volumeCarousel" class="carousel slide" data-bs-ride="false">
+                                            <div class="carousel-inner">
+                                                {% for img in volume.images.all %}
+                                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                                        <div class="carousel-center">
+                                                            <img
+                                                                    src="{{ img.image_detail.url }}"
+                                                                    alt="{{ img.caption|default:'Image' }}"
+                                                                    class="d-block"
+                                                                    style="max-height: 100%; max-width: 100%; width: auto; height: auto;">
+                                                        </div>
+
+                                                        {% if img.caption %}
+                                                            <div class="carousel-caption d-none d-md-block text-dark text-bold
+                                                    bg-light bg-opacity-75 rounded px-2 w-50 mx-auto">
+                                                                <p class="mb-0"
+                                                                   style="font-size:1.25em;">{{ img.caption }}</p>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                {% endfor %}
+                                            </div>
+
+                                            <button class="carousel-control-prev" type="button"
+                                                    data-bs-target="#volumeCarousel"
+                                                    data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+
+                                            <button class="carousel-control-next" type="button"
+                                                    data-bs-target="#volumeCarousel"
+                                                    data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <script>
+                            document.querySelectorAll(".volume-thumb").forEach((el) => {
+                                el.addEventListener("click", () => {
+                                    const index = parseInt(el.getAttribute("data-slide-index"), 10);
+                                    const carouselEl = document.querySelector("#volumeCarousel");
+                                    const carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
+                                    carousel.to(index);
+                                });
+                            });
+                        </script>
+                    {% endif %}
                 </div>
-                <script>
-                    document.querySelectorAll(".volume-thumb").forEach((el) => {
-                        el.addEventListener("click", () => {
-                            const index = parseInt(el.getAttribute("data-slide-index"), 10);
-                            const carouselEl = document.querySelector("#volumeCarousel");
-                            const carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
-                            carousel.to(index);
-                        });
-                    });
-                </script>
-            {% endif %}
+            </div>
         </div>
-
 {% endblock content %}

@@ -162,7 +162,7 @@ class VolumeAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Bibliographic", {
             "fields": (
-                "title", "collection", "works", "book_set",
+                "title", "collection", "works", "primary_work", "book_set",
             "volume_number",
                 "publisher", "publication_year",
                 "isbn13", "isbn10", "volume_content_type",

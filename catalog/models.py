@@ -1,5 +1,6 @@
 import os
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -492,6 +493,14 @@ class Volume(models.Model):
                                         blank=True)
     sort_title = models.CharField(max_length=255, editable=False, blank=True)
     works = models.ManyToManyField(Work, related_name='volumes', blank=True)
+    primary_work = models.ForeignKey(
+        Work,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="primary_for_volumes",
+    )
+
     book_set = models.ForeignKey(BookSet, on_delete=models.CASCADE,
                                  related_name='volumes', blank=True, null=True)
     volume_number = models.PositiveIntegerField(blank=True, null=True)
@@ -643,6 +652,24 @@ class Volume(models.Model):
     def cover_is_stock(self) -> bool:
         return not bool(self.cover_image_id) and bool(self.cover_url)
 
+    @property
+    def display_work(self):
+        return self.primary_work or self.works.select_related("author").first()
+
+    @property
+    def display_author(self):
+        w = self.display_work
+        return w.author if w else None
+
+
+    def clean(self):
+        super().clean()
+        if self.primary_work_id:
+            if not self.pk:
+                return  # can't check m2m until saved
+            if not self.works.filter(pk=self.primary_work_id).exists():
+                raise ValidationError({"primary_work": "Primary work must be one of this volume’s works."})
+
     def save(self, *args, **kwargs):
         if self.isbn10 and not self.isbn13:
             self.isbn13 = self.convert_isbn10_to_13(self.isbn10)
@@ -650,6 +677,7 @@ class Volume(models.Model):
             maybe10 = self.convert_isbn13_to_10(self.isbn13)
             if maybe10:
                 self.isbn10 = maybe10
+        self.clean()
         self.sort_title = normalize_sort_title(self.title)
         # handle volumes already existing when acquisition_cost added to model
         if self.acquisition_cost is None:
