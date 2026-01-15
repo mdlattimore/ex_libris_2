@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-from .views import work_redirect_by_id
+from .views import work_redirect_by_id, VolumeImageManageView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -72,6 +72,8 @@ urlpatterns = [
          name='dev_note_list'),
     path('dev_note_detail/<int:pk>/', views.DevNoteDetailView.as_view(), name='dev_note_detail'),
     path('dev_note_update/<int:pk>/', views.DevNoteUpdateView.as_view(),name='dev_note_update'),
+    path("volumes/<int:pk>/images/", VolumeImageManageView.as_view(),
+         name="volume_images_manage"),
 
 ]
 

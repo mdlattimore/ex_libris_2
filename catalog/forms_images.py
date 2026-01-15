@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import modelformset_factory
+
 from .models import VolumeImage, BooksetImage
 from .utils.images.images import process_upload
 
@@ -62,3 +64,64 @@ class BooksetImageUploadForm(forms.ModelForm):
                 self.bookset.save(update_fields=["cover_image"])
 
         return instance
+
+
+class CoverChoiceForm(forms.Form):
+    cover_image_id = forms.ChoiceField(
+        required=False,
+        widget=forms.RadioSelect,
+        label="Cover image",
+    )
+
+    def __init__(self, *args, images=None, current_cover_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        images = images or []
+        self.fields["cover_image_id"].choices = [(str(img.id), "") for img in images]
+        if current_cover_id:
+            self.initial["cover_image_id"] = str(current_cover_id)
+
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleImageField(forms.ImageField):
+    """
+    An ImageField that accepts multiple uploaded files and returns a list.
+    """
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        # data will be either a single UploadedFile or a list of them
+        if data is None:
+            return []
+        if isinstance(data, (list, tuple)):
+            return [super().clean(d, initial) for d in data]
+        return [super().clean(data, initial)]
+
+
+class VolumeImageMultiUploadForm(forms.Form):
+    uploads = MultipleImageField(
+        required=True,
+        label="Choose Image(s)",
+    )
+
+
+
+
+
+
+
+
+class VolumeImageEditForm(forms.ModelForm):
+    class Meta:
+        model = VolumeImage
+        fields = ["kind", "caption"]  # hide sort_order for now
+
+VolumeImageFormSet = modelformset_factory(
+    VolumeImage,
+    form=VolumeImageEditForm,
+    extra=0,
+    can_delete=True,
+)
