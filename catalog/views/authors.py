@@ -71,8 +71,8 @@ class AuthorCreateModalView(View):
 class AuthorUpdateView(UpdateView):
     model = Author
     context_object_name = "author"
+    form_class = AuthorCreateForm
     template_name = "catalog/author_create_update.html"
-    fields = "__all__"
 
 
 class AuthorListView(ListView):

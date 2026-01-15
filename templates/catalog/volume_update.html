@@ -2,12 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <br><br>
+    <br>
+    <h1 class="text-center">Update Volume</h1>
 
     <form action="" method="post">{% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" value="Save" class="btn btn-success">
-        <a onclick="window.history.back()" class="btn btn-danger">Cancel</a>
+    {% crispy form %}
+
 
 </form>
 

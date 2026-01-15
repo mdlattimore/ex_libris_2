@@ -158,9 +158,9 @@ class VolumeDetailView(DetailView):
 class VolumeUpdateView(UpdateView):
     model = Volume
     context_object_name = "volume"
+    form_class = VolumeForm
     template_name = "catalog/volume_update.html"
-    fields = "__all__"
-    exclude_fields = ("volume_json",)
+
 
     # def get_form(self, form_class=None):
     #     form = super().get_form(form_class)

@@ -3,12 +3,10 @@
 
 {% block content %}
     <br>
-    <h1 class="text-center">Add Author</h1>
+    <h1 class="text-center">Add/Update Author</h1>
     <br>
     <form action="" method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Save" class="btn btn-success">
-        <a onclick="window.history.back()" class="btn btn-danger">Cancel</a>
+        {% crispy form %}
 
     </form>
 

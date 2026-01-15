@@ -167,8 +167,9 @@ class VolumeForm(forms.ModelForm):
                     "Save",
                     css_class="form-group btn btn-primary col-md-1 mb-0",
                 ),
-                HTML('<span class="form-group col-md-3 mb-0"></span>'),
-
+                HTML('<span class="form-group col-md-1 mb-0"></span>'),
+                HTML('<a onclick="window.history.back()" class="btn '
+                     'btn-danger col-md-1">Cancel</a>')
             ))
 
 
@@ -216,13 +217,13 @@ class WorkCreateForm(forms.ModelForm):
                 Column("work_ebook_url", css_class="form-group col-md-4 mb-0"),
             ),
             Row(
-                HTML('<span class="form-group col-md-3 mb-0"></span>'),
+
                 Submit(
                     "submit",
                     "Save",
                     css_class="form-group btn btn-primary col-md-1 mb-0",
                 ),
-                HTML('<span class="form-group col-md-3 mb-0"></span>'),
+                HTML('<span class="form-group col-md-1 mb-0"></span>'),
                 HTML(
                     '<a href="javascript:javascript:history.go(-1)" class="form-group btn btn-danger col-md-1">Cancel</a>'
                 ),
@@ -234,6 +235,42 @@ class AuthorCreateForm(forms.ModelForm):
     class Meta:
         model = Author
         fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields["full_name"].label = "Full Name"
+        self.fields["dob"].label = "Date of Birth"
+        self.fields["dod"].label = "Date of Death"
+        self.fields["author_image_url"].label = "Author Image URL"
+
+        self.helper.layout = Layout(
+            Row(
+                Column('full_name', css_class="form-group col-md-6 mb-0"),
+            ),
+            Row(
+                Column('dob', css_class="form-group col-md-3 mb-0"),
+                Column('dod', css_class="form-group col-md-3 mb-0"),
+            ),
+            Row(
+                Column("nationality", css_class="form-group col-md-3 mb-0"),
+                Column("author_image_url", css_class="form-group col-md-3 mb-0"),
+            ),
+            Row(
+                Column("bio", css_class="form-group col-md-8 mb-0"),
+            ),
+            Row(
+
+                Submit(
+                    "submit",
+                    "Save",
+                    css_class="form-group btn btn-primary col-md-1 mb-0",
+                ),
+                HTML('<span class="form-group col-md-1 mb-0"></span>'),
+                HTML(
+                    '<a href="javascript:javascript:history.go(-1)" class="form-group btn btn-danger col-md-1">Cancel</a>'
+                ),
+        ))
 
 
 class ISBNSearchForm(forms.Form):
