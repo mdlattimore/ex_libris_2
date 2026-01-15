@@ -1,0 +1,21 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br>
+    <h1 class="text-center">Dev Notes</h1>
+    <br>
+    {% for note in dev_notes %}
+        <div class="row">
+            <div class="col-sm-3">
+                <p><a href="{% url 'dev_note_detail' note.pk %}">{{ note.effective_date }}</a>: </p>
+            </div>
+            <div class="col-sm-9">
+                {% if note.subject %}
+                    <p>{{ note.subject }}</p>
+                {% else %}
+                    <p>{{ note.note|truncatechars:100 }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock content %}

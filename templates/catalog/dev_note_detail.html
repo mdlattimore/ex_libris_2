@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br>
+<h1 class="text-center">Dev Note</h1>
+    <br>
+    <p>Note created: {{ dev_note.created_at }}<br>
+        {% if dev_note.updated_at %}
+        Last updated: {{ dev_note.updated_at }} <br>
+        {% endif %}
+    By: {{ dev_note.user.get_full_name }}<br>
+        Subject: {{ dev_note.subject }} <br>
+        Page: {{ dev_note.referring_url|urlize }}</p>
+    <p>{{ dev_note.note }}</p>
+    <br>
+    {% if user.is_authenticated %}
+        <a href="{% url 'dev_note_update' dev_note.pk %}" class="btn btn-primary">Update</a>
+    {% endif %}
+
+{% endblock content %}

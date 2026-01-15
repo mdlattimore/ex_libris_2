@@ -11,3 +11,4 @@ from .search import *
 from .pricing import *
 from .view_images import *
 from .view_bookset_images import *
+from .dev_notes import *

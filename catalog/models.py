@@ -3,14 +3,20 @@ import os
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from simple_name_parser import NameParser
 
+from accounts.models import CustomUser
 from catalog.integrations.google_books_provider import GoogleBooksProvider
 from catalog.utils.fuzzy_matching import normalize_name
 from catalog.utils.normalization import normalize_sort_title
+from django.contrib.auth import get_user_model
+from django.conf import settings
+User = get_user_model()
+
 
 parser = NameParser()
 parse_name = parser.parse_name
@@ -778,3 +784,26 @@ class VolumeBibliographyReference(models.Model):
 
     def __str__(self):
         return f"{self.bibliography.code}: {self.reference_detail}"
+
+class DevNote(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="dev_notes",
+    )
+    subject = models.CharField(max_length=255, blank=True, null=True)
+    note = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    referring_url = models.URLField(blank=True)
+
+    class Meta:
+        ordering = ["-updated_at", "-created_at"]
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.updated_at = timezone.now()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"DevNote by {self.user} @ {self.created_at:%Y-%m-%d %H:%M}"

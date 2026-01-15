@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (Author, Work, BookSet, Volume, AuthorAlias, Collection,
                      Genre, Bibliography, VolumeBibliographyReference,
-                     VolumeImage, BooksetImage)
+                     VolumeImage, BooksetImage, DevNote)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -239,8 +239,20 @@ class BooksetImageAdmin(admin.ModelAdmin):
     preview_large.short_description = "Preview"
 
 
+@admin.register(DevNote)
+class DevNoteAdmin(admin.ModelAdmin):
+    exclude = ("user",)
+    readonly_fields = ("created_at",)
+    list_display = ("created_at", "user", "short_notes")
 
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.user = request.user
+        super().save_model(request, obj, form, change)
 
+    @admin.display(description="Notes")
+    def short_notes(self, obj):
+        return obj.note[:60]
 
 
 

@@ -1,0 +1,10 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <br>
+    <h1 class="display-8">User: {{ request.user.get_full_name }}</h1>
+
+{% include "partials/dev_note_form.html" %}
+
+{% endblock content %}

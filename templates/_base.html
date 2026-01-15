@@ -101,9 +101,25 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Panel</a></li>
                             <li><a class="dropdown-item" href="{% url 'stats' %}">Stats</a></li>
-                            <li><a class="dropdown-item" href="{% url 'pricing_calculator' %}">Pricing Calculator</a></li>
-
-                        </ul>
+                            <li><a class="dropdown-item" href="{% url 'pricing_calculator' %}">Pricing Calculator</a>
+                            </li>
+                            {#                            <li><a class="dropdown-item"#}
+                            {#                                   href="{% url 'dev_note_create' %}?next={{ request.get_full_path|urlencode }}">#}
+                            {#                                Add dev note#}
+                            {#                            </a>#}
+                            <li>
+                            <a class="dropdown-item"
+                               hx-get="{% url 'dev_note_create' %}?next={{ request.get_full_path|urlencode }}"
+                               href="{% url 'dev_note_create' %}?next={{ request.get_full_path|urlencode }}"
+                               hx-target="#devNoteModalBody"
+                               hx-swap="innerHTML"
+                               data-bs-toggle="modal"
+                               data-bs-target="#devNoteModal">
+                                New Dev note
+                            </a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'dev_note_list' %}">Dev Note List</a></li>
+                    </ul>
                     </li>
 
                     <!-- + Add Dropdown -->
@@ -121,33 +137,33 @@
                     </li>
                 {% endif %}
 
-                {% if user.is_authenticated %}
-                    <!-- User Settings -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Settings
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><span class="dropdown-item-text">{{ user.email }}</span></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item"
-                                   href="{% url 'account_change_password' %}">Change password</a></li>
-                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a></li>
+            {% if user.is_authenticated %}
+                <!-- User Settings -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Settings
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item-text">{{ user.email }}</span></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item"
+                               href="{% url 'account_change_password' %}">Change password</a></li>
+                        <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a></li>
 
-                        </ul>
-                    </li>
+                    </ul>
+                </li>
 
-                {% else %}
-                    <!-- Login Button -->
-                    <li class="nav-item">
-                        <a class="btn btn-outline-secondary" href="{% url 'account_login' %}">
-                            Log in
-                        </a>
-                    </li>
-                {% endif %}
+            {% else %}
+                <!-- Login Button -->
+                <li class="nav-item">
+                    <a class="btn btn-outline-secondary" href="{% url 'account_login' %}">
+                        Log in
+                    </a>
+                </li>
+            {% endif %}
 
             </ul>
         </div>
@@ -158,8 +174,24 @@
 <div class="container">
     {% block content %}
         <p>Default content...</p>
+
+
+
     {% endblock content %}
 </div>
+<div class="modal fade" id="devNoteModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Dev note</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="devNoteModalBody">
+                        <!-- HTMX injects content -->
+                    </div>
+                </div>
+            </div>
+        </div>
 
 <footer class="footer">
     <div class="container">

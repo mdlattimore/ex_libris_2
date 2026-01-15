@@ -4,7 +4,7 @@ from crispy_forms.layout import Layout, Row, Column, HTML, Submit, Div
 from django import forms
 from django_json_widget.widgets import JSONEditorWidget
 
-from .models import Volume, Work, Author
+from .models import Volume, Work, Author, DevNote
 
 from crispy_forms.layout import Submit, Layout, Row, Column, HTML, Field
 
@@ -238,3 +238,9 @@ class AuthorCreateForm(forms.ModelForm):
 
 class ISBNSearchForm(forms.Form):
     isbn = forms.CharField(max_length=14, label='ISBN')
+
+
+class DevNoteCreateForm(forms.ModelForm):
+    class Meta:
+        model = DevNote
+        exclude = ['user', 'referring_url', 'updated_at']

@@ -67,6 +67,12 @@ urlpatterns = [
     path("search/", views.SearchResultsView.as_view(), name="search_results"),
     path('stats/', views.StatsView.as_view(), name='stats'),
     path('pricing_calculator/', views.pricing_view, name='pricing_calculator'),
+    path('dev_note_create/', views.DevNoteCreateView.as_view(), name='dev_note_create'),
+    path('dev_note_list/', views.DevNoteListView.as_view(),
+         name='dev_note_list'),
+    path('dev_note_detail/<int:pk>/', views.DevNoteDetailView.as_view(), name='dev_note_detail'),
+    path('dev_note_update/<int:pk>/', views.DevNoteUpdateView.as_view(),name='dev_note_update'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
