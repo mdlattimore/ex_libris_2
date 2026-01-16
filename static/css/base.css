@@ -670,7 +670,7 @@ img {
 
 .card {
     border-radius: 10px;
-    margin-bottom: 1rem;
+    overflow: hidden;
 }
 
 .card-body p {
@@ -688,10 +688,7 @@ img {
     color: #fff;
     font-weight: 500;
     letter-spacing: 0.03em;
-    border: none; /* removes the light gray border */
-    border-top-left-radius: 0; /* flush edges */
-    border-top-right-radius: 0;
-    margin: -1px -1px 0 -1px; /* overlap the card border slightly */
+
 }
 
 

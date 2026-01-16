@@ -26,6 +26,23 @@ class SiteContentMixin:
         return context
 
 
+from django.views.generic import TemplateView
+from catalog.models import Volume, Work, Author, BookSet
+
+
+class DashboardView(TemplateView):
+    template_name = "pages/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context["volumes"] = Volume.objects.all()
+        context["works"] = Work.objects.all()
+        context["authors"] = Author.objects.all()
+        context["sets"] = BookSet.objects.all()
+
+
+        return context
+
 class HomePageView(SiteContentMixin, TemplateView):
     template_name = "pages/home.html"
 

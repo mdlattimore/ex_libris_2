@@ -5,6 +5,7 @@ from .views import work_redirect_by_id, VolumeImageManageView
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('author_create/', views.AuthorCreateView.as_view(),
          name='author_create'),
@@ -74,7 +75,6 @@ urlpatterns = [
     path('dev_note_update/<int:pk>/', views.DevNoteUpdateView.as_view(),name='dev_note_update'),
     path("volumes/<int:pk>/images/", VolumeImageManageView.as_view(),
          name="volume_images_manage"),
-
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

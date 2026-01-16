@@ -43,7 +43,7 @@
 
                 <!-- Home -->
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'dashboard' %}">Home</a>
                 </li>
 
                 <!-- About -->
@@ -51,21 +51,9 @@
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
 
-                <!-- Catalog Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Catalog
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'work_list' %}">Works</a></li>
-                        <li><a class="dropdown-item" href="{% url 'volume_list' %}">Books</a></li>
-                        <li><a class="dropdown-item" href="{% url 'author_list' %}">Authors</a></li>
-                        <li><a class="dropdown-item" href="{% url 'collection_list' %}">Collections</a></li>
-                        <li><a class="dropdown-item" href="{% url 'bookset_list' %}">Sets</a></li>
 
-                    </ul>
-                </li>
+
+
             </ul>
 
             <!-- SEARCH BAR -->
@@ -122,19 +110,7 @@
                     </ul>
                     </li>
 
-                    <!-- + Add Dropdown -->
-                    <li class="nav-item dropdown me-2">
-                        <a class="nav-link dropdown-toggle" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            + Add
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{% url 'author_create' %}">Author</a></li>
-                            <li><a class="dropdown-item" href="{% url 'work_create' %}">Work</a></li>
-                            <li><a class="dropdown-item" href="{% url 'collection_create' %}">Collection</a></li>
-                            <li><a class="dropdown-item" href="{% url 'isbn_lookup' %}">Book</a></li>
-                        </ul>
-                    </li>
+
                 {% endif %}
 
             {% if user.is_authenticated %}
