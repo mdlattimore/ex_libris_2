@@ -8,67 +8,70 @@
     <div class="row">
         <div class="col-md-12">
             <div class="accordion" id="detailAccordion">
-            {% if volume.description %}
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFive"
-                                aria-expanded="false" aria-controls="collapseFive">
-                            Description
-                        </button>
-                    </h2>
-                    <div id="collapseFive" class="accordion-collapse collapse show" data-bs-parent="#detailAccordian">
-                        <div class="accordion-body">
+                {% if volume.description %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFive"
+                                    aria-expanded="false" aria-controls="collapseFive">
+                                Description
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse show"
+                             data-bs-parent="#detailAccordian">
+                            <div class="accordion-body">
 
-                            <div class="card">
-                                <div class="card-header fw-semibold text-center">Description</div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-12">{{ volume.description }}</div>
+                                <div class="card">
+                                    <div class="card-header fw-semibold text-center">Description</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">{{ volume.description }}</div>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
-
                         </div>
                     </div>
-                </div>
-            {% endif %}
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseImage"
-                                aria-expanded="false" aria-controls="collapseImage">
-                            Images ({{ ordered_images|length }} photo{{ ordered_images|length|pluralize }})
-                        </button>
-                    </h2>
-                    <div id="collapseImage" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
+                {% endif %}
 
-                            {# Thumbnails grid #}
-                            {% if volume.images.all %}
-                                <div class="row g-2">
-                                    {% for img in ordered_images %}
-                                        <div class="col-6 col-md-3">
-                                            <img
-                                                    src="{{ img.image_thumb.url }}"
-                                                    class="img-fluid rounded shadow-sm volume-thumb"
-                                                    style="cursor:pointer"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#volumeImagesModal"
-                                                    data-slide-index="{{ forloop.counter0 }}"
-                                                    alt="{{ img.caption|default:'Image' }}"
-                                            >
-                                        </div>
-                                    {% endfor %}
-                                </div>
+                {% if volume.images.all %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseImage"
+                                    aria-expanded="false" aria-controls="collapseImage">
+                                Images ({{ ordered_images|length }} photo{{ ordered_images|length|pluralize }})
+                            </button>
+                        </h2>
+                        <div id="collapseImage" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+                                {# Thumbnails grid #}
+                                {% if volume.images.all %}
+                                    <div class="row g-2">
+                                        {% for img in ordered_images %}
+                                            <div class="col-6 col-md-3">
+                                                <img
+                                                        src="{{ img.image_thumb.url }}"
+                                                        class="img-fluid rounded shadow-sm volume-thumb"
+                                                        style="cursor:pointer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#volumeImagesModal"
+                                                        data-slide-index="{{ forloop.counter0 }}"
+                                                        alt="{{ img.caption|default:'Image' }}"
+                                                >
+                                            </div>
+                                        {% endfor %}
+                                    </div>
 
 
 
-                            {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                {% endif %}
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
