@@ -1,5 +1,6 @@
 from itertools import chain
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -14,7 +15,7 @@ from catalog.utils.normalization import normalize_sort_title
 from catalog.views import CatalogBaseView
 
 
-class WorkCreateView(CreateView):
+class WorkCreateView(LoginRequiredMixin, CreateView):
     model = Work
     form_class = WorkCreateForm
     success_url = reverse_lazy("work_list")

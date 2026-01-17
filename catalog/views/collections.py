@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
@@ -5,14 +6,14 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from catalog.models import Collection, Volume, Work
 
 
-class CollectionCreateView(CreateView):
+class CollectionCreateView(LoginRequiredMixin, CreateView):
     model = Collection
     context_object_name = "collection"
     template_name = "catalog/collection_create_update.html"
     fields = "__all__"
 
 
-class CollectionUpdateView(UpdateView):
+class CollectionUpdateView(LoginRequiredMixin, UpdateView):
     model = Collection
     context_object_name = "collection"
     template_name = "catalog/collection_create_update.html"

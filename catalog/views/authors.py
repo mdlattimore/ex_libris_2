@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
@@ -11,7 +12,7 @@ from catalog.forms import AuthorCreateForm
 from catalog.models import Author, Work
 
 
-class AuthorCreateView(CreateView):
+class AuthorCreateView(LoginRequiredMixin, CreateView):
     model = Author
     form_class = AuthorCreateForm
     success_url = reverse_lazy("author_list")
@@ -68,7 +69,7 @@ class AuthorCreateModalView(View):
         return HttpResponse(html)
 
 
-class AuthorUpdateView(UpdateView):
+class AuthorUpdateView(LoginRequiredMixin, UpdateView):
     model = Author
     context_object_name = "author"
     form_class = AuthorCreateForm

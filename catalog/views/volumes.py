@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, UpdateView
@@ -155,7 +157,7 @@ class VolumeDetailView(DetailView):
 
 
 
-class VolumeUpdateView(UpdateView):
+class VolumeUpdateView(LoginRequiredMixin, UpdateView):
     model = Volume
     context_object_name = "volume"
     form_class = VolumeForm
@@ -167,6 +169,7 @@ class VolumeUpdateView(UpdateView):
     #     return form
 
 
+
 def volume_create_view(request):
     form = VolumeForm(request.POST or None)
     if form.is_valid():
@@ -174,7 +177,7 @@ def volume_create_view(request):
         return render(request, "partials/volume_saved.html", {"volume": volume})
     return render(request, "partials/volume_form_errors.html", {"form": form})
 
-
+@login_required
 def manual_volume_form(request):
     """Render a blank manual entry form for creating a new Volume."""
     form = VolumeForm()
