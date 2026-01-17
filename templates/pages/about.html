@@ -3,9 +3,12 @@
 {% block title %}About page{% endblock %}
 
 {% block content %}
-<br>
-<br>
+    <br>
+    <br>
+    {{ content.home_html|safe }}
 
-{{ content.about_html|safe }}
+    <br>
+
+    {{ content.about_html|safe }}
     <br>
 {% endblock content %}

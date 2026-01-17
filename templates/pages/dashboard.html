@@ -2,12 +2,12 @@
 
 {% block content %}
     <br>
-    <h1 class="text-center">Ex Libris</h1>
+    <h1 class="display-4 text-center fst-italic">Ex Libris</h1>
     <br>
 
     <!-- Search Bar -->
-    <h1 class="display-7 text-center mb-1">Find</h1>
-    <div class="border border border-secondary shadow rounded-3 mb-5">
+    <h1 class="display-6 text-center mb-1">Search</h1>
+    <div class="border border border-secondary shadow rounded-3 mb-4">
         <div class="row">
             <div class="col">
                 <form action="{% url 'search_results' %}" method="get"
@@ -15,7 +15,7 @@
                     <input type="search" class="form-control"
                            style="border-radius: 7px 0 0 7px;"
                            name="q"
-                           placeholder="Search for Work, Volume, Author, or Set"
+                           placeholder="Search Work, Volume, Author, or Set"
                            aria-label="Search"/>
                     <button class="input-group-text text-black border-0" type="submit"
                             style="border-radius: 0 7px 7px 0;">
@@ -33,7 +33,7 @@
     </div>
 
     <!-- Navigation -->
-    <h1 class="display-7 text-center mb-1">Browse</h1>
+    <h1 class="display-6 text-center mb-1">Browse</h1>
 
     <div class="border border border-secondary shadow rounded-3 mb-5 pt-2">
 
@@ -70,95 +70,96 @@
             </div>
         </div>
 
-{% if user.is_staff %}
-        <div class="row m-2 mb-3">
-            <div class="col text-center">
-                <a href="{% url 'work_create' %}">Add+</a>
+        {% if user.is_staff %}
+            <div class="row m-2 mb-3">
+                <div class="col text-center">
+                    <a href="{% url 'work_create' %}">Add+</a>
+                </div>
+                <div class="col text-center">
+                    <a href="{% url 'isbn_lookup' %}">Add+</a>
+                </div>
+                <div class="col text-center">
+                    <a href="{% url 'author_create' %}">Add+</a>
+                </div>
+                <div class="col text-center">
+                    <a href="{% url 'collection_create' %}">Add+</a>
+                </div>
+                <div class="col"></div>
             </div>
-            <div class="col text-center">
-                <a href="{% url 'isbn_lookup' %}">Add+</a>
-            </div>
-            <div class="col text-center">
-                <a href="{% url 'author_create' %}">Add+</a>
-            </div>
-            <div class="col text-center">
-                <a href="{% url 'collection_create' %}">Add+</a>
-            </div>
-            <div class="col"></div>
-        </div>
-    {% endif %}
+        {% endif %}
     </div>
 
     <!-- Recent Activity -->
-    <div class="row mb-5">
-        <div class="col-md-1"></div>
-        <div class="col-sm-5">
-            <h1 class="display-8 text-center">Recent Activity</h1>
-            <ul>
-                {% for book in books|slice:"0:5:1" %}
-                    <li>{{ book.title }}</li>
-                {% endfor %}
-            </ul>
+    {% if user.is_staff %}
+        <div class="row mb-5">
+            <div class="col-md-1"></div>
+            <div class="col-sm-5">
+                <h1 class="display-8 text-center">Recent Activity</h1>
+                <ul>
+                    {% for book in books|slice:"0:5:1" %}
+                        <li>{{ book.title }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-sm-5">
+                <h1 class="display-8 text-center">Maintenance Queues</h1>
+            </div>
         </div>
-        <div class="col-sm-5">
-            <h1 class="display-8 text-center">Maintenance Queues</h1>
+    {% endif %}
+
+    {% if not user.is_staff %}
+        <h1 class="display-6 mb-0">Book Roulette</h1>
+        <em>A random pick from the shelves</em>
+        <div class="row mt-3 mb-3">
+            <div class="col-2">
+                <a href="{% url 'volume_detail' rand_vol.pk %}"><img src="{{ cover }}" alt="Random book cover" style="max-width: 150px; height:auto"></a>
+            </div>
+            <div class="col-10">
+                <p><span class="fst-italic fs-4">{{ title }}</span> {% if rand_vol.edition %}({{ rand_vol.edition }}){% endif %}</p>
+                {{ blurb }}
+            </div>
         </div>
-    </div>
+    {% endif %}
+
     <!-- Library Snapshot -->
     <h1 class="display-7 text-center mb-1">Library Snapshot</h1>
 
     <div class="border border border-secondary shadow rounded-3 mb-5 pt-2">
         <div class="row p-2 m-3">
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="text-center">{{ works|length }} Works</p>
-                    </div>
-                </div>
+                <p class="text-center">{{ works|length }} Works</p>
             </div>
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="text-center">{{ volumes|length }} Volumes</p>
-                    </div>
-                </div>
+                <p class="text-center">{{ volumes|length }} Volumes</p>
             </div>
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="text-center">{{ authors|length }} Authors</p>
-                    </div>
-                </div>
+                <p class="text-center">{{ authors|length }} Authors</p>
             </div>
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="text-center">{{ sets|length }} Sets</p>
-                    </div>
-                </div>
+                <p class="text-center">{{ sets|length }} Sets</p>
             </div>
         </div>
 
     </div>
 
     <!-- Tools -->
-    <h1 class="display-7 text-center mb-1">Tools</h1>
-    <div class="border border border-secondary shadow rounded-3 mb-5 pt-2 pb-2">
-        <div class="row m-3">
-            <div class="col text-center">
-                <a href="" class="btn btn-outline-secondary">Admin Panel</a>
-            </div>
-            <div class="col text-center">
-                <a href="" class="btn btn-outline-secondary">Stats</a>
-            </div>
-            <div class="col text-center">
-                <a href="" class="btn btn-outline-secondary">Pricing Calculator</a>
-            </div>
-            <div class="col text-center">
-                <a href="" class="btn btn-outline-secondary">Dev Notes</a>
+    {% if user.is_staff %}
+        <h1 class="display-7 text-center mb-1">Tools</h1>
+        <div class="border border border-secondary shadow rounded-3 mb-5 pt-2 pb-2">
+            <div class="row m-3">
+                <div class="col text-center">
+                    <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary">Admin Panel</a>
+                </div>
+                <div class="col text-center">
+                    <a href="{% url 'stats' %}" class="btn btn-outline-secondary">Stats</a>
+                </div>
+                <div class="col text-center">
+                    <a href="{% url 'pricing_calculator' %}" class="btn btn-outline-secondary">Pricing Calculator</a>
+                </div>
+                <div class="col text-center">
+                    <a href="{% url 'dev_note_list' %}" class="btn btn-outline-secondary">Dev Notes</a>
+                </div>
             </div>
         </div>
-
-    </div>
-
+    {% endif %}
 {% endblock content %}
