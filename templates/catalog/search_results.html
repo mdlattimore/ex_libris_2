@@ -285,8 +285,8 @@
                 <a href="{% url 'volume_detail' volume.pk %}"
                    class="list-group-item list-group-item-action d-flex align-items-start gap-3 catalog-item">
 
-                    {% if volume.cover_url %}
-                        <img src="{{ volume.cover_url }}"
+                    {% if volume.cover_src %}
+                        <img src="{{ volume.cover_src }}"
                              alt="{{ volume.title }}"
                              class="rounded shadow-sm"
                              style="width:80px;height:auto;">
