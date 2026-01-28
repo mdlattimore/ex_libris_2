@@ -34,6 +34,18 @@
                             {% endfor %}
                         </div>
                     </div>
+                <div class="row">
+                        <div class="col-sm-4">Collection(s):</div>
+                        <div class="col-sm-8">
+                            {% for collection in work.collection.all %}
+                                {{ collection }}{% if not forloop.last %}<br>
+                                {% endif %}
+                            {% empty %}
+                                <span class="text-muted">Not part of a collection</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
                     {% if work.work_ebook_url %}
                         <div class="row">
                             <div class="col-md-4">Ebook URL:</div>

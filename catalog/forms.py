@@ -201,9 +201,10 @@ class WorkCreateForm(forms.ModelForm):
                     </div>""")
             ),
             Row(
-                Column("first_published", css_class="form-group col-md-4 mb-0"),
-                Column("work_type", css_class="form-group col-md-4 mb-0"),
-                Column("genre", css_class="form-group col-md-4 mb-0"),
+                Column("collection", css_class="form-group col-md-3 mb-0"),
+                Column("first_published", css_class="form-group col-md-3 mb-0"),
+                Column("work_type", css_class="form-group col-md-3 mb-0"),
+                Column("genre", css_class="form-group col-md-3 mb-0"),
             ),
 
             Row(
