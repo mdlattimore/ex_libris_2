@@ -1,0 +1,88 @@
+{#{% extends "_base.html" %}#}
+{##}
+{#{% block content %}#}
+{##}
+{#    <br><br>#}
+{#    <h1 class="text-center display-6">{{ collection.name }} Collection</h1>#}
+{#    <p class="text-center">{{ collection.description }}</p>#}
+{##}
+{##}
+{##}
+{#    {% for work in collection.works.all %}#}
+{#        <div class="row">#}
+{#        <div class="col-md-6">#}
+{#            <a href="{% url 'work_detail' work.pk %}">#}
+{#                {{ work.title }} by {{ work.author }}#}
+{#            </a>#}
+{#        </div>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{##}
+{##}
+{#    <br>#}
+{#    {% if user.is_authenticated %}#}
+{#        <a href="{% url 'collection_update' collection.pk %}" class="btn btn-primary">Update</a>#}
+{#    {% endif %}#}
+{#    <br><br>#}
+{##}
+{##}
+{##}
+{##}
+{#{% endblock content %}#}
+
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container my-4">
+
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1 class="display-6">{{ collection.name }}</h1>
+
+        {% if collection.description %}
+            <p class="lead text-muted mt-2">
+                {{ collection.description }}
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Works list -->
+    <div class="card shadow-sm">
+    <div class="card-header fw-semibold">
+        Works in this Collection
+    </div>
+
+    <ul class="list-group list-group-flush">
+        {% for work in collection.works.all %}
+            <li class="list-group-item position-relative">
+                <a href="{% url 'work_detail' work.pk %}"
+                   class="stretched-link text-decoration-none"></a>
+
+                <div class="fw-semibold">
+                    {{ work.title }}
+                </div>
+                <div class="text-muted small">
+                    {{ work.author }}
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-muted fst-italic">
+                No works have been added to this collection yet.
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+    <!-- Actions -->
+    {% if user.is_authenticated %}
+        <div class="text-center mt-4">
+            <a href="{% url 'collection_update' collection.pk %}"
+               class="btn btn-outline-primary">
+                Edit Collection
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock content %}

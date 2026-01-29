@@ -712,6 +712,11 @@ p.text-muted {
     max-width: 900px;
 }
 
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+
 .w-lg-33 { width: 40% !important; }
 
 .carousel-center {

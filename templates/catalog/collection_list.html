@@ -1,0 +1,36 @@
+
+
+{% extends "_base.html" %}
+
+{% block content %}
+    <div class="container">
+        <br>
+        <h1 class="text-center mb-1">Collections</h1>
+        <p class="text-center" style="font-size: 1em;">Curated groups of works, focused on a single theme, author, or genre.</p>
+
+        <br>
+        <!-- Bootstrap responsive grid -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for collection in collections %}
+                <div class="col">
+                    <a href="{{ collection.get_absolute_url }}" class="text-decoration-none text-dark">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header text-center">
+                                {{ collection.name }}
+                            </div>
+                            <div class="card-body">
+                                {% if collection.description %}
+                                    <p class="card-text small text-muted">
+                                        {{ collection.description|truncatewords:30 }}
+                                    </p>
+                                {% else %}
+                                    <p class="card-text text-muted fst-italic small">No description available.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

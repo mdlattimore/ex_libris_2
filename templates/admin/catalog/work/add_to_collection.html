@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="hidden" name="action" value="add_to_collection_bulk">
+    <input type="hidden" name="apply" value="1">
+
+    <p>
+      You are adding <strong>{{ works|length }}</strong>
+      work{{ works|length|pluralize }} to a collection.
+    </p>
+
+    <ul>
+      {% for w in works|slice:":12" %}
+        <li>{{ w }}</li>
+      {% endfor %}
+      {% if works|length > 12 %}
+        <li>…and {{ works|length|add:"-12" }} more</li>
+      {% endif %}
+    </ul>
+
+    <div class="submit-row">
+      <input type="submit" value="Apply" class="default">
+      <a href=".." class="button cancel-link">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

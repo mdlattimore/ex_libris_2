@@ -119,7 +119,7 @@ class VolumeDetailView(DetailView):
                 "primary_work__author",
             )
             .prefetch_related(
-                "bookshelf",
+                "bookshelves",
                 Prefetch("works", queryset=works_qs),
                 Prefetch("images", queryset=images_qs),
                 Prefetch("bibliography_refs", queryset=refs_qs),

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-from .views import work_redirect_by_id, VolumeImageManageView
+from .views import work_redirect_by_id, VolumeImageManageView, bookshelf_redirect_by_id
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -52,17 +52,28 @@ urlpatterns = [
     path('catalog/', views.CatalogAllView.as_view(), name='catalog_all'),
     path('isbn_lookup/', views.isbn_lookup_view, name='isbn_lookup'),
     path('volume_create/', views.volume_create_view, name='volume_create'),
+
     path('bookshelf_create/', views.BookshelfCreateView.as_view(),
          name='bookshelf_create'),
     path('bookshelf_update/<int:pk>/', views.BookshelfUpdateView.as_view(),
          name='bookshelf_update'),
     path('bookshelf_list/', views.BookshelfListView.as_view(),
          name='bookshelf_list'),
-
-    path('bookshelf_detail/<int:pk>/', work_redirect_by_id,
+    path('bookshelf_detail/<int:pk>/', bookshelf_redirect_by_id,
          name='bookshelf_detail_old'),
     path('bookshelf_detail/<slug:slug>/',
          views.BookshelfDetailView.as_view(), name='bookshelf_detail'),
+
+path('collection_create/', views.CollectionCreateView.as_view(),
+         name='collection_create'),
+    path('collection_update/<int:pk>/', views.CollectionUpdateView.as_view(),
+         name='collection_update'),
+    path('collection_list/', views.CollectionListView.as_view(),
+         name='collection_list'),
+    path('collection_detail/<slug:slug>/',
+         views.CollectionDetailView.as_view(), name='collection_detail'),
+
+
 
     path("manual-form/", views.manual_volume_form, name="manual_volume_form"),
     path("search/", views.SearchResultsView.as_view(), name="search_results"),

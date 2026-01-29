@@ -1,11 +1,13 @@
 import json
 
+from django import forms
 from django.contrib import admin, messages
+from django.http import HttpResponseRedirect
 from django.utils.safestring import mark_safe
 
 from .models import (Author, Work, BookSet, Volume, AuthorAlias, Bookshelf,
                      Genre, Bibliography, VolumeBibliographyReference,
-                     VolumeImage, BooksetImage, DevNote)
+                     VolumeImage, BooksetImage, DevNote, Collection)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -20,6 +22,12 @@ from django_json_widget.widgets import JSONEditorWidget
 class BookshelfAdmin(admin.ModelAdmin):
     list_display = ['name']
     ordering = ('name',)
+
+@admin.register(Collection)
+class CollectionAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    ordering = ('name',)
+
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
@@ -37,12 +45,58 @@ class GenreAdmin(admin.ModelAdmin):
     search_fields = ["name", "description"]
 
 
+class AddToCollectionForm(forms.Form):
+    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
+    collection = forms.ModelChoiceField(
+        queryset=Collection.objects.order_by("name"),
+        label="Collection",
+    )
+
+
 
 @admin.register(Work)
 class WorkAdmin(admin.ModelAdmin):
-    list_display = ['title']
+    list_display = ['title', 'author']
     ordering = ('sort_title',)
+    search_fields = ('title',)
+    filter_horizontal = ("collections",)
 
+    actions = ["add_to_collection_bulk"]
+
+    def add_to_collection_bulk(self, request, queryset):
+        if "apply" in request.POST:
+            form = AddToCollectionForm(request.POST)
+            if form.is_valid():
+                collection = form.cleaned_data["collection"]
+
+                for work in queryset:
+                    work.collections.add(collection)
+
+                self.message_user(
+                    request,
+                    f"Added {queryset.count()} works to collection “{collection.name}”.",
+                    level=messages.SUCCESS,
+                )
+                return HttpResponseRedirect(request.get_full_path())
+
+        form = AddToCollectionForm(
+            initial={
+                "_selected_action": [str(w.pk) for w in queryset],
+            }
+        )
+
+        return render(
+            request,
+            "admin/catalog/work/add_to_collection.html",
+            {
+                "works": queryset,
+                "form": form,
+                "title": "Add selected works to collection",
+                "action_checkbox_name": admin.helpers.ACTION_CHECKBOX_NAME,
+            },
+        )
+
+    add_to_collection_bulk.short_description = "Add selected works to collection…"
 
 class BooksetImageInline(admin.TabularInline):
     model = BooksetImage
@@ -87,6 +141,12 @@ class VolumeImageInline(admin.TabularInline):
     preview.short_description = "Thumb"
 
 
+class AddToBookshelfForm(forms.Form):
+    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
+    bookshelf = forms.ModelChoiceField(
+        queryset=Bookshelf.objects.order_by("name"),
+        label="Bookshelf",
+    )
 
 
 
@@ -96,6 +156,7 @@ class VolumeAdmin(admin.ModelAdmin):
     ordering = ('sort_title',)
     inlines = [VolumeBibliographyReferenceInline, VolumeImageInline]
     search_fields = ['title', 'edition']
+    filter_horizontal = ("bookshelves",)  # <-- your M2M field name
 
     formfield_overrides = {
         models.JSONField: {"widget": JSONEditorWidget(attrs={"class": "json-wide-editor"})},
@@ -104,6 +165,44 @@ class VolumeAdmin(admin.ModelAdmin):
     readonly_fields = (
         'pretty_volume_json',)  # Replace 'json_field' with your actual
     # JSONField name
+
+    actions = ["add_to_bookshelf_bulk"]
+
+    def add_to_bookshelf_bulk(self, request, queryset):
+        if "apply" in request.POST:
+            form = AddToBookshelfForm(request.POST)
+            if form.is_valid():
+                shelf = form.cleaned_data["bookshelf"]
+
+                for volume in queryset:
+                    volume.bookshelves.add(shelf)
+
+                self.message_user(
+                    request,
+                    f"Added {queryset.count()} volumes to bookshelf “{shelf.name}”.",
+                    level=messages.SUCCESS,
+                )
+                return HttpResponseRedirect(request.get_full_path())
+
+        form = AddToBookshelfForm(
+            initial={
+                "_selected_action": [str(v.pk) for v in queryset],
+            }
+        )
+
+        return render(
+            request,
+            "admin/catalog/volume/add_to_bookshelf.html",
+            {
+                "volumes": queryset,
+                "form": form,
+                "title": "Add selected volumes to bookshelf",
+                "action_checkbox_name": admin.helpers.ACTION_CHECKBOX_NAME,
+            },
+        )
+
+    add_to_bookshelf_bulk.short_description = "Add selected volumes to bookshelf…"
+
 
     def pretty_volume_json(self, obj):
         if not obj.volume_json:
@@ -162,7 +261,7 @@ class VolumeAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Bibliographic", {
             "fields": (
-                "title", "bookshelf", "works", "primary_work", "book_set",
+                "title", "bookshelves", "works", "primary_work", "book_set",
             "volume_number",
                 "publisher", "publication_year",
                 "isbn13", "isbn10", "volume_content_type",

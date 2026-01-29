@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <br>
+    <h1 class="text-center">Add/Update Collection</h1>
+    <br>
+    <form action="" method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="Save" class="btn btn-success">
+        <a onclick="window.history.back()" class="btn btn-danger">Cancel</a>
+
+    </form>
+
+{% endblock content %}

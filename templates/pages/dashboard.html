@@ -112,10 +112,20 @@
             <div class="col text-center d-flex flex-column">
                 <a href="{% url 'bookshelf_list' %}" class="card text-decoration-none w-100 mb-2 h-100">
                     <div class="card-header text-center">Bookshelves</div>
-                    <div class="card-body text-center">Thematic groupings</div>
+                    <div class="card-body text-center">Thematic groupings of Volumes</div>
                 </a>
                 {% if user.is_staff %}
                     <a href="{% url 'bookshelf_create' %}" class="mt-auto">Add+</a>
+                {% endif %}
+            </div>
+
+            <div class="col text-center d-flex flex-column">
+                <a href="{% url 'collection_list' %}" class="card text-decoration-none w-100 mb-2 h-100">
+                    <div class="card-header text-center">Collections</div>
+                    <div class="card-body text-center">Thematic groupings of Works</div>
+                </a>
+                {% if user.is_staff %}
+                    <a href="{% url 'collection_create' %}" class="mt-auto">Add+</a>
                 {% endif %}
             </div>
 

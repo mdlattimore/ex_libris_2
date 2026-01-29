@@ -37,7 +37,7 @@ class VolumeForm(forms.ModelForm):
         model = Volume
         fields = [
             'title',
-            'bookshelf',
+            'bookshelves',
             'works',
             'book_set',
             'volume_number',

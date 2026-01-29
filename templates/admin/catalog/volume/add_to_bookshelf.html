@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="hidden" name="action" value="add_to_bookshelf_bulk">
+    <input type="hidden" name="apply" value="1">
+
+    <p>
+      You are adding <strong>{{ volumes|length }}</strong>
+      volume{{ volumes|length|pluralize }} to a bookshelf.
+    </p>
+
+    <ul>
+      {% for v in volumes|slice:":12" %}
+        <li>{{ v }}</li>
+      {% endfor %}
+      {% if volumes|length > 12 %}
+        <li>…and {{ volumes|length|add:"-12" }} more</li>
+      {% endif %}
+    </ul>
+
+    <div class="submit-row">
+      <input type="submit" value="Apply" class="default">
+      <a href="../.." class="button cancel-link">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

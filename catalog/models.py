@@ -155,6 +155,8 @@ class Work(models.Model):
         blank=True, null=True
     )
     genre = models.ManyToManyField(Genre, related_name="works", blank=True)
+    collections = models.ManyToManyField("catalog.Collection",
+                                         related_name="works", blank=True)
     work_ebook_url = models.URLField(blank=True, null=True, help_text="URL to "
                                                                   "ebook")
     notes = MarkdownxField(blank=True, null=True)
@@ -398,6 +400,8 @@ class BooksetImage(models.Model):
 
 # ------ 3.5 Bookshelf ----------------------------
 class Bookshelf(models.Model):
+    class Meta:
+        verbose_name_plural = "Bookshelves"
 
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
@@ -422,6 +426,37 @@ class Bookshelf(models.Model):
 
     def get_absolute_url(self):
         return reverse("bookshelf_detail", args=[self.slug])
+
+    def __str__(self):
+        return self.name
+
+class Collection(models.Model):
+    class Meta:
+        ordering = ["name"]
+
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=True)
+    description = MarkdownxField(blank=True, null=True)
+
+    @property
+    def description_html(self):
+        return markdownify(self.description)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.name)
+            slug = base
+            counter = 1
+
+            while Collection.objects.filter(slug=slug).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("collection_detail", args=[self.slug])
 
     def __str__(self):
         return self.name
@@ -498,9 +533,10 @@ class Volume(models.Model):
     # Bibliographic Information
     title = models.CharField(max_length=255)
     date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    bookshelf = models.ManyToManyField("catalog.Bookshelf",
-                                     related_name="volumes",
-                                        blank=True)
+    bookshelves = models.ManyToManyField("catalog.Bookshelf",
+                                         related_name="volumes",
+                                         blank=True)
+
     sort_title = models.CharField(max_length=255, editable=False, blank=True)
     works = models.ManyToManyField(Work, related_name='volumes', blank=True)
     primary_work = models.ForeignKey(
