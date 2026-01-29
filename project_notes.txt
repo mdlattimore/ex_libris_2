@@ -5,3 +5,8 @@ Total investment:
 Avg price per volume
 Number of volumes by collection
 Avg age
+
+fly ssh sftp get [path/to/remote/file] [path/to/local/save] (eg, /Users/mark/Downloads/audit.csv)
+
+e.g.
+fly ssh sftp get pick_audit_20250826.csv /Users/mark/Downloads/pick_audit.csv
