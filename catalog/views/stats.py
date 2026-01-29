@@ -2,7 +2,7 @@ from django.db.models import Sum, Avg, Max, Count
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from catalog.models import Volume, Author, Collection
+from catalog.models import Volume, Author, Bookshelf
 
 
 class StatsView(LoginRequiredMixin, TemplateView):
@@ -34,7 +34,7 @@ class StatsView(LoginRequiredMixin, TemplateView):
         )
 
         context["num_volumes_by_collection"] = (
-            Collection.objects.values("name")
+            Bookshelf.objects.values("name")
             .annotate(count=Count("volumes"))
             .order_by("name")
         )

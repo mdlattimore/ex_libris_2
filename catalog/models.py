@@ -144,8 +144,7 @@ class Work(models.Model):
     sort_title = models.CharField(max_length=255, blank=True, null=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE,
                                related_name='works')
-    collection = models.ManyToManyField("Collection", related_name="works",
-                                        blank=True)
+
     work_ebook_url = models.URLField(blank=True, null=True, help_text="URL to ")
     first_published = models.IntegerField(blank=True, null=True)
     work_type = models.CharField(
@@ -397,22 +396,12 @@ class BooksetImage(models.Model):
     def __str__(self):
         return f"{self.bookset} [{self.kind}]"
 
-# ------ 3.5 Collection ----------------------------
-class Collection(models.Model):
-    SCOPE_VOLUME = "VOLUME"
-    SCOPE_WORK = "WORK"
-    SCOPE_BOTH = "BOTH"
-
-    SCOPE_CHOICES = [
-        (SCOPE_VOLUME, "Volumes only"),
-        (SCOPE_WORK, "Works only"),
-        (SCOPE_BOTH, "Works and Volumes"),
-    ]
+# ------ 3.5 Bookshelf ----------------------------
+class Bookshelf(models.Model):
 
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
     description = MarkdownxField(blank=True, null=True)
-    scope = models.CharField( max_length=20, choices=SCOPE_CHOICES, default=SCOPE_VOLUME)
 
     @property
     def description_html(self):
@@ -424,7 +413,7 @@ class Collection(models.Model):
             slug = base
             counter = 1
 
-            while Collection.objects.filter(slug=slug).exists():
+            while Bookshelf.objects.filter(slug=slug).exists():
                 slug = f"{base}-{counter}"
                 counter += 1
 
@@ -432,7 +421,7 @@ class Collection(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("collection_detail", args=[self.slug])
+        return reverse("bookshelf_detail", args=[self.slug])
 
     def __str__(self):
         return self.name
@@ -509,7 +498,8 @@ class Volume(models.Model):
     # Bibliographic Information
     title = models.CharField(max_length=255)
     date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    collection = models.ManyToManyField("Collection", related_name="volumes",
+    bookshelf = models.ManyToManyField("catalog.Bookshelf",
+                                     related_name="volumes",
                                         blank=True)
     sort_title = models.CharField(max_length=255, editable=False, blank=True)
     works = models.ManyToManyField(Work, related_name='volumes', blank=True)

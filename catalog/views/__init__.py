@@ -6,7 +6,7 @@ from .isbn_lookup import *
 from .book_set import *
 from .stats import *
 from .base import *
-from .collections import *
+from .bookshelves import *
 from .search import *
 from .pricing import *
 from .view_images import *

@@ -3,12 +3,12 @@
 {% block content %}
 
     <br><br>
-    <h1 class="text-center display-6">{{ collection.name }} Collection</h1>
-    <p class="text-center">{{ collection.description }}</p>
+    <h1 class="text-center display-6">{{ bookshelf.name }} Bookshelf</h1>
+    <p class="text-center">{{ bookshelf.description }}</p>
 
     <div class="row g-3">
 
-    {% for volume in collection.volumes.all %}
+    {% for volume in bookshelf.volumes.all %}
         <div class="col-md-6 col-lg-4">
             <a href="{% url 'volume_detail' volume.pk %}"
                class="text-decoration-none text-reset">
@@ -20,7 +20,7 @@
 
     <br>
     {% if user.is_authenticated %}
-        <a href="{% url 'collection_update' collection.pk %}" class="btn btn-primary">Update</a>
+        <a href="{% url 'bookshelf_update' bookshelf.pk %}" class="btn btn-primary">Update</a>
     {% endif %}
     <br><br>
 

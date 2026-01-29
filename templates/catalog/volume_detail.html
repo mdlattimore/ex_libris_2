@@ -91,15 +91,15 @@
                                           style="color:red">THIS VOLUME NO LONGER IN COLLECTION</span>
                                         </div>
                                     {% endif %}
-                                    {% if volume.collection.exists %}
+                                    {% if volume.bookshelf.exists %}
                                         <div class="row">
-                                            <div class="col-sm-4">Collection:</div>
+                                            <div class="col-sm-4">Bookshelf:</div>
                                             <div class="col-sm-8 fw-bolder">
                                                 {#                                {% for coll in volume.collection.all %}#}
                                                 {#                                    <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>#}
                                                 {#                                    {% if not forloop.last %}, {% endif %}#}
                                                 {#                                {% endfor %}#}
-                                                {% for coll in volume.collection.all %}
+                                                {% for coll in volume.bookshelf.all %}
                                                     <a href="{{ coll.get_absolute_url }}">{{ coll.name }}</a>
                                                     {% if not forloop.last %},
                                                     {% endif %}

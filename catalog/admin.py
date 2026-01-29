@@ -3,7 +3,7 @@ import json
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 
-from .models import (Author, Work, BookSet, Volume, AuthorAlias, Collection,
+from .models import (Author, Work, BookSet, Volume, AuthorAlias, Bookshelf,
                      Genre, Bibliography, VolumeBibliographyReference,
                      VolumeImage, BooksetImage, DevNote)
 from django.urls import path
@@ -16,8 +16,8 @@ from django.db import models
 from django_json_widget.widgets import JSONEditorWidget
 
 
-@admin.register(Collection)
-class CollectionAdmin(admin.ModelAdmin):
+@admin.register(Bookshelf)
+class BookshelfAdmin(admin.ModelAdmin):
     list_display = ['name']
     ordering = ('name',)
 
@@ -162,7 +162,7 @@ class VolumeAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Bibliographic", {
             "fields": (
-                "title", "collection", "works", "primary_work", "book_set",
+                "title", "bookshelf", "works", "primary_work", "book_set",
             "volume_number",
                 "publisher", "publication_year",
                 "isbn13", "isbn10", "volume_content_type",
