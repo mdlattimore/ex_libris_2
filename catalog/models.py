@@ -465,6 +465,8 @@ class Collection(models.Model):
 # ----- 3.75 ----------------------------------------------
 
 class Bibliography(models.Model):
+    class Meta:
+        verbose_name_plural = "Bibliographies"
     code = models.CharField(max_length=20, unique=True)
     title = models.CharField(max_length=200)
     authors = models.CharField(max_length=200, blank=True, null=True)

@@ -219,7 +219,12 @@
                                                 <div class="col-sm-8 fw-bolder">
                                                     {% for ref in refs %}
                                                         {{ ref.bibliography.code }}:
-                                                        {{ ref.reference_detail }}{% if not forloop.last %}<br>
+                                                        {% if ref.reference_detail|slice:"0:4:1"|lower == "http" %}
+                                                            <a href="{{ ref.reference_detail }}" target="_blank">{{ ref.bibliography.code }}</a>
+                                                        {% else %}
+                                                            {{ ref.reference_detail }}
+                                                        {% endif %}
+                                                        {% if not forloop.last %}<br>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </div>
