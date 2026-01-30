@@ -92,7 +92,7 @@ class VolumeForm(forms.ModelForm):
                 Column("title", css_class="form-group col-md-4 mb-0")
             ),
             Row(
-                Column("bookshelf", css_class="form-group col-md-3 mb-0"),
+                Column("bookshelves", css_class="form-group col-md-3 mb-0"),
                 Column("works", css_class="form-group col-md-4 mb-0"),
                 Column("book_set", css_class="form-group col-md-3 mb-0"),
                 Column("volume_number", css_class="form-group col-md-2 mb-0"),
