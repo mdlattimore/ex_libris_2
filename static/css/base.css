@@ -392,7 +392,7 @@ img {
 }
 
 /* Row spacing inside cards: slightly more breathing room */
-.card.legacy-card .card-body .row {
+.card .card-body .row {
     margin-bottom: 0.5rem;
 }
 

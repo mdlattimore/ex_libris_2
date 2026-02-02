@@ -162,6 +162,7 @@ class VolumeForm(forms.ModelForm):
             ),
 
             Row(
+                Column(
                 Submit(
                     "submit",
                     "Save",
@@ -170,7 +171,7 @@ class VolumeForm(forms.ModelForm):
                 HTML('<span class="form-group col-md-1 mb-0"></span>'),
                 HTML('<a onclick="window.history.back()" class="btn '
                      'btn-danger col-md-1">Cancel</a>')
-            ))
+            )))
 
 
 class WorkCreateForm(forms.ModelForm):
