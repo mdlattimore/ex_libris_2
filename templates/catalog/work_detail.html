@@ -63,7 +63,7 @@
                 <div class="card-body">
                     Appears In:<br>
                     {% for volume in work.volumes.all %}
-                        <a href="{{ volume.get_absolute_url }}">{{ volume.title }}</a>
+                        <em><a href="{{ volume.get_absolute_url }}">{{ volume.title }}</a></em>
                         ({{ volume.publication_year }}) {{ volume.edition|default:"" }}<br>
                     {% endfor %}
                 </div>

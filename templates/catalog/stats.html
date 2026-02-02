@@ -1,26 +1,187 @@
+{#{% extends "_base.html" %}#}
+{#{% load humanize %}#}
+{#{% block content %}#}
+{#    <br>#}
+{#    <h1 class="text-center mb-1">Library Stats</h1><br>#}
+{##}
+{#    <div class="row row-cols-1 w-50 g-4 mx-auto">#}
+{#        <div class="col">#}
+{#            <div class="card">#}
+{#                <div class="card-header text-center">#}
+{#                    Collection Overview#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                    <span class="fw-bolder">Total Volumes:</span> {{ total_volumes }}<br>#}
+{#                    <span class="fw-bolder">Total Authors:</span> {{ total_authors }}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="col">#}
+{#            <div class="card">#}
+{#                <div class="card-header text-center">#}
+{#                    Author Overview#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                    <span class="fw-bolder">Total Authors:</span> {{ total_authors }}<br><br>#}
+{#                    <span class="fw-bolder">Works By Author:</span> <br>#}
+{#                    {% for author in works_by_author|slice:"0:5:1" %}#}
+{#                        &emsp;{{ author.full_name }}: {{ author.count }}<br>#}
+{#                    {% endfor %}<br>#}
+{#                    <span class="fw-bolder">Volumes By Author:</span> <br>#}
+{#                    {% for author in volumes_by_author|slice:"0:5:1" %}#}
+{#                        &emsp;{{ author.full_name }}: {{ author.count }}<br>#}
+{#                    {% endfor %}<br>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="col">#}
+{#            <div class="card">#}
+{#                <div class="card-header text-center">#}
+{#                    Collection Structure#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                    <span class="fw-bolder">Number of Volumes by Bookshelf:</span><br>#}
+{#                    {% for bookshelf in num_volumes_by_bookshelf %}#}
+{#                        &emsp;{{ bookshelf.name }}: {{ bookshelf.count }}<br>#}
+{#                    {% endfor %}<br>#}
+{#                    <span class="fw-bolder">Number of Works by Collection:</span><br>#}
+{#                    {% for collection in num_works_by_collection %}#}
+{#                        &emsp;{{ collection.name }}: {{ collection.count }}<br>#}
+{#                    {% endfor %}<br>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        {% if user.is_superuser %}#}
+{#            <div class="col">#}
+{#                <div class="card">#}
+{#                    <div class="card-header text-center">#}
+{#                        Financial Snapshot#}
+{#                    </div>#}
+{#                    <div class="card-body">#}
+{#                        <span class="fw-bolder">Total Cost of All Volumes:</span> ${{ total_volume_cost|floatformat:"2"|intcomma }}<br>#}
+{#                        <span class="fw-bolder">Average Cost of All Volumes:</span> ${{ avg_volume_cost|floatformat:"2"|intcomma }}<br>#}
+{#                        <span class="fw-bolder">Most Expensive Volume(s)</span>: {% for vol in max_cost_volumes %}{{ vol.title }} (${{ max_volume_cost|floatformat:"2"|intcomma }}){% endfor %}<br>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    </div>#}
+{##}
+{#    <br>#}
+{#{% endblock content %}#}
+
 {% extends "_base.html" %}
+{% load humanize %}
 {% block content %}
-    <br><br>
-    <p>Total Volumes: {{ total_volumes }}</p>
-    <p>Total Cost: ${{ total_cost|floatformat:2 }}</p>
-    <p>Average Cost Per Volume: ${{ avg_cost|floatformat:2 }}<br>
-        <span class="small">Note: The average includes only volumes with a recorded price greater than $0.</span>
-
-    <p>Most Expensive: ${{ max_cost|floatformat:2 }} ({{ max_cost_volume.0.title }})</p>
     <br>
-    <h3>Number of Volumes Per Collection</h3>
-    <ul>
-        {% for item in num_volumes_by_collection %}
-            <li>{{ item.name|default:"(Unknown)" }} — {{ item.count }}</li>
-        {% endfor %}
-    </ul>
-    <br>
+    <h1 class="text-center mb-3">Library Stats</h1>
 
-    <h3>Authors by Nationality</h3>
-    <p>Total Authors: {{ total_authors }}</p>
-    <ul>
-        {% for item in authors_by_nationality %}
-            <li>{{ item.nationality|default:"(Unknown)" }} — {{ item.count }}</li>
-        {% endfor %}
-    </ul>
+    <div class="row g-4 justify-content-center">
+        <div class="col-12 col-lg-8 col-xl-6">
+            <div class="card">
+                <div class="card-header text-center">Collection Overview</div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bolder">Total Volumes</span>
+                        <span>{{ total_volumes }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bolder">Total Works</span>
+                        <span>{{ total_works }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bolder">Total Authors</span>
+                        <span>{{ total_authors }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8 col-xl-6">
+            <div class="card">
+                <div class="card-header text-center">Top Authors</div>
+                <div class="card-body">
+                    <div class="fw-bolder mb-1">Works by Author</div>
+                    <ul class="list-unstyled mb-3">
+                        {% for author in works_by_author|slice:":5" %}
+                            <li class="d-flex justify-content-between">
+                                <a href="{% url 'author_detail' author.slug %}"><span>{{ author.full_name }}</span></a>
+                                <span class="text-muted">{{ author.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="fw-bolder mb-1">Volumes by Author</div>
+                    <ul class="list-unstyled mb-0">
+                        {% for author in volumes_by_author|slice:":5" %}
+                            <li class="d-flex justify-content-between">
+                                <a href="{% url 'author_detail' author.slug %}"><span>{{ author.full_name }}</span></a>
+                                <span class="text-muted">{{ author.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8 col-xl-6">
+            <div class="card">
+                <div class="card-header text-center">Collection Structure</div>
+                <div class="card-body">
+                    <div class="fw-bolder mb-1">Volumes by Bookshelf</div>
+                    <ul class="list-unstyled mb-3">
+                        {% for bookshelf in num_volumes_by_bookshelf %}
+                            <li class="d-flex justify-content-between">
+                                <a href="{% url 'bookshelf_detail' bookshelf.pk %}"><span>{{ bookshelf.name }}</span></a>
+                                <span class="text-muted">{{ bookshelf.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="fw-bolder mb-1">Works by Collection</div>
+                    <ul class="list-unstyled mb-0">
+                        {% for collection in num_works_by_collection %}
+                            <li class="d-flex justify-content-between">
+                                <a href="{% url 'collection_detail' collection.slug %}"><span>{{ collection.name }}</span></a>
+                                <span class="text-muted">{{ collection.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {% if user.is_superuser %}
+            <div class="col-12 col-lg-8 col-xl-6">
+                <div class="card">
+                    <div class="card-header text-center">Financial Snapshot</div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bolder">Total Cost</span>
+                            <span>${{ total_volume_cost|default:0|floatformat:"2"|intcomma }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bolder">Average Cost</span>
+                            <span>
+            {% if avg_volume_cost %}
+                ${{ avg_volume_cost|floatformat:"2"|intcomma }}
+            {% else %}
+                —
+            {% endif %}
+          </span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bolder">Most Expensive Volume(s):</span>
+                            {% for vol in max_cost_volumes %}
+                                <span><a href="{% url 'volume_detail' vol.id %}">{{ vol.title }}</a> (${{ max_volume_cost|floatformat:"2"|intcomma }})</span>
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <br>
 {% endblock content %}

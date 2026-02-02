@@ -9,7 +9,7 @@ from django.views.generic import DetailView, CreateView, UpdateView
 from django.views.generic import ListView
 
 from catalog.forms import AuthorCreateForm
-from catalog.models import Author, Work
+from catalog.models import Author, Work, Volume
 
 
 class AuthorCreateView(LoginRequiredMixin, CreateView):
@@ -128,6 +128,22 @@ class AuthorDetailView(DetailView):
     model = Author
     context_object_name = 'author'
     template_name = "catalog/author_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        author = self.object
+
+        # Keep your existing works logic (whatever it is)
+        context["works"] = author.works.all().order_by("sort_title")  # adjust field
+
+        # Add volumes linked to any of the author's works
+        context["volumes"] = (
+            Volume.objects
+            .filter(works__author=author)
+            .distinct()
+            .order_by("sort_title")  # adjust if you sort differently
+        )
+        return context
 
 
 def author_redirect_by_id(request, pk):

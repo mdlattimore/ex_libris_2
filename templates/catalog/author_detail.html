@@ -5,16 +5,72 @@
 {% block content %}
     <br>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
 
-            <div class="row mb-3" style="height: 150px;"></div>
+            {#            <div class="row mb-3" style="height: 150px;"></div>#}
+            {##}
+            {#            <h1 class="display-7">Works</h1>#}
+            {#            {% for work in works %}#}
+            {#                <a href="{% url 'work_detail' work.pk %}">{{ work.title }}</a><br>#}
+            {#            {% endfor %}#}
+            {#            <h1 class="display-7">Volumes</h1>#}
+            {#            {% for volume in volumes %}#}
+            {#                <a href="{% url 'volume_detail' volume.pk %}">{{ volume.title }} ({{ volume.edition }})</a><br>#}
+            {#            {% endfor %}#}
+            <div class="accordion" id="authorAccordion">
 
-            <h1 class="display-7">Works</h1>
-            {% for work in author.works.all %}
-                <p><a href="{% url 'work_detail' work.pk %}">{{ work.title }}</a></p>
-            {% endfor %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingWorks">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseWorks"
+                                aria-expanded="false" aria-controls="collapseWorks">
+                            Works <span class="ms-2 text-muted">({{ works|length }})</span>
+                        </button>
+                    </h2>
+                    <div id="collapseWorks" class="accordion-collapse collapse"
+                         aria-labelledby="headingWorks" data-bs-parent="#authorAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled mb-0">
+                                {% for w in works %}
+                                    <li style="margin-bottom: 10px;">
+                                        <a href="{% url 'work_detail' w.pk %}">{{ w }}</a>
+                                    </li>
+                                {% empty %}
+                                    <li class="text-muted">No works.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingVolumes">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseVolumes"
+                                aria-expanded="false" aria-controls="collapseVolumes">
+                            Volumes <span class="ms-2 text-muted">({{ volumes|length }})</span>
+                        </button>
+                    </h2>
+                    <div id="collapseVolumes" class="accordion-collapse collapse"
+                         aria-labelledby="headingVolumes" data-bs-parent="#authorAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled mb-0">
+                                {% for v in volumes %}
+                                    <li style="margin-bottom: 10px;">
+                                        <a href="{% url 'volume_detail' v.pk %}"><em>{{ v.title }}</em></a> ({{ v.edition }})
+                                    </li>
+                                {% empty %}
+                                    <li class="text-muted">No volumes linked.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <div class="row">
                 <div class="col-md-8">
                     <h1 class="text-start">{{ author.full_name }}</h1>
