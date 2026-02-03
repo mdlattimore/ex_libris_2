@@ -6,77 +6,6 @@
         <img src="../static/images/el_logo.png" alt="logo" style="max-height: 100px; width: auto;">
     </div>
 
-    <!-- Search Bar -->
-    {#    <h1 class="display-6 text-center mb-1">Search</h1>#}
-    {#    <div class="border border border-secondary shadow rounded-3 mb-4">#}
-    {#        <div class="row">#}
-    {#            <div class="col">#}
-    {#                <form action="{% url 'search_results' %}" method="get"#}
-    {#                      class="d-flex input-group me-3">#}
-    {#                    <input type="search" class="form-control"#}
-    {#                           style="border-radius: 7px 0 0 7px;"#}
-    {#                           name="q"#}
-    {#                           placeholder="Search Work, Volume, Author, or Set"#}
-    {#                           aria-label="Search"/>#}
-    {#                    <button class="input-group-text text-black border-0" type="submit"#}
-    {#                            style="border-radius: 0 7px 7px 0;">#}
-    {#                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"#}
-    {#                             fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">#}
-    {#                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001#}
-    {#                                 q.044.06.098.115l3.85 3.85a1 1 0 0 0#}
-    {#                                 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1z#}
-    {#                                 M12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>#}
-    {#                        </svg>#}
-    {#                    </button>#}
-    {#                </form>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
-
-    <!-- Navigation -->
-    {#    <h1 class="display-6 text-center mb-1">Browse</h1>#}
-
-    {#    <div class="border border border-secondary shadow rounded-3 mb-5 pt-2">#}
-    {##}
-    {#        <div class="row m-2 mb-5">#}
-    {#            <div class="col text-center">#}
-    {#                <a href="{% url 'work_list' %}" class="card text-decoration-none h-75 mb-2">#}
-    {#                    <div class="card-header text-center">Works</div>#}
-    {#                    <div class="card-body text-center">The work itself</div>#}
-    {#                </a>#}
-    {#                <a href="{% url 'work_create' %}">Add+</a>#}
-    {#            </div>#}
-    {#            <div class="col text-center">#}
-    {#                <a href="{% url 'volume_list' %}" class="card text-decoration-none h-100 mb-2">#}
-    {#                    <div class="card-header text-center">Volumes</div>#}
-    {#                    <div class="card-body text-center">Physical copies</div>#}
-    {#                </a>#}
-    {#                <a href="{% url 'isbn_lookup' %}">Add+</a>#}
-    {##}
-    {#            </div>#}
-    {#            <div class="col text-center">#}
-    {#                <a href="{% url 'author_list' %}" class="card text-decoration-none h-100 mb-2">#}
-    {#                    <div class="card-header text-center">Authors</div>#}
-    {#                    <div class="card-body text-center">Creators</div>#}
-    {#                </a>#}
-    {#                <a href="{% url 'author_create' %}">Add+</a>#}
-    {##}
-    {#            </div>#}
-    {#            <div class="col text-center">#}
-    {#                <a href="{% url 'collection_list' %}" class="card text-decoration-none h-100 mb-2">#}
-    {#                    <div class="card-header text-center">Collections</div>#}
-    {#                    <div class="card-body text-center">Thematic groupings</div>#}
-    {#                </a>#}
-    {#                <a href="{% url 'collection_create' %}">Add+</a>#}
-    {##}
-    {#            </div>#}
-    {#            <div class="col">#}
-    {#                <a href="{% url 'bookset_list' %}" class="card text-decoration-none h-100 mb-2">#}
-    {#                    <div class="card-header text-center">Sets</div>#}
-    {#                    <div class="card-body text-center">Book sets</div>#}
-    {#                </a>#}
-    {#            </div>#}
-    {#        </div>#}
     <div class="border border-secondary shadow rounded-3 mb-5 pt-2">
         <div class="row m-2 mb-3 align-items-stretch">
             <div class="col text-center d-flex flex-column">
@@ -166,17 +95,7 @@
     {% if not user.is_staff %}
         <h1 class="display-7 mb-0">Book Roulette</h1>
         <em>A random pick from the shelves</em>
-        {#        <div class="row mt-3 mb-3">#}
-        {#            <div class="col-2">#}
-        {#                <a href="{% url 'volume_detail' rand_vol.pk %}"><img src="{{ cover }}" alt="Random book cover"#}
-        {#                                                                     style="max-width: 150px; height:auto"></a>#}
-        {#            </div>#}
-        {#            <div class="col-10">#}
-        {#                <p><span class="fst-italic fs-5">{{ title }}</span> {% if rand_vol.edition %}({{ rand_vol.edition }}#}
-        {#                    ){% endif %}</p>#}
-        {#                {{ blurb }}#}
-        {#            </div>#}
-        {#        </div>#}
+
         <div class="row mt-3 mb-3 g-3 align-items-start">
             <div class="col-12 col-md-2">
                 <a href="{% url 'volume_detail' rand_vol.pk %}">
@@ -206,10 +125,10 @@
     <div class="border border border-secondary shadow rounded-3 mb-5 pt-2">
         <div class="row p-2 m-3">
             <div class="col">
-                <p class="text-center">{{ works|length }} Works</p>
+                <p class="text-center">{{ volumes|length }} Volumes</p>
             </div>
             <div class="col">
-                <p class="text-center">{{ volumes|length }} Volumes</p>
+                <p class="text-center">{{ works|length }} Works</p>
             </div>
             <div class="col">
                 <p class="text-center">{{ authors|length }} Authors</p>

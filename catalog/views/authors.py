@@ -134,7 +134,8 @@ class AuthorDetailView(DetailView):
         author = self.object
 
         # Keep your existing works logic (whatever it is)
-        context["works"] = author.works.all().order_by("sort_title")  # adjust field
+        context["works"] = author.works.all().order_by("first_published")  #
+        # adjust field
 
         # Add volumes linked to any of the author's works
         context["volumes"] = (

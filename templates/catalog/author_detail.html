@@ -33,7 +33,7 @@
                             <ul class="list-unstyled mb-0">
                                 {% for w in works %}
                                     <li style="margin-bottom: 10px;">
-                                        <a href="{% url 'work_detail' w.pk %}">{{ w }}</a>
+                                        <a href="{% url 'work_detail' w.pk %}">{{ w }} {% if w.first_published %}({{ w.first_published }}){% endif %}</a>
                                     </li>
                                 {% empty %}
                                     <li class="text-muted">No works.</li>
