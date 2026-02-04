@@ -65,6 +65,12 @@ class VolumeForm(forms.ModelForm):
             'estimated_value',
             'edition_notes',
             'volume_json',
+            'disposition',
+            'disposition_date',
+            'recipient',
+            'sales_price',
+            'shipping_charged',
+            'shipping_cost',
         ]
 
         widgets = {
@@ -160,7 +166,25 @@ class VolumeForm(forms.ModelForm):
                 Column("edition_notes", css_class="form-group col-md-5 mb-0"),
                 Column("volume_json", css_class="form-group col-md-7 mb-0"),
             ),
-
+            Row(
+                HTML("""<h5 class="fw-light">Disposition<h5> """)
+            ),
+            Row(
+                Column("disposition", css_class="form-group col-md-6 mb-0"),
+                Column("disposition_date", css_class="form-group col-md-6 mb-0"),
+            ),
+            Row(
+                Column("recipient", css_class="form-group col-md-6 mb-0"),
+            ),
+            Row(
+                Column("sales_price", css_class="form-group col-md-6 mb-0"),
+            ),
+            Row(
+                Column("shipping_charged", css_class="form-group col-md-6 mb-0"),
+            ),
+            Row(
+                Column("shipping_cost", css_class="form-group col-md-6 mb-0"),
+            ),
             Row(
                 Column(
                 Submit(

@@ -282,7 +282,8 @@ class VolumeAdmin(admin.ModelAdmin):
                 "price", "estimated_value", "edition_notes",),
         }),
         ("Disposition", {
-            "fields": ()
+            "fields": ("disposition", "recipient", "sales_price",
+                "shipping_charged", "shipping_cost", "disposition_date")
         }),
     ]
 
