@@ -7,80 +7,97 @@ from django.views.generic import ListView, DetailView, UpdateView
 from catalog.forms import VolumeForm
 from catalog.utils.normalization import normalize_sort_title
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, F
+from django.db import connection
 
 from catalog.models import (Volume, Work, VolumeImage,
                             VolumeBibliographyReference)
 
-class VolumeListView(ListView):
-    model = Volume
-    context_object_name = "volumes"
-    template_name = "catalog/volume_list.html"
-
-    def get_queryset(self):
-        return (
-            Volume.objects
-            .select_related("book_set")
-            .prefetch_related("works__author")  # key change
-        )
-
-
-
-
-# class VolumeDetailView(DetailView):
+# class VolumeListView(ListView):
 #     model = Volume
-#     context_object_name = "volume"
-#     template_name = "catalog/volume_detail.html"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         volume = self.object
-#
-#         # Collect all unique genres from associated works (field is singular)
-#         genres = (
-#             volume.works.values_list("genre__name", flat=True)
-#             .distinct()
-#             .order_by("genre__name")
-#         )
-#
-#         context["genres"] = genres
-#         return context
-
-# class VolumeDetailView(DetailView):
-#     model = Volume
-#     context_object_name = "volume"
-#     template_name = "catalog/volume_detail.html"
+#     context_object_name = "volumes"
+#     template_name = "catalog/volume_list.html"
 #
 #     def get_queryset(self):
-#         # Works are used in multiple places: first_work, list of works, genres query.
-#         works_qs = Work.objects.select_related("author").order_by("sort_title")
-#
 #         return (
 #             Volume.objects
-#             .select_related("book_set")  # keep if FK
-#             # If publisher is FK, add it; if CharField, omit.
-#             # .select_related("publisher")
-#             .prefetch_related(
-#                 "collection",  # whatever your M2M related name is (you used volume.collection)
-#                 Prefetch("works", queryset=works_qs),
-#                 # bibliography_refs likely a reverse FK/m2m; select bibliography to avoid N+1 on ref.bibliography.code
-#                 "bibliography_refs__bibliography",
-#             )
+#             .select_related("book_set")
+#             .prefetch_related("works__author")  # key change
 #         )
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         volume = self.object
-#
-#         # If works are prefetched with genre, this becomes cheap and may not hit DB,
-#         # but values_list/distinct is still usually 1 DB query; that's fine.
-#         genres = (
-#             volume.works.values_list("genre__name", flat=True)
-#             .distinct()
-#             .order_by("genre__name")
-#         )
-#         context["genres"] = genres
-#         return context
+
+
+class VolumeListView(ListView):
+    model = Volume
+    template_name = "catalog/volume_list.html"
+    context_object_name = "volumes"
+    # paginate_by = 36
+
+    SORTS = {
+        "title": ["sort_title", "title", "id"],
+        "date_added": ["date_added", "id"],
+        "pub_year": ["publication_year", "sort_title", "id"],
+        "publisher": ["publisher", "sort_title", "id"],
+        "acq_date": ["acquisition_date", "sort_title", "id"],
+        "status": ["status", "sort_title", "id"],
+        "value": ["estimated_value", "sort_title", "id"],
+        "isbn": ["isbn13", "sort_title", "id"],
+    }
+
+    DEFAULT_SORT = "title"
+    DEFAULT_DIR = "asc"
+
+    def get_queryset(self):
+        qs = super().get_queryset().select_related(
+            "primary_work",
+            "book_set",
+            "cover_image",
+        ).prefetch_related(
+            "bookshelves",
+        )
+
+        sort = self.request.GET.get("sort", self.DEFAULT_SORT)
+        direction = self.request.GET.get("dir", self.DEFAULT_DIR)
+
+        if sort not in self.SORTS:
+            sort = self.DEFAULT_SORT
+        if direction not in ("asc", "desc"):
+            direction = self.DEFAULT_DIR
+
+        self.sort = sort
+        self.direction = direction
+
+        fields = self.SORTS[sort]
+        nulls_last_fields = {"pub_year", "acq_date", "value", "isbn",
+            "publisher"}
+        use_nulls_last = sort in nulls_last_fields
+
+        supports_nulls_ordering = getattr(connection.features,
+                                          "supports_nulls_ordering", False)
+
+        order_by = []
+        for field in fields:
+            expr = F(field)
+            if use_nulls_last and supports_nulls_ordering:
+                expr = expr.asc(nulls_last=True) if direction == "asc" else expr.desc(nulls_last=True)
+            else:
+                expr = expr.asc() if direction == "asc" else expr.desc()
+            order_by.append(expr)
+
+
+        return qs.order_by(*order_by)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["sort"] = getattr(self, "sort", self.DEFAULT_SORT)
+        ctx["dir"] = getattr(self, "direction", self.DEFAULT_DIR)
+
+        view = self.request.GET.get("view", "grid")
+        if view not in ("grid", "list"):
+            view = "grid"
+        ctx["view"] = view
+
+        return ctx
+
 
 
 

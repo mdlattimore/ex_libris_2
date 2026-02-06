@@ -1,0 +1,9 @@
+<div class="row g-3">
+    {% for volume in volumes %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
+                {% include "partials/volume_card.html" %}
+            </a>
+        </div>
+    {% endfor %}
+</div>

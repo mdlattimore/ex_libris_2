@@ -1,0 +1,95 @@
+<div class="d-flex align-items-start gap-3 py-2 px-3
+ border rounded shadow-sm catalog-item h-100">
+
+
+    {% if volume.cover_src %}
+        <div class="position-relative d-inline-block">
+            <img
+                    src="{{ volume.cover_src }}"
+                    alt="{{ volume.title }}"
+                    class="rounded shadow-sm"
+                    style="width:40px;height:auto;">
+            {% if volume.cover_is_stock %}
+                {#                <span class="badge position-absolute bottom-0 end-0 m-1"#}
+                {#                      style="background: rgba(0,0,0,0.35); font-size: 0.65rem; font-weight: 500;">#}
+                {#  Stock Image#}
+                {#</span>#}
+
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+             style="width:40px;height:80px;">
+            <i class="bi bi-book text-muted fs-2"></i>
+        </div>
+    {% endif %}
+
+
+    <div class="flex-fill">
+        {#        <h6 class="mb-0">{{ volume.title }}</h6>#}
+        {##}
+        {##}
+        {#        <small class="text-muted">#}
+        {#            {% with w=volume.works.all|first %}#}
+        {#                {% if w %}#}
+        {#                    <span>{{ w.author }}</span>#}
+        {#                {% endif %}#}
+        {#            {% endwith %}#}
+        {#        </small>#}
+        {#    {% if volume.edition %}#}
+        {#            <small><span>({{ volume.edition }})</span></small><br>#}
+        {#        {% endif %}#}
+        {##}
+        {#        {% if volume.disposition %}#}
+        {#            <small>#}
+        {#                <span class="text-danger">THIS VOLUME NO LONGER IN COLLECTION</span>#}
+        {#            </small>#}
+        {#        {% endif %}#}
+
+        <div class="fw-semibold lh-sm">{{ volume.title }}</div>
+        <div class="small text-muted lh-sm">
+            {{ volume.primary_work.author }}
+            {% if volume.edition %} · {{ volume.edition }}{% endif %}
+        </div>
+
+    </div>
+    <div class="ms-auto text-muted small">
+        {{ volume.publisher }} ({{ volume.publication_year }})<br>
+        {% if volume.disposition %}
+          <div class="small text-danger fw-semibold">No longer in collection</div>
+      {% endif %}
+    </div>
+
+</div>
+
+
+{#<div class="d-flex align-items-start gap-3 py-2 px-2 border-bottom">#}
+{##}
+{#  {% if volume.cover_src %}#}
+{#      <img#}
+{#          src="{{ volume.cover_src }}"#}
+{#          alt=""#}
+{#          class="rounded"#}
+{#          style="width:40px;height:auto;">#}
+{#  {% else %}#}
+{#      <div style="width:40px;height:60px;"></div>#}
+{#  {% endif %}#}
+{##}
+{#  <div class="flex-fill">#}
+{#      <div class="fw-semibold">{{ volume.title }}</div>#}
+{##}
+{#      <div class="small text-muted">#}
+{#          {% if volume.primary_work %}#}
+{#              {{ volume.primary_work.author }}#}
+{#          {% endif %}#}
+{#          {% if volume.edition %}#}
+{#              · {{ volume.edition }}#}
+{#          {% endif %}#}
+{#      </div>#}
+{##}
+{#      {% if volume.disposition %}#}
+{#          <div class="small text-danger fw-semibold">No longer in collection</div>#}
+{#      {% endif %}#}
+{#  </div>#}
+{##}
+{#</div>#}

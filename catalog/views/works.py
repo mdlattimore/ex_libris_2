@@ -13,6 +13,7 @@ from catalog.models import BookSet
 from catalog.models import Work, Volume
 from catalog.utils.normalization import normalize_sort_title
 from catalog.views import CatalogBaseView
+from django.db.models import Prefetch
 
 
 class WorkCreateView(LoginRequiredMixin, CreateView):
@@ -78,7 +79,6 @@ class WorkUpdateView(UpdateView):
 
 
 from itertools import chain
-from django.db.models import Prefetch
 
 # class WorkListView(CatalogBaseView):
 #     model = Work

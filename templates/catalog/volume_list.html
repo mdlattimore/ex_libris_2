@@ -1,56 +1,60 @@
-{#{% extends "_base.html" %}#}
-{##}
-{#{% block content %}#}
-{#    <br>#}
-{#    <h1 class="display-6 text-center">All Books</h1>#}
-{#    #}
-{##}
-{#    <div class="container mt-3 list-container">#}
-{#        {% for volume in volumes %}#}
-{#            <a href="{{ volume.get_absolute_url }}" class="fw-light text-italic text-decoration-none"#}
-{#               style="color:black;">#}
-{#                <div class="d-flex justify-content-between align-items-center border-bottom py-1 catalog-item mb-2">#}
-{#                    <div>#}
-{##}
-{#                        <i>{{ volume.title }}</i>&nbsp; <span#}
-{#                            class="fw-lighter small"> by {{ volume.works.first.author }}</span>#}
-{#                    </div>#}
-{#                    <div class="text-muted small text-end">#}
-{#                        <i class="bi bi-chevron-right ms-1 fw-light">#}
-{#                            {% if volume.edition %}#}
-{#                                {{ volume.edition }} |#}
-{#                            {% endif %}#}
-{#                            {{ volume.publisher }}#}
-{#                            ({{ volume.publication_year }})#}
-{#                        </i>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </a>#}
-{#        {% endfor %}#}
-{#    </div>#}
-{#    #}
-{##}
-{##}
-{##}
-{#{% endblock content %}#}
+
 
 {% extends "_base.html" %}
 
 {% block content %}
-    <br>
-    <h1 class="display-6 text-center">All Books</h1>
+    <h1 class="display-6 text-center mt-3">All Books</h1>
+    <form method="get" class="d-flex gap-2 align-items-center justify-content-center mb-3">
+        <input type="hidden" name="view" value="{{ view }}">
+
+        <select name="sort" class="form-select-sm w-auto" onchange="this.form.submit()">
+            <option value="date_added" {% if sort == "date_added" %}selected{% endif %}>Date added</option>
+            <option value="title" {% if sort == "title" %}selected{% endif %}>Title</option>
+            <option value="pub_year" {% if sort == "pub_year" %}selected{% endif %}>Publication year</option>
+            <option value="publisher" {% if sort == "publisher" %}selected{% endif %}>Publisher</option>
+            <option value="acq_date" {% if sort == "acq_date" %}selected{% endif %}>Acquisition date</option>
+            <option value="status" {% if sort == "status" %}selected{% endif %}>Status</option>
+            <option value="value" {% if sort == "value" %}selected{% endif %}>Estimated value</option>
+            <option value="isbn" {% if sort == "isbn" %}selected{% endif %}>ISBN</option>
+        </select>
+
+        <select name="dir" class="form-select-sm w-auto" onchange="this.form.submit()">
+            <option value="asc" {% if dir == "asc" %}selected{% endif %}>Asc</option>
+            <option value="desc" {% if dir == "desc" %}selected{% endif %}>Desc</option>
+        </select>
+
+        {# preserve other filters/search params later by adding hidden inputs #}
+    </form>
+
     <br>
 
-    <div class="row g-3">
 
+    {# Grid Display #}
+
+{#    <div class="row g-3">#}
+{#        {% for volume in volumes %}#}
+{#            <div class="col-md-6 col-lg-4">#}
+{#                <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">#}
+{#                    {% include "partials/volume_card.html" %}#}
+{#                </a>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+
+
+    {# List Display #}
+
+    <div>
     {% for volume in volumes %}
-        <div class="col-md-6 col-lg-4">
+        <div class="vstack gap-3">
             <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
-                {% include "partials/volume_card.html" %}
+                {% include "partials/volume_list_entry.html" %}
             </a>
         </div>
     {% endfor %}
-</div>
+    </div>
+
+
 
 
 
