@@ -58,12 +58,26 @@ class VolumeListView(ListView):
     DEFAULT_DIR = "asc"
 
     def get_queryset(self):
-        qs = super().get_queryset().select_related(
-            "primary_work",
-            "book_set",
-            "cover_image",
-        ).prefetch_related(
-            "bookshelves",
+        # qs = super().get_queryset().select_related(
+        #     "primary_work",
+        #     "book_set",
+        #     "cover_image",
+        # ).prefetch_related(
+        #     "bookshelves",
+        # )
+
+        qs = (
+            super().get_queryset()
+            .select_related(
+                "primary_work",
+                "book_set",
+                "cover_image",
+                # add this ONLY if Work.author is FK:
+                "primary_work__author",
+            )
+            # drop bookshelves if you don't display them:
+            # .prefetch_related("bookshelves")
+            .defer("notes", "edition_notes", "description", "volume_json")
         )
 
         sort = self.request.GET.get("sort", self.DEFAULT_SORT)

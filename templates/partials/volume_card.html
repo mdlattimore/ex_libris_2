@@ -29,11 +29,15 @@
 
 
         <small class="text-muted">
-            {% with w=volume.works.all|first %}
-                {% if w %}
-                    <span>{{ w.author }}</span>
-                {% endif %}
-            {% endwith %}
+            {#            {% with w=volume.works.all|first %}#}
+            {#                {% if w %}#}
+            {#                    <span>{{ w.author }}</span>#}
+            {#                {% endif %}#}
+            {#            {% endwith %}#}
+            {% if volume.primary_work %}
+                <small class="text-muted">{{ volume.primary_work.author }}</small><br>
+            {% endif %}
+
         </small><br>
 
         <small>
