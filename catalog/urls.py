@@ -30,7 +30,11 @@ urlpatterns = [
     path('work_detail/<slug:slug>/', views.WorkDetailView.as_view(),
          name='work_detail'),
 
-    path('volume_list/', views.VolumeListView.as_view(), name='volume_list'),
+    path('volume_list/', views.VolumeListView.as_view(),
+         name='volume_list'),
+    # path('volume_grid/', views.VolumeListView.as_view(),
+    #      name='volume_grid'),
+
     # OLD URL — keep it above the slug pattern
     path("volume_detail/<int:pk>/", views.volume_redirect_by_id,
          name="volume_detail_old"),

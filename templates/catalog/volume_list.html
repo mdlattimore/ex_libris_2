@@ -25,36 +25,65 @@
 
         {# preserve other filters/search params later by adding hidden inputs #}
     </form>
+    <div class="d-flex justify-content-center">
+        <a href="{% url 'volume_list' %}?view=list&sort={{ sort }}&dir={{ dir }}{% if show_all %}&show_all={{ show_all }}{% endif %}"><i class="bi bi-list-ul"
+                                                                                     style="font-size:1.25rem"></i>
+        </a>&emsp;
+        <a href="{% url 'volume_list' %}?view=grid&sort={{ sort }}&dir={{ dir }}{% if show_all %}&show_all={{ show_all }}{% endif %}"><i class="bi bi-grid-3x3-gap-fill"
+                                                                                     style="font-size:1.25rem"></i></a>&emsp;
 
+        {% if show_all %}
+  <a href="?view={{ view }}&sort={{ sort }}&dir={{ dir }}">Paginate</a>
+{% else %}
+  <a href="?view={{ view }}&sort={{ sort }}&dir={{ dir }}&show_all">Show all</a>
+{% endif %}
+
+
+
+    </div>
     <br>
 
 
     {# Grid Display #}
-
-{#    <div class="row g-3">#}
-{#        {% for volume in volumes %}#}
-{#            <div class="col-md-6 col-lg-4">#}
-{#                <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">#}
-{#                    {% include "partials/volume_card.html" %}#}
-{#                </a>#}
-{#            </div>#}
-{#        {% endfor %}#}
-{#    </div>#}
-
-
-    {# List Display #}
-
-    <div>
-    {% for volume in volumes %}
-        <div class="vstack gap-3">
-            <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
-                {% include "partials/volume_list_entry.html" %}
-            </a>
+    {% if view == "grid" %}
+        <div class="row g-3">
+            {% for volume in volumes %}
+                <div class="col-md-6 col-lg-4">
+                    <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
+                        {% include "partials/volume_card.html" %}
+                    </a>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-    </div>
 
 
+        {# List Display #}
+    {% else %}
+        <div>
+            {% for volume in volumes %}
+                <div class="vstack gap-3">
+                    <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
+                        {% include "partials/volume_list_entry.html" %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <br>
+
+    {% if is_paginated %}
+        <nav>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Prev</a>
+            {% endif %}
+
+            &emsp;Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&emsp;
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Next</a>
+            {% endif %}
+        </nav>
+    {% endif %}
 
 
 

@@ -30,7 +30,18 @@ class VolumeListView(ListView):
     model = Volume
     template_name = "catalog/volume_list.html"
     context_object_name = "volumes"
-    # paginate_by = 36
+    paginate_by = 36
+
+
+
+    def get_show_all(self):
+        return "show_all" in self.request.GET
+
+    def get_paginate_by(self, queryset):
+        view = self.request.GET.get("view", "grid")
+        if self.get_show_all():
+            return None
+        return 42 if view == "list" else 33
 
     SORTS = {
         "title": ["sort_title", "title", "id"],
@@ -90,6 +101,7 @@ class VolumeListView(ListView):
         ctx = super().get_context_data(**kwargs)
         ctx["sort"] = getattr(self, "sort", self.DEFAULT_SORT)
         ctx["dir"] = getattr(self, "direction", self.DEFAULT_DIR)
+        ctx["show_all"] = self.get_show_all()
 
         view = self.request.GET.get("view", "grid")
         if view not in ("grid", "list"):
