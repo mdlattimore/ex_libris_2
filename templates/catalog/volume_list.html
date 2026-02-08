@@ -26,18 +26,20 @@
         {# preserve other filters/search params later by adding hidden inputs #}
     </form>
     <div class="d-flex justify-content-center">
-        <a href="{% url 'volume_list' %}?view=list&sort={{ sort }}&dir={{ dir }}{% if show_all %}&show_all={{ show_all }}{% endif %}"><i class="bi bi-list-ul"
-                                                                                     style="font-size:1.25rem"></i>
+        <a href="{% url 'volume_list' %}?view=grid&sort={{ sort }}&dir=
+                {{ dir }}{% if show_all %}&show_all={{ show_all }}{% endif %}"><i class="bi bi-grid-3x3-gap-fill"
+                                                                                  style="font-size:1.25rem"></i></a>&emsp;
+
+        <a href="{% url 'volume_list' %}?view=list&sort={{ sort }}&dir=
+                {{ dir }}{% if show_all %}&show_all={{ show_all }}{% endif %}"><i class="bi bi-list-ul"
+                                                                                  style="font-size:1.25rem"></i>
         </a>&emsp;
-        <a href="{% url 'volume_list' %}?view=grid&sort={{ sort }}&dir={{ dir }}{% if show_all %}&show_all={{ show_all }}{% endif %}"><i class="bi bi-grid-3x3-gap-fill"
-                                                                                     style="font-size:1.25rem"></i></a>&emsp;
 
         {% if show_all %}
-  <a href="?view={{ view }}&sort={{ sort }}&dir={{ dir }}">Paginate</a>
-{% else %}
-  <a href="?view={{ view }}&sort={{ sort }}&dir={{ dir }}&show_all">Show all</a>
-{% endif %}
-
+            <a href="?view={{ view }}&sort={{ sort }}&dir={{ dir }}">Paginate</a>
+        {% else %}
+            <a href="?view={{ view }}&sort={{ sort }}&dir={{ dir }}&show_all">Show all</a>
+        {% endif %}
 
 
     </div>
