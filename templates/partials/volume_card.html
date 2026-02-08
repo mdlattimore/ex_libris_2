@@ -34,9 +34,17 @@
             {#                    <span>{{ w.author }}</span>#}
             {#                {% endif %}#}
             {#            {% endwith %}#}
+            {#            {% if volume.primary_work %}#}
+            {#                <small class="text-muted">{{ volume.primary_work.author }}</small><br>#}
+            {#            {% endif %}#}
             {% if volume.primary_work %}
-                <small class="text-muted">{{ volume.primary_work.author }}</small><br>
+                {{ volume.primary_work.author }}
+            {% else %}
+                {% with w=volume.works.all|first %}
+                    {% if w %}{{ w.author }}{% endif %}
+                {% endwith %}
             {% endif %}
+
 
         </small><br>
 

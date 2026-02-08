@@ -75,10 +75,13 @@ class VolumeListView(ListView):
                 # add this ONLY if Work.author is FK:
                 "primary_work__author",
             )
-            # drop bookshelves if you don't display them:
-            # .prefetch_related("bookshelves")
-            .defer("notes", "edition_notes", "description", "volume_json")
+            .prefetch_related("works", "works__author")
+
         )
+        #     drop bookshelves if you don't display them:
+        #     .prefetch_related("bookshelves")
+        #     .defer("notes", "edition_notes", "description", "volume_json")
+
 
         sort = self.request.GET.get("sort", self.DEFAULT_SORT)
         direction = self.request.GET.get("dir", self.DEFAULT_DIR)
