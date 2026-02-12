@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, UpdateView
 
 from catalog.forms import VolumeForm
+from catalog.services.covers_google import cache_google_cover_for_volume
 from catalog.utils.normalization import normalize_sort_title
 
 from django.db.models import Prefetch, F
@@ -220,6 +221,8 @@ def volume_create_view(request):
     form = VolumeForm(request.POST or None)
     if form.is_valid():
         volume = form.save()
+        cache_google_cover_for_volume(volume)
+
         return render(request, "partials/volume_saved.html", {"volume": volume})
     return render(request, "partials/volume_form_errors.html", {"form": form})
 
