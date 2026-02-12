@@ -112,6 +112,7 @@ class BooksetImageInline(admin.TabularInline):
 
 @admin.register(BookSet)
 class BookSetAdmin(admin.ModelAdmin):
+
     list_display = ['title']
     inlines = [BooksetImageInline]
 

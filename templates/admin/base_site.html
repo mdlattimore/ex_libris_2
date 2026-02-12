@@ -1,0 +1,9 @@
+{#Add admin_overrides.css globally (within admin)#}
+
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/admin_overrides.css' %}">
+{% endblock %}

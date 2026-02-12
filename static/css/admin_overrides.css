@@ -56,3 +56,11 @@
 .form-group.field-volume_json #id_volume_json {
     width: 100% !important;
 }
+
+/* Neutralize MarkdownX autosize ratchet */
+textarea.markdownx-editor {
+  height: 250px !important;
+  max-height: 250px !important;
+  overflow-y: auto !important;
+  resize: vertical;
+}
