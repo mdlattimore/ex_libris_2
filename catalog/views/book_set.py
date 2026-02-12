@@ -93,16 +93,22 @@ class BookSetListView(CatalogBaseView):
         #     .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
         #     .order_by("title")
         # )
+        # volumes_qs = (
+        #     Volume.objects
+        #     .select_related("cover_image", "primary_work__author")
+        #     .prefetch_related("works__author")
+        #     .only(
+        #         "id", "slug", "title", "sort_title",
+        #         "cover_url", "cover_image_id",
+        #         "cover_image__image_display",
+        #         "primary_work_id", "primary_work__author_id",
+        #     )
+        #     .order_by("sort_title")
+        # )
         volumes_qs = (
             Volume.objects
             .select_related("cover_image", "primary_work__author")
             .prefetch_related("works__author")
-            .only(
-                "id", "slug", "title", "sort_title",
-                "cover_url", "cover_image_id",
-                "cover_image__image_display",
-                "primary_work_id", "primary_work__author_id",
-            )
             .order_by("sort_title")
         )
 
