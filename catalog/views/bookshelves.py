@@ -50,19 +50,31 @@ class BookshelfDetailView(DetailView):
     context_object_name = "bookshelf"
     template_name = "catalog/bookshelf_detail.html"
 
-    def get_queryset(self):
-        works_qs = Work.objects.select_related("author").order_by("sort_title")
+    # def get_queryset(self):
+    #     works_qs = Work.objects.select_related("author").order_by("sort_title")
+    #
+    #     volumes_qs = (
+    #         Volume.objects
+    #         .order_by("sort_title")
+    #         .prefetch_related(Prefetch("works", queryset=works_qs))
+    #     )
+    #
+    #     return Bookshelf.objects.prefetch_related(
+    #         Prefetch("volumes", queryset=volumes_qs)
+    #     )
 
+    def get_queryset(self):
         volumes_qs = (
             Volume.objects
+            .select_related("cover_image", "primary_work__author")
+            .prefetch_related("works__author")
             .order_by("sort_title")
-            .prefetch_related(Prefetch("works", queryset=works_qs))
         )
 
-        return Bookshelf.objects.prefetch_related(
-            Prefetch("volumes", queryset=volumes_qs)
+        return (
+            Bookshelf.objects
+            .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
         )
-
 
 def bookshelf_redirect_by_id(request, pk):
     bookshelf = get_object_or_404(Bookshelf, pk=pk)

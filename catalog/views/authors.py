@@ -76,53 +76,96 @@ class AuthorUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "catalog/author_create_update.html"
 
 
+# class AuthorListView(ListView):
+#     model = Author
+#     context_object_name = "authors"
+#     template_name = "catalog/author_list.html"
+#
+#     def get_queryset(self):
+#         """
+#         Prefetch works and volumes so the template doesn't hit the database
+#         repeatedly, and attach unique_volumes to each author.
+#         """
+#         qs = (
+#             Author.objects
+#             .prefetch_related(
+#                 Prefetch(
+#                     "works",
+#                     queryset=Work.objects.prefetch_related("volumes")
+#                 )
+#             )
+#         )
+#
+#         # Attach deduplicated volume list to each author
+#         for author in qs:
+#             seen = set()
+#             unique_volumes = []
+#             for work in author.works.all():
+#                 for vol in work.volumes.all():
+#                     if vol.pk not in seen:
+#                         seen.add(vol.pk)
+#                         unique_volumes.append(vol)
+#             author.unique_volumes = unique_volumes
+#
+#         return qs
+#
+#     def get_context_data(self, **kwargs):
+#         """
+#         Preserve your existing sorting by sort_name
+#         and expose authors as authors_display.
+#         """
+#         context = super().get_context_data(**kwargs)
+#
+#         authors_sorted = sorted(
+#             self.object_list, key=lambda author: author.sort_name
+#         )
+#         context["authors_display"] = authors_sorted
+#
+#         return context
+
 class AuthorListView(ListView):
     model = Author
     context_object_name = "authors"
     template_name = "catalog/author_list.html"
 
     def get_queryset(self):
-        """
-        Prefetch works and volumes so the template doesn't hit the database
-        repeatedly, and attach unique_volumes to each author.
-        """
-        qs = (
-            Author.objects
-            .prefetch_related(
-                Prefetch(
-                    "works",
-                    queryset=Work.objects.prefetch_related("volumes")
-                )
-            )
+        volumes_qs = (
+            Volume.objects
+            .select_related("cover_image")  # avoid N+1 if template calls vol.cover_src
+            .order_by("sort_title")
         )
 
-        # Attach deduplicated volume list to each author
-        for author in qs:
-            seen = set()
-            unique_volumes = []
-            for work in author.works.all():
-                for vol in work.volumes.all():
-                    if vol.pk not in seen:
-                        seen.add(vol.pk)
-                        unique_volumes.append(vol)
-            author.unique_volumes = unique_volumes
+        works_qs = (
+            Work.objects
+            .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
+            .order_by("sort_title")
+        )
 
-        return qs
+        return (
+            Author.objects
+            .prefetch_related(Prefetch("works", queryset=works_qs))
+            .order_by("sort_name")
+        )
 
     def get_context_data(self, **kwargs):
-        """
-        Preserve your existing sorting by sort_name
-        and expose authors as authors_display.
-        """
         context = super().get_context_data(**kwargs)
 
-        authors_sorted = sorted(
-            self.object_list, key=lambda author: author.sort_name
-        )
-        context["authors_display"] = authors_sorted
+        # If you're already ordering by sort_name in the queryset,
+        # you don't need to sort again here.
+        authors = list(context["authors"])
 
+        for author in authors:
+            seen = set()
+            unique_vols = []
+            for work in author.works.all():        # prefetched
+                for vol in work.volumes.all():     # prefetched
+                    if vol.pk not in seen:
+                        seen.add(vol.pk)
+                        unique_vols.append(vol)
+            author.unique_volumes = unique_vols
+
+        context["authors_display"] = authors
         return context
-
 
 class AuthorDetailView(DetailView):
     model = Author
