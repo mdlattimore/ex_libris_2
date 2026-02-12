@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import DetailView
 
-from catalog.models import BookSet, Volume
 from catalog.utils.normalization import normalize_sort_title
 from catalog.views import CatalogBaseView
 
@@ -35,31 +34,85 @@ from catalog.views import CatalogBaseView
 from django.db.models import Prefetch
 from catalog.models import BookSet, Volume, Work  # adjust import path if needed
 
+# class BookSetListView(CatalogBaseView):
+#     model = BookSet
+#     template_name = "catalog/work_list.html"
+#     view_type = "booksets"
+#
+#     def get_queryset(self):
+#         # We render volume cover thumbnails in the list,
+#         # so we must prefetch volumes to kill the N+1.
+#         volumes_qs = Volume.objects.order_by("sort_title")
+#
+#         # If your BookSet.author display is computed via volumes -> works -> author,
+#         # prefetch those too. This costs 1 extra query but prevents per-row queries
+#         # if `item.author` walks relations.
+#         works_qs = Work.objects.select_related("author").order_by("sort_title")
+#         volumes_qs = volumes_qs.prefetch_related(Prefetch("works", queryset=works_qs))
+#
+#         return (
+#             BookSet.objects
+#             .all()
+#             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
+#             .order_by("title")
+#         )
+
+
+from django.db.models import Prefetch
+
 class BookSetListView(CatalogBaseView):
     model = BookSet
     template_name = "catalog/work_list.html"
     view_type = "booksets"
 
     def get_queryset(self):
-        # We render volume cover thumbnails in the list,
-        # so we must prefetch volumes to kill the N+1.
-        volumes_qs = Volume.objects.order_by("sort_title")
+        # If you need author via volume.works.author, keep this (lean).
+        works_qs = (
+            Work.objects
+            .select_related("author")
+            .only("id", "author_id", "title", "sort_title")
+            .order_by("sort_title")
+        )
 
-        # If your BookSet.author display is computed via volumes -> works -> author,
-        # prefetch those too. This costs 1 extra query but prevents per-row queries
-        # if `item.author` walks relations.
-        works_qs = Work.objects.select_related("author").order_by("sort_title")
-        volumes_qs = volumes_qs.prefetch_related(Prefetch("works", queryset=works_qs))
+        # volumes_qs = (
+        #     Volume.objects
+        #     .select_related("cover_image")  # <-- critical: kills VolumeImage N+1
+        #     .only(
+        #         "id", "slug", "title", "sort_title",
+        #         "cover_url", "cover_image_id",
+        #         "cover_image__image_display",
+        #         # include image_thumb if you might use it later
+        #         "cover_image__image_thumb",
+        #     )
+        #     .order_by("sort_title")
+        #     .prefetch_related(Prefetch("works", queryset=works_qs))  # only if item.author needs it
+        # )
+        #
+        # return (
+        #     BookSet.objects
+        #     .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
+        #     .order_by("title")
+        # )
+        volumes_qs = (
+            Volume.objects
+            .select_related("cover_image", "primary_work__author")
+            .prefetch_related("works__author")
+            .only(
+                "id", "slug", "title", "sort_title",
+                "cover_url", "cover_image_id",
+                "cover_image__image_display",
+                "primary_work_id", "primary_work__author_id",
+            )
+            .order_by("sort_title")
+        )
 
         return (
             BookSet.objects
-            .all()
             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
             .order_by("title")
         )
 
 
-from django.db.models import Prefetch
 
 # class BookSetListView(CatalogBaseView):
 #     model = BookSet

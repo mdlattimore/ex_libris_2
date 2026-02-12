@@ -361,6 +361,17 @@ class BookSet(models.Model):
     def get_absolute_url(self):
         return reverse("bookset_detail", args=[self.slug])
 
+    @property
+    def author(self):
+        # uses prefetched cache when available; does NOT hit DB
+        vols = list(self.volumes.all())
+        if not vols:
+            return ""
+        # pick a representative author however you want:
+        v0 = vols[0]
+        w = v0.primary_work or (v0.works.all()[0] if v0.works.all() else None)
+        return w.author if w else ""
+
     def __str__(self):
         return self.title
 

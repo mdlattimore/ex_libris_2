@@ -103,21 +103,46 @@ from itertools import chain
 #         combined = chain(works, booksets)
 #         return sorted(combined, key=lambda obj: normalize_sort_title(obj.title))
 
+# class WorkListView(CatalogBaseView):
+#     model = Work
+#     template_name = "catalog/work_list.html"
+#     view_type = "works"
+#
+#     def get_queryset(self):
+#         volumes_qs = Volume.objects.only("id", "title", "cover_url", "slug",
+#                                          "cover_image")
+#         return (
+#             Work.objects
+#             .select_related("author")
+#             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
+#             .order_by("sort_title")
+#         )
+
 class WorkListView(CatalogBaseView):
     model = Work
     template_name = "catalog/work_list.html"
     view_type = "works"
 
     def get_queryset(self):
-        volumes_qs = Volume.objects.only("id", "title", "cover_url", "slug",
-                                         "cover_image")
+        volumes_qs = (
+            Volume.objects
+            .select_related("cover_image")  # <-- kills the 187 VolumeImage queries
+            .only(
+                "id", "slug", "title", "sort_title",
+                "cover_url", "cover_image_id",
+                "cover_image__id",                # safe
+                "cover_image__image_display",     # so .url doesn't trigger extra work
+                "cover_image__image_thumb",       # if you ever switch to thumb here
+            )
+            .order_by("sort_title")
+        )
+
         return (
             Work.objects
             .select_related("author")
             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
             .order_by("sort_title")
         )
-
 
 
 class WorkDetailView(DetailView):
