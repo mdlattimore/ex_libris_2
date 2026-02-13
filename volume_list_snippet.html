@@ -1,9 +1,0 @@
-<div>
-    {% for volume in volumes %}
-        <div class="vstack gap-3">
-            <a href="{{ volume.get_absolute_url }}" class="text-decoration-none text-reset">
-                {% include "partials/volume_list_entry.html" %}
-            </a>
-        </div>
-    {% endfor %}
-</div>

@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+  <h1>{{ readinglist.name }}</h1>
+
+  <p>{{ readinglist.description_html|safe }}</p>
+
+  <h2>Items</h2>
+  <ul>
+    {% for item in readinglist.items.all %}
+      <li>
+        {{ item.position }} — {{ item.volume.title }}
+        {% if item.notes %}
+          <div>{{ item.notes_html|safe }}</div>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>No items yet.</li>
+    {% endfor %}
+  </ul>
+
+{% endblock content %}

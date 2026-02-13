@@ -9,6 +9,7 @@ urlpatterns = [
     path("", include("pages.urls")),
     path("catalog/", include("catalog.urls")),
     path("markdownx/", include("markdownx.urls")),
+    path("reading/", include("reading.urls")),
 
 ]
 

@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     # Local
     "accounts",
     "pages",
+    "reading",
     "utils",
     "catalog.apps.CatalogConfig",
 ]
