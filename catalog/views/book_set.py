@@ -62,8 +62,8 @@ from django.db.models import Prefetch
 
 class BookSetListView(CatalogBaseView):
     model = BookSet
-    template_name = "catalog/work_list.html"
-    view_type = "booksets"
+    template_name = "catalog/bookset_list.html"
+
 
     def get_queryset(self):
         # If you need author via volume.works.author, keep this (lean).

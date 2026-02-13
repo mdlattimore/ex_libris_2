@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from django.views.generic import DetailView, UpdateView
 
 from catalog.forms import WorkCreateForm  # or whatever your
@@ -121,7 +121,7 @@ from itertools import chain
 class WorkListView(CatalogBaseView):
     model = Work
     template_name = "catalog/work_list.html"
-    view_type = "works"
+    context_object_name = "items"
 
     def get_queryset(self):
         volumes_qs = (

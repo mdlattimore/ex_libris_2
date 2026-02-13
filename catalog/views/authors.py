@@ -127,6 +127,7 @@ class AuthorListView(ListView):
     model = Author
     context_object_name = "authors"
     template_name = "catalog/author_list.html"
+    paginate_by = 20
 
     def get_queryset(self):
         volumes_qs = (

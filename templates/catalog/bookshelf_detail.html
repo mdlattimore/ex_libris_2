@@ -8,15 +8,28 @@
 
     <div class="row g-3">
 
-    {% for volume in bookshelf.volumes.all %}
-        <div class="col-md-6 col-lg-4">
-            <a href="{% url 'volume_detail' volume.pk %}"
-               class="text-decoration-none text-reset">
-                {% include "partials/volume_card.html" %}
-            </a>
-        </div>
-    {% endfor %}
-</div>
+        {% for volume in page_obj %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{% url 'volume_detail' volume.pk %}"
+                   class="text-decoration-none text-reset">
+                    {% include "partials/volume_card.html" %}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    {% if is_paginated %}
+        <nav>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Prev</a>
+            {% endif %}
+
+            &emsp;Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&emsp;
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Next</a>
+            {% endif %}
+        </nav>
+    {% endif %}
 
     <br>
     {% if user.is_authenticated %}

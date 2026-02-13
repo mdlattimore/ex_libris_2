@@ -39,6 +39,7 @@ class VolumeForm(forms.ModelForm):
             'title',
             'bookshelves',
             'works',
+            'primary_work',
             'book_set',
             'volume_number',
             'publisher',
@@ -99,9 +100,12 @@ class VolumeForm(forms.ModelForm):
             ),
             Row(
                 Column("bookshelves", css_class="form-group col-md-3 mb-0"),
-                Column("works", css_class="form-group col-md-4 mb-0"),
                 Column("book_set", css_class="form-group col-md-3 mb-0"),
                 Column("volume_number", css_class="form-group col-md-2 mb-0"),
+            ),
+            Row(
+                Column("works", css_class="form-group col-md-4 mb-0"),
+                Column("primary_work", css_class="form-group col-md-4 mb-0"),
             ),
 
             Row(

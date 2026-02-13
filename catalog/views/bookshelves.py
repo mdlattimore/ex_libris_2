@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic.list import MultipleObjectMixin
 
 from catalog.models import Bookshelf, Volume, Work
 
@@ -45,23 +46,13 @@ class BookshelfListView(ListView):
 #     context_object_name = 'collection'
 #     template_name = "catalog/bookshelf_detail.html"
 
-class BookshelfDetailView(DetailView):
+class BookshelfDetailView(DetailView, MultipleObjectMixin):
     model = Bookshelf
     context_object_name = "bookshelf"
     template_name = "catalog/bookshelf_detail.html"
+    paginate_by = 36
 
-    # def get_queryset(self):
-    #     works_qs = Work.objects.select_related("author").order_by("sort_title")
-    #
-    #     volumes_qs = (
-    #         Volume.objects
-    #         .order_by("sort_title")
-    #         .prefetch_related(Prefetch("works", queryset=works_qs))
-    #     )
-    #
-    #     return Bookshelf.objects.prefetch_related(
-    #         Prefetch("volumes", queryset=volumes_qs)
-    #     )
+
 
     def get_queryset(self):
         volumes_qs = (
@@ -75,6 +66,12 @@ class BookshelfDetailView(DetailView):
             Bookshelf.objects
             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
         )
+
+    def get_context_data(self, **kwargs):
+        bookshelf = self.get_object()
+        # This will use the prefetched queryset from get_queryset()
+        volumes = bookshelf.volumes.all()
+        return super().get_context_data(object_list=volumes, **kwargs)
 
 def bookshelf_redirect_by_id(request, pk):
     bookshelf = get_object_or_404(Bookshelf, pk=pk)

@@ -33,8 +33,6 @@ class VolumeListView(ListView):
     context_object_name = "volumes"
     paginate_by = 36
 
-
-
     def get_show_all(self):
         return "show_all" in self.request.GET
 
@@ -46,6 +44,7 @@ class VolumeListView(ListView):
 
     SORTS = {
         "title": ["sort_title", "title", "id"],
+        "author": ["primary_work__author__sort_name", "sort_title", "id"],  # <-- added
         "date_added": ["date_added", "id"],
         "pub_year": ["publication_year", "sort_title", "id"],
         "publisher": ["publisher", "sort_title", "id"],
@@ -59,30 +58,16 @@ class VolumeListView(ListView):
     DEFAULT_DIR = "asc"
 
     def get_queryset(self):
-        # qs = super().get_queryset().select_related(
-        #     "primary_work",
-        #     "book_set",
-        #     "cover_image",
-        # ).prefetch_related(
-        #     "bookshelves",
-        # )
-
         qs = (
             super().get_queryset()
             .select_related(
                 "primary_work",
                 "book_set",
                 "cover_image",
-                # add this ONLY if Work.author is FK:
-                "primary_work__author",
+                "primary_work__author",  # needed for author sort + display
             )
             .prefetch_related("works", "works__author")
-
         )
-        #     drop bookshelves if you don't display them:
-        #     .prefetch_related("bookshelves")
-        #     .defer("notes", "edition_notes", "description", "volume_json")
-
 
         sort = self.request.GET.get("sort", self.DEFAULT_SORT)
         direction = self.request.GET.get("dir", self.DEFAULT_DIR)
@@ -96,22 +81,33 @@ class VolumeListView(ListView):
         self.direction = direction
 
         fields = self.SORTS[sort]
-        nulls_last_fields = {"pub_year", "acq_date", "value", "isbn",
-            "publisher"}
+
+        nulls_last_fields = {
+            "pub_year",
+            "acq_date",
+            "value",
+            "isbn",
+            "publisher",
+            "author",   # <-- optional: puts missing primary_work/author at the end
+        }
         use_nulls_last = sort in nulls_last_fields
 
-        supports_nulls_ordering = getattr(connection.features,
-                                          "supports_nulls_ordering", False)
+        supports_nulls_ordering = getattr(
+            connection.features, "supports_nulls_ordering", False
+        )
 
         order_by = []
         for field in fields:
             expr = F(field)
             if use_nulls_last and supports_nulls_ordering:
-                expr = expr.asc(nulls_last=True) if direction == "asc" else expr.desc(nulls_last=True)
+                expr = (
+                    expr.asc(nulls_last=True)
+                    if direction == "asc"
+                    else expr.desc(nulls_last=True)
+                )
             else:
                 expr = expr.asc() if direction == "asc" else expr.desc()
             order_by.append(expr)
-
 
         return qs.order_by(*order_by)
 
@@ -127,7 +123,6 @@ class VolumeListView(ListView):
         ctx["view"] = view
 
         return ctx
-
 
 
 

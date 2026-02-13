@@ -10,6 +10,7 @@
         <select name="sort" class="form-select-sm w-auto" onchange="this.form.submit()">
             <option value="date_added" {% if sort == "date_added" %}selected{% endif %}>Date added</option>
             <option value="title" {% if sort == "title" %}selected{% endif %}>Title</option>
+            <option value="author" {% if sort == "author" %}selected{% endif %}>Author</option>
             <option value="pub_year" {% if sort == "pub_year" %}selected{% endif %}>Publication year</option>
             <option value="publisher" {% if sort == "publisher" %}selected{% endif %}>Publisher</option>
             <option value="acq_date" {% if sort == "acq_date" %}selected{% endif %}>Acquisition date</option>

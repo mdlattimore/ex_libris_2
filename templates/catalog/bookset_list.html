@@ -1,13 +1,46 @@
 {% extends "_base.html" %}
-
 {% block content %}
-    <br>
-    <h1 class="display-7 text-center">All Book Sets</h1>
-    <br>
-    {% for bookset in booksets_sorted %}
-        <a href="#">{{ bookset.title }}</a><br>
-    {% endfor %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-1">Book Sets</h1>
+        <p class="text-center" style="font-size: 1em;">A group of volumes published or packaged as a unit. May or may
+            not be 'boxed.'</p>
+
+
+        <div class="container mt-3 list-container">
+            {% include "partials/work_or_bookset_row.html" %}
+        </div>
+        <br>
+        {% if is_paginated %}
+            <nav>
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Prev</a>
+                {% endif %}
+
+                &emsp;Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&emsp;
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Next</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener("click", function (e) {
+            const item = e.target.closest(".outer-link");
+            if (!item) return;
+
+            // If the click hit a real link inside, let it behave normally
+            if (e.target.closest("a")) return;
+
+            // Otherwise navigate to the row's URL
+            window.location = item.dataset.url;
+        });
+    </script>
+
+{% endblock %}
 
 
 
-{% endblock content %}
+
+

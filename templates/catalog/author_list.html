@@ -86,12 +86,27 @@
     {% endif %}
 {% endfor %}
 
+
 </div>
 
 
         </div>
 
     {% endfor %}
+
+        {% if is_paginated %}
+            <nav>
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Prev</a>
+                {% endif %}
+
+                &emsp;Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&emsp;
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&view={{ view }}&sort={{ sort }}&dir={{ dir }}">Next</a>
+                {% endif %}
+            </nav>
+        {% endif %}
 </div>
 
 
