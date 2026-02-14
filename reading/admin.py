@@ -5,7 +5,7 @@ from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 from django.utils.safestring import mark_safe
 
-from .models import (ReadingList, ReadingListItem)
+from .models import (ReadingPath, ReadingPathItem)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -15,12 +15,12 @@ from catalog.utils.normalization import normalize_sort_title
 from django.db import models
 from django_json_widget.widgets import JSONEditorWidget
 
-@admin.register(ReadingList)
-class ReadingListAdmin(admin.ModelAdmin):
+@admin.register(ReadingPath)
+class ReadingPathAdmin(admin.ModelAdmin):
     list_display = ['name']
     ordering = ('name',)
 
-@admin.register(ReadingListItem)
-class ReadingListItemAdmin(admin.ModelAdmin):
-    list_display = ['reading_list', 'volume']
-    ordering = ('volume',)
+@admin.register(ReadingPathItem)
+class ReadingPathItemAdmin(admin.ModelAdmin):
+    list_display = ['reading_path', 'work']
+    ordering = ('work',)

@@ -661,7 +661,7 @@ class Volume(models.Model):
             else:
                 return f"{self.title} (Part of '{self.book_set.title}' Set)"
         else:
-            return f"{self.title}"
+            return f"{self.title} ({self.edition})" if self.edition else f"{self.title}"
 
     @property
     def total_cost(self):

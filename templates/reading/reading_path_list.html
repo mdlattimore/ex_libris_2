@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+
+    <div class="container mt-4">
+        <h1 class="display-5 text-center">Reading Paths</h1>
+        Reading Paths are curated sequences of works organized around a theme or question.
+        They let you arrange readings in intentional order, attach notes to each work, and maintain overview reflections
+        across the entire path. <br><br>
+        {% for readingpath in readingpaths %}
+
+            <a href="{% url 'reading_path_detail' readingpath.pk %}"><h1 class="display-7">{{ readingpath.name }}</h1>
+            </a>
+            <div class="mx-5 markdown-content">{{ readingpath.description }}
+            </div>
+            <br>
+        {% endfor %}
+        <br>
+        <a href="{% url 'reading_path_create' %}">New Reading Path</a>
+    </div>
+
+{% endblock content %}

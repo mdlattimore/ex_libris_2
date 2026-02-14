@@ -1,0 +1,86 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <br>
+    <h1 class="display-6">{{ readingpath.name }} Reading Path</h1>
+    {{ readingpath.owner.get_full_name }}<br>
+    {{ readingpath.description_html|safe }}<br>
+
+    <div class="row">
+        <div class="col-md-7">
+            <h1 class="display-7">Notes</h1>
+
+            <ul class="list-unstyled">
+                {% for item in readingpath.items.all %}
+                    <li class="mb-4 pb-3 border-bottom">
+
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                {{ item.position }} —
+                                <a href="{% url 'work_detail' item.work.pk %}">
+                                    <span class="fw-bolder fs-5">{{ item.work.title }}</span>
+                                </a>
+
+                                {% if item.source_volume %}
+                                    <div class="text-muted small">
+                                        Source Volume:
+                                        <a href="{% url 'volume_detail' item.source_volume.pk %}"
+                                           class="fst-italic">
+                                            {{ item.source_volume }}
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="text-end small">
+                                <a href="{% url 'reading_path_item_update' item.pk %}"
+                                   class="btn btn-sm btn-outline-secondary me-1">
+                                    Edit
+                                </a>
+                                <a href="{% url 'reading_path_item_delete' item.pk %}"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+
+                        {% if item.notes %}
+                            <div class="markdown-content mt-2">
+                                {{ item.notes_html|safe }}
+                            </div>
+                        {% endif %}
+
+                    </li>
+                {% empty %}
+                    <li>No items yet.</li>
+                {% endfor %}
+            </ul>
+
+
+        </div>
+        <div class="col-md-5">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h1 class="display-7">Overview Notes</h1>
+
+                <div class="text-end small">
+                    <a href="{% url 'reading_path_update' readingpath.pk %}"
+                       class="btn btn-sm btn-outline-secondary me-1">
+                        Edit
+                    </a>
+                    {#            <a href="{% url 'reading_path_delete' readingpath.pk %}"#}
+                    {#               class="btn btn-sm btn-outline-danger">#}
+                    {#                Delete#}
+                    {#            </a>#}
+                </div>
+            </div>
+
+            <div class="markdown-content">
+                {{ readingpath.overview_notes|safe }}
+            </div>
+
+        </div>
+    </div>
+    {#    <a href="{% url "reading_list_item_create" %}">New Note</a>#}
+    <a href="{% url 'reading_path_item_create' readingpath.pk %}">Add Note</a>
+
+{% endblock content %}

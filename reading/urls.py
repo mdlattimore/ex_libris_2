@@ -1,29 +1,32 @@
 from django.urls import path, include
 
-from .views import ReadingListDetailView, ReadingListListView, \
-    ReadingListItemCreateView, ReadingListItemUpdateView, ReadingListCreateView, \
-    ReadingListUpdateView
+from .views import ReadingPathDetailView, ReadingPathListView, \
+    ReadingPathItemCreateView, ReadingPathCreateView, \
+    ReadingPathUpdateView, ReadingPathItemUpdateView, ReadingPathItemDeleteView
 
 urlpatterns = [
-    path("reading_list_create/", ReadingListCreateView.as_view(),
-         name="reading_list_create"),
-    path("reading_list_update/<int:pk>", ReadingListUpdateView.as_view(),
-         name="reading_list_update"),
-    path("reading_list_detail/<int:pk>", ReadingListDetailView.as_view(),
-         name="reading_list_detail"),
-    path("reading_list_list/", ReadingListListView.as_view(),
-         name="reading_list_list"),
-    # path("reading_list_item_create/", ReadingListItemCreateView.as_view(),
-    # name="reading_list_item_create"),
+    path("reading_path_create/", ReadingPathCreateView.as_view(),
+         name="reading_path_create"),
+    path("reading_path_update/<int:pk>", ReadingPathUpdateView.as_view(),
+         name="reading_path_update"),
+    path("reading_path_detail/<int:pk>", ReadingPathDetailView.as_view(),
+         name="reading_path_detail"),
+    path("reading_path_list/", ReadingPathListView.as_view(),
+         name="reading_path_list"),
+    # path("reading_path_item_create/", ReadingListItemCreateView.as_view(),
+    # name="reading_path_item_create"),
     # reading/urls.py
     path(
-        "reading_lists/<int:readinglist_pk>/item/create/",
-        ReadingListItemCreateView.as_view(),
-        name="reading_list_item_create",
+        "reading_paths/<int:readingpath_pk>/item/create/",
+        ReadingPathItemCreateView.as_view(),
+        name="reading_path_item_create",
     ),
 
-    path("reading_list_item_update/<int:pk>",
-         ReadingListItemUpdateView.as_view(), name="reading_list_item_update"),
+    path("reading_path_item_update/<int:pk>",
+         ReadingPathItemUpdateView.as_view(), name="reading_path_item_update"),
+
+    path("reading_path_item_delete/<int:pk>",
+         ReadingPathItemDeleteView.as_view(), name="reading_path_item_delete"),
 
     path("markdownx/", include("markdownx.urls")),
 

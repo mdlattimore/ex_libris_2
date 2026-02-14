@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<form method="post">{% csrf_token %}
+    <p>Are you sure you want to delete "{{ object }}"?</p>
+    {{ form|crispy }}
+    <input type="submit" value="Confirm">
+        <a onclick="window.history.back()" class="btn btn-danger">Cancel</a>
+
+</form>
+
+{% endblock content %}

@@ -444,4 +444,22 @@ a:hover {
     font-weight: bolder;
 }
 
+.markdown-content {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Keep MarkdownX preview/content from overflowing its container */
+.markdownx-preview,
+.markdownx-preview * {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Code blocks are the other common overflow culprit */
+.markdownx-preview pre,
+.markdown-content pre {
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
 

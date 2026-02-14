@@ -1,8 +1,12 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
+
 {% block content %}
-{{ form.media }}
-    <form action="" method="post">{% csrf_token %}
+    {{ form.media }}
+    <br>
+    <h1 class="display-7">Create/Update Item in {{ readingpath.name }} Reading Path</h1>
+
+<form action="" method="post">{% csrf_token %}
         {{ form|crispy }}
         <input type="submit" value="Save" class="btn btn-success">
         <a onclick="window.history.back()" class="btn btn-danger">Cancel</a>
