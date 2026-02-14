@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+    <h1 class="display-5 text-center mt-3">Reading Lists</h1>
+    <div class="container mt-4">
+        {% for readinglist in readinglists %}
+
+            <a href="{% url 'reading_list_detail' readinglist.pk %}"><h1 class="display-7">{{ readinglist.name }}</h1>
+            </a>
+            {{ readinglist.description }}<br>
+        {% endfor %}
+    </div>
+    <a href="{% url 'reading_list_create' %}">New Reading List</a>
+{% endblock content %}

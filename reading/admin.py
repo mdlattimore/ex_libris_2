@@ -22,5 +22,5 @@ class ReadingListAdmin(admin.ModelAdmin):
 
 @admin.register(ReadingListItem)
 class ReadingListItemAdmin(admin.ModelAdmin):
-    list_display = ['reading_list']
+    list_display = ['reading_list', 'volume']
     ordering = ('volume',)

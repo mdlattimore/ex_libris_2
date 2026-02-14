@@ -1,23 +1,37 @@
 {% extends "_base.html" %}
 
 {% block content %}
+    <br>
+    <h1 class="display-6">{{ readinglist.name }} Reading List</h1>
+    {{ readinglist.owner.get_full_name }}<br>
+    {{ readinglist.description_html|safe }}<br>
 
-  <h1>{{ readinglist.name }}</h1>
+    <div class="row">
+        <div class="col-md-7">
+            <h1 class="display-7">Notes</h1>
+            <ul style="list-style-type: none">
+                {% for item in readinglist.items.all %}
+                    <li>
+                        {{ item.position }} — <a href="{% url 'volume_detail' item.volume.pk %}"><span class="fw-bolder fst-italic fs-5">{{ item.volume.title }}</span></a>
+                        {% if item.notes %}
+                            <div>{{ item.notes_html|safe }}</div>
+                        {% endif %}
+                    </li>
+                    <a href="{% url 'reading_list_item_update' item.pk %}">Update</a>
+                    <hr style="border: 1px solid black">
+                {% empty %}
+                    <li>No notes yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-5">
+            <h1 class="display-7">Overview Notes</h1>
+            {{ readinglist.overview_notes|safe }}<br>
+            <a href="{% url 'reading_list_update' readinglist.pk %}">Update</a>
 
-  <p>{{ readinglist.description_html|safe }}</p>
-
-  <h2>Items</h2>
-  <ul>
-    {% for item in readinglist.items.all %}
-      <li>
-        {{ item.position }} — {{ item.volume.title }}
-        {% if item.notes %}
-          <div>{{ item.notes_html|safe }}</div>
-        {% endif %}
-      </li>
-    {% empty %}
-      <li>No items yet.</li>
-    {% endfor %}
-  </ul>
+        </div>
+    </div>
+{#    <a href="{% url "reading_list_item_create" %}">New Note</a>#}
+    <a href="{% url 'reading_list_item_create' readinglist.pk %}">Add Note</a>
 
 {% endblock content %}

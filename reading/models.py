@@ -6,13 +6,16 @@ from catalog.models import Volume
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from django.conf import settings
+from django.urls import reverse
+
 user = get_user_model()
 
 
 class ReadingList(models.Model):
     name = models.CharField(max_length=200)
-    theme = models.CharField(max_length=200)
+    theme = models.CharField(max_length=200, blank=True, default="")
     description = MarkdownxField(blank=True, default="")
+    overview_notes = MarkdownxField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(
@@ -21,15 +24,23 @@ class ReadingList(models.Model):
         related_name="reading_lists",
     )
 
+
+
+    def get_absolute_url(self):
+        return reverse("reading_list_detail", args=[self.pk])
+
     class Meta:
         ordering = ("name",)
 
-    class Meta:
-        ordering = ["name"]
+
 
     @property
     def description_html(self):
         return markdownify(self.description or "")
+
+    @property
+    def overview_notes_html(self):
+        return markdownify(self.overview or "")
 
     def __str__(self):
         return self.name
@@ -55,6 +66,8 @@ class ReadingListItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def get_absolute_url(self):
+        return reverse("reading_list_detail", args=[self.reading_list.pk])
 
     class Meta:
         ordering = ("position", "created_at")
