@@ -18,7 +18,7 @@
                             <div>
                                 {{ item.position }} —
                                 <a href="{% url 'work_detail' item.work.pk %}">
-                                    <span class="fw-bolder fs-5">{{ item.work.title }}</span>
+                                    <span class="fw-bolder fs-5">{{ item.work.title }}</span> ({{ item.work.get_work_type_display }})
                                 </a>
 
                                 {% if item.source_volume %}
