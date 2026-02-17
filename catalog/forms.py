@@ -2,9 +2,10 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, HTML, Submit, Div
 from django import forms
+from django.forms import inlineformset_factory
 from django_json_widget.widgets import JSONEditorWidget
 
-from .models import Volume, Work, Author, DevNote
+from .models import Volume, Work, Author, DevNote, VolumeWork
 
 from crispy_forms.layout import Submit, Layout, Row, Column, HTML, Field
 
@@ -301,6 +302,14 @@ class AuthorCreateForm(forms.ModelForm):
                     '<a href="javascript:javascript:history.go(-1)" class="form-group btn btn-danger col-md-1">Cancel</a>'
                 ),
         ))
+
+# VolumeWorkFormSet = inlineformset_factory(
+#     parent_model=Volume,
+#     model=Volume,
+#     fields=["work", "locator", "position"],
+#     extra=1,
+#     can_delete=True,
+# )
 
 
 class ISBNSearchForm(forms.Form):

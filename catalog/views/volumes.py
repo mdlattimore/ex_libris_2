@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, UpdateView
 
 from catalog.forms import VolumeForm
@@ -12,7 +13,7 @@ from django.db.models import Prefetch, F
 from django.db import connection
 
 from catalog.models import (Volume, Work, VolumeImage,
-                            VolumeBibliographyReference)
+                            VolumeBibliographyReference, VolumeWork)
 
 # class VolumeListView(ListView):
 #     model = Volume
@@ -194,6 +195,12 @@ class VolumeDetailView(DetailView):
         context["ordered_images"] = imgs
         context[
             "cover_slide_index"] = 0 if cover_id else 0  # cover will be 0 when present
+        context["contents"] = (
+            VolumeWork.objects
+            .select_related("work")
+            .filter(volume=self.object)
+            .order_by("position", "id")
+        )
         print(context["ordered_images"])
         return context
 
@@ -210,6 +217,13 @@ class VolumeUpdateView(LoginRequiredMixin, UpdateView):
     #     form = super().get_form(form_class)
     #     return form
 
+class VolumeWorkUpdateView(UpdateView):
+    model = VolumeWork
+    fields = ["position", "locator"]
+    template_name = "catalog/volumework_form.html"
+
+    def get_success_url(self):
+        return reverse("volume_detail", args=[self.object.volume.pk])
 
 
 def volume_create_view(request):

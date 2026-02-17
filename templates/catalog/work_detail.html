@@ -34,7 +34,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                <div class="row">
+                    <div class="row">
                         <div class="col-sm-4">Collection(s):</div>
                         <div class="col-sm-8">
                             {% for collection in work.collection.all %}
@@ -62,10 +62,20 @@
             <div class="card">
                 <div class="card-body">
                     Appears In:<br>
-                    {% for volume in work.volumes.all %}
-                        <em><a href="{{ volume.get_absolute_url }}">{{ volume.title }}</a></em>
-                        ({{ volume.publication_year }}) {{ volume.edition|default:"" }}<br>
-                    {% endfor %}
+                    <ul class="list-unstyled">
+                        {% for a in appearances %}
+                            <li class="mb-2">
+                                <a href="{% url 'volume_detail' a.volume.pk %}">{{ a.volume }}</a>
+
+                                {# Only show locator when the work is not the entire volume #}
+                                {% if a.locator %}
+                                    <span class="text-muted small">({{ a.locator }})</span>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">No containing volumes recorded.</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>

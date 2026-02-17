@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<br>
+
+<h4>Edit Locator for:</h4>
+<p>
+    <strong>{{ object.work.title }}</strong><br>
+    in <em>{{ object.volume }}</em>
+</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'volume_detail' object.volume.pk %}" class="btn btn-danger">Cancel</a>
+</form>
+
+{% endblock %}

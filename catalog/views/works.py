@@ -9,7 +9,7 @@ from django.views.generic import CreateView, ListView
 from django.views.generic import DetailView, UpdateView
 
 from catalog.forms import WorkCreateForm  # or whatever your
-from catalog.models import BookSet
+from catalog.models import BookSet, VolumeWork
 from catalog.models import Work, Volume
 from catalog.utils.normalization import normalize_sort_title
 from catalog.views import CatalogBaseView
@@ -80,43 +80,7 @@ class WorkUpdateView(UpdateView):
 
 from itertools import chain
 
-# class WorkListView(CatalogBaseView):
-#     model = Work
-#     context_object_name = "items"
-#     template_name = "catalog/work_list.html"
-#     view_type = "works"
-#
-#     def get_queryset(self):
-#         volumes_qs = Volume.objects.only("id", "title", "cover_url", "slug")
-#
-#         works = (
-#             Work.objects
-#             .select_related("author")
-#             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
-#         )
-#
-#         booksets = (
-#             BookSet.objects
-#             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
-#         )
-#
-#         combined = chain(works, booksets)
-#         return sorted(combined, key=lambda obj: normalize_sort_title(obj.title))
 
-# class WorkListView(CatalogBaseView):
-#     model = Work
-#     template_name = "catalog/work_list.html"
-#     view_type = "works"
-#
-#     def get_queryset(self):
-#         volumes_qs = Volume.objects.only("id", "title", "cover_url", "slug",
-#                                          "cover_image")
-#         return (
-#             Work.objects
-#             .select_related("author")
-#             .prefetch_related(Prefetch("volumes", queryset=volumes_qs))
-#             .order_by("sort_title")
-#         )
 
 class WorkListView(CatalogBaseView):
     model = Work
@@ -150,6 +114,15 @@ class WorkDetailView(DetailView):
     context_object_name = "work"
     template_name = "catalog/work_detail.html"
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["appearances"] = (
+            VolumeWork.objects
+            .select_related("volume")
+            .filter(work=self.object)
+            .order_by("position", "id")
+        )
+        return ctx
 
 def work_redirect_by_id(request, pk):
     work = get_object_or_404(Work, pk=pk)

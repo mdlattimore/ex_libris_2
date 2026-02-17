@@ -202,14 +202,37 @@
                                     <hr class="my-2">
                                     <div class="row">
                                         <div class="col-sm-4">Works:</div>
-                                        <div class="col-sm-8 fw-bolder">
-                                            {% for work in volume.works.all %}
-                                                <a href="{% url 'work_detail' work.pk %}">{{ work }}</a>
-                                                {% if not forloop.last %}<br>
-                                                {% endif %}
+                                        <div class="col-sm-8">
+                                        <ul class="list-unstyled">
+                                            {% for entry in contents %}
+                                                <li class="mb-3 pb-2 border-bottom">
+
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div>
+                                                            <a href="{% url 'work_detail' entry.work.pk %}">
+                                                                <span class="fw-semibold">{{ entry.work.title }}</span>
+                                                            </a>
+
+                                                            {% if entry.locator %}
+                                                                <span class="text-muted small">
+                                                                    &emsp; ({{ entry.locator }})
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+
+                                                        <div class="text-end small">
+                                                            <a href="{% url 'volumework_update' entry.pk %}"
+                                                               class="btn btn-sm btn-outline-secondary">
+                                                                Edit
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                </li>
                                             {% empty %}
-                                                <span class="text-muted">No associated works</span>
+                                                <li class="text-muted">No works recorded.</li>
                                             {% endfor %}
+                                        </ul>
                                         </div>
                                     </div>
                                     {% with refs=volume.bibliography_refs.all %}
@@ -220,7 +243,8 @@
                                                     {% for ref in refs %}
                                                         {{ ref.bibliography.code }}:
                                                         {% if ref.reference_detail|slice:"0:4:1"|lower == "http" %}
-                                                            <a href="{{ ref.reference_detail }}" target="_blank">{{ ref.bibliography.code }}</a>
+                                                            <a href="{{ ref.reference_detail }}"
+                                                               target="_blank">{{ ref.bibliography.code }}</a>
                                                         {% else %}
                                                             {{ ref.reference_detail }}
                                                         {% endif %}

@@ -1,10 +1,10 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 
 from . import views
-from .views import work_redirect_by_id, VolumeImageManageView, bookshelf_redirect_by_id
-from django.conf import settings
-from django.conf.urls.static import static
-
+from .views import VolumeImageManageView, \
+    bookshelf_redirect_by_id, VolumeWorkUpdateView
 
 urlpatterns = [
     path('author_create/', views.AuthorCreateView.as_view(),
@@ -42,16 +42,16 @@ urlpatterns = [
          name='volume_detail'),
     path('volume_update/<int:pk>/', views.VolumeUpdateView.as_view(),
          name='volume_update'),
-    path( "volume_detail/<slug:slug>/images/add/",
-          views.VolumeImageUploadView.as_view(), name="volume_image_add"),
+    path("volume_detail/<slug:slug>/images/add/",
+         views.VolumeImageUploadView.as_view(), name="volume_image_add"),
 
     path('bookset_list/', views.BookSetListView.as_view(), name='bookset_list'),
     path('bookset_detail/<int:pk>/', views.bookset_redirect_by_id,
          name='bookset_detail_old'),
     path('bookset_detail/<slug:slug>/', views.BookSetDetailView.as_view(),
          name='bookset_detail'),
-    path( "bookset_detail/<slug:slug>/images/add/",
-          views.BooksetImageUploadView.as_view(), name="bookset_image_add"),
+    path("bookset_detail/<slug:slug>/images/add/",
+         views.BooksetImageUploadView.as_view(), name="bookset_image_add"),
 
     path('catalog/', views.CatalogAllView.as_view(), name='catalog_all'),
     path('isbn_lookup/', views.isbn_lookup_view, name='isbn_lookup'),
@@ -68,7 +68,7 @@ urlpatterns = [
     path('bookshelf_detail/<slug:slug>/',
          views.BookshelfDetailView.as_view(), name='bookshelf_detail'),
 
-path('collection_create/', views.CollectionCreateView.as_view(),
+    path('collection_create/', views.CollectionCreateView.as_view(),
          name='collection_create'),
     path('collection_update/<int:pk>/', views.CollectionUpdateView.as_view(),
          name='collection_update'),
@@ -77,19 +77,27 @@ path('collection_create/', views.CollectionCreateView.as_view(),
     path('collection_detail/<slug:slug>/',
          views.CollectionDetailView.as_view(), name='collection_detail'),
 
-
-
     path("manual-form/", views.manual_volume_form, name="manual_volume_form"),
     path("search/", views.SearchResultsView.as_view(), name="search_results"),
     path('stats/', views.StatsView.as_view(), name='stats'),
     path('pricing_calculator/', views.pricing_view, name='pricing_calculator'),
-    path('dev_note_create/', views.DevNoteCreateView.as_view(), name='dev_note_create'),
+    path('dev_note_create/', views.DevNoteCreateView.as_view(),
+         name='dev_note_create'),
     path('dev_note_list/', views.DevNoteListView.as_view(),
          name='dev_note_list'),
-    path('dev_note_detail/<int:pk>/', views.DevNoteDetailView.as_view(), name='dev_note_detail'),
-    path('dev_note_update/<int:pk>/', views.DevNoteUpdateView.as_view(),name='dev_note_update'),
+    path('dev_note_detail/<int:pk>/', views.DevNoteDetailView.as_view(),
+         name='dev_note_detail'),
+    path('dev_note_update/<int:pk>/', views.DevNoteUpdateView.as_view(),
+         name='dev_note_update'),
     path("volumes/<int:pk>/images/", VolumeImageManageView.as_view(),
          name="volume_images_manage"),
+
+    path(
+        "volume-work/<int:pk>/edit/",
+        VolumeWorkUpdateView.as_view(),
+        name="volumework_update",
+    ),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

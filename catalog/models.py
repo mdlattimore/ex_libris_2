@@ -691,22 +691,6 @@ class Volume(models.Model):
         else:
             return ""
 
-    # @property
-    # def cover_src(self) -> str | None:
-    #     """
-    #     Preferred cover image source for display.
-    #     - uploaded cover_image if present
-    #     - else stock cover_url
-    #     - else None
-    #     """
-    #     if self.cover_image_id and getattr(self.cover_image, "image_display",
-    #                                        None):
-    #         try:
-    #             return self.cover_image.image_display.url
-    #         except Exception:
-    #             pass
-    #     return self.cover_url or None
-
     @property
     def cover_src(self) -> str | None:
         if self.cover_image_id and getattr(self.cover_image, "image_display",
@@ -870,3 +854,39 @@ class DevNote(models.Model):
 
     def __str__(self):
         return f"DevNote by {self.user} @ {self.created_at:%Y-%m-%d %H:%M}"
+
+
+class VolumeWork(models.Model):
+    volume = models.ForeignKey(
+        Volume,
+        on_delete=models.CASCADE,
+        related_name="work_entries",
+    )
+    work = models.ForeignKey(
+        Work,
+        on_delete=models.CASCADE,
+        related_name="volume_entries",
+    )
+
+    # Where inside the volume this work appears
+    locator = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text='e.g., "pp. 109–161", "xiii–xxv", "Ch. 3", "Essay 5"',
+    )
+
+    # Optional: order of works within a multi-work volume
+    position = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=("volume", "work"),
+                name="uniq_volumework_volume_work",
+            ),
+        ]
+        ordering = ("position", "id")
+
+    def __str__(self):
+        return f"{self.volume} ↔ {self.work} ({self.locator})"

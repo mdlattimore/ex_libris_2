@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (Author, Work, BookSet, Volume, AuthorAlias, Bookshelf,
                      Genre, Bibliography, VolumeBibliographyReference,
-                     VolumeImage, BooksetImage, DevNote, Collection)
+                     VolumeImage, BooksetImage, DevNote, Collection, VolumeWork)
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
@@ -17,6 +17,20 @@ from catalog.utils.normalization import normalize_sort_title
 from django.db import models
 from django_json_widget.widgets import JSONEditorWidget
 
+
+class VolumeWorkInline(admin.TabularInline):
+    model = VolumeWork
+    extra = 0
+    autocomplete_fields = ["work"]
+    fields = ("position", "work", "locator")
+    ordering = ("position",)
+
+class WorkVolumeInline(admin.TabularInline):
+    model = VolumeWork
+    extra = 0
+    autocomplete_fields = ["volume"]
+    fields = ("position", "volume", "locator")
+    ordering = ("position",)
 
 @admin.register(Bookshelf)
 class BookshelfAdmin(admin.ModelAdmin):
@@ -60,7 +74,7 @@ class WorkAdmin(admin.ModelAdmin):
     ordering = ('sort_title',)
     search_fields = ('title',)
     filter_horizontal = ("collections",)
-
+    inlines = [WorkVolumeInline]
     actions = ["add_to_collection_bulk"]
 
     def add_to_collection_bulk(self, request, queryset):
@@ -97,6 +111,17 @@ class WorkAdmin(admin.ModelAdmin):
         )
 
     add_to_collection_bulk.short_description = "Add selected works to collection…"
+
+
+@admin.register(VolumeWork)
+class VolumeWorkAdmin(admin.ModelAdmin):
+    list_display = ("volume", "work", "locator", "position")
+    list_filter = ("volume",)
+    search_fields = ("volume__title", "work__title", "locator")
+    autocomplete_fields = ("volume", "work")
+    ordering = ("volume", "position", "id")
+
+
 
 class BooksetImageInline(admin.TabularInline):
     model = BooksetImage
@@ -155,14 +180,13 @@ class AddToBookshelfForm(forms.Form):
 class VolumeAdmin(admin.ModelAdmin):
     list_display = ['title', 'edition']
     ordering = ('sort_title',)
-    inlines = [VolumeBibliographyReferenceInline, VolumeImageInline]
+    inlines = [VolumeBibliographyReferenceInline, VolumeImageInline, VolumeWorkInline]
     search_fields = ['title', 'edition']
     filter_horizontal = ("bookshelves",)  # <-- your M2M field name
 
     formfield_overrides = {
         models.JSONField: {"widget": JSONEditorWidget(attrs={"class": "json-wide-editor"})},
     }
-
     readonly_fields = (
         'pretty_volume_json',)  # Replace 'json_field' with your actual
     # JSONField name

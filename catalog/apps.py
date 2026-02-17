@@ -11,7 +11,7 @@ class CatalogConfig(AppConfig):
     name = "catalog"
 
     def ready(self):
-        import catalog.signals
+        from . import signals
         try:
             import pillow_heif
             pillow_heif.register_heif_opener()
