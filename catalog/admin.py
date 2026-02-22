@@ -280,7 +280,7 @@ class VolumeAdmin(admin.ModelAdmin):
         }),
         ("Collection Data", {
             "fields": ("acquisition_date", "acquisition_year", "source",
-                "price", "estimated_value", "edition_notes",),
+                "price", "estimated_value", "edition_notes", "status"),
         }),
         ("Disposition", {
             "fields": ("disposition", "recipient", "sales_price",
