@@ -640,11 +640,11 @@ class Volume(models.Model):
                                    max_length=30, blank=True, null=True)
     recipient = models.CharField(max_length=150, blank=True, null=True)
     sales_price = models.DecimalField(decimal_places=2, max_digits=10,
-                                      blank=True, null=True)
+                                      blank=True, null=True, default=0)
     shipping_charged = models.DecimalField(decimal_places=2, max_digits=10,
-                                           blank=True, null=True)
+                                           blank=True, null=True, default=0)
     shipping_cost = models.DecimalField(decimal_places=2, max_digits=10,
-                                        blank=True, null=True)
+                                        blank=True, null=True, default=0)
     disposition_date = models.DateField(blank=True, null=True)
 
     # Utility

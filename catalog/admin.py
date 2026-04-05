@@ -17,6 +17,11 @@ from catalog.utils.normalization import normalize_sort_title
 from django.db import models
 from django_json_widget.widgets import JSONEditorWidget
 
+class VolumeInline(admin.TabularInline):
+    model = Volume.works.through
+    extra = 1
+    verbose_name = "Volume"
+    verbose_name_plural = "Volumes this work appears in"
 
 @admin.register(Bookshelf)
 class BookshelfAdmin(admin.ModelAdmin):
@@ -60,6 +65,8 @@ class WorkAdmin(admin.ModelAdmin):
     ordering = ('sort_title',)
     search_fields = ('title',)
     filter_horizontal = ("collections",)
+    inlines = [VolumeInline]
+
 
     actions = ["add_to_collection_bulk"]
 

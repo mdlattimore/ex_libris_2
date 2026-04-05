@@ -18,3 +18,5 @@ db_backup.sqlite3
 dsd_logs/
 
 *.sh
+
+*.ipynb

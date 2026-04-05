@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     "django_htmx",
     "markdownx",
     "django_json_widget",
+    "django_admin_shell",
+    "django_extensions",
     # "debug_toolbar",
     # Local
     "accounts",
@@ -377,3 +379,5 @@ if os.environ.get("ON_FLYIO"):
 
     # Prevent CSRF "Origin checking failed" issue.
     CSRF_TRUSTED_ORIGINS = ["https://ex-libris.fly.dev"]
+
+DJANGO_ALLOW_ASYNC_UNSAFE = True
