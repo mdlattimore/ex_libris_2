@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "markdownx",
     "django_json_widget",
-    "django_admin_shell",
+    # "django_admin_shell",
     "django_extensions",
     # "debug_toolbar",
     # Local

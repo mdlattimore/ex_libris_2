@@ -1,10 +1,77 @@
-# fly.toml app configuration file generated for ex-libris-latti on 2026-01-01T21:13:19-05:00
+## fly.toml app configuration file generated for ex-libris-latti on 2026-01-01T21:13:19-05:00
+##
+## See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+##
 #
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#app = 'ex-libris-latti'
+#primary_region = 'dfw'
+#kill_signal = 'SIGINT'
+#kill_timeout = '5s'
+#console_command = '/code/manage.py shell'
 #
+#[experimental]
+#  auto_rollback = true
+#
+#[build]
+#
+#[deploy]
+#  release_command = 'python manage.py migrate --noinput'
+#
+#[env]
+#  DJANGO_PRODUCTION = 'True'
+#  PORT = '8000'
+#
+#[[mounts]]
+#  source = 'media_volume'
+#  destination = '/data/media'
+#
+#[http_service]
+#  internal_port = 8000
+#  force_https = true
+#  auto_stop_machines = 'suspend'
+#  auto_start_machines = true
+#  min_machines_running = 0
+#  processes = ['app']
+#
+#[[services]]
+#  protocol = 'tcp'
+#  internal_port = 8000
+#  processes = ['app']
+#
+#  [[services.ports]]
+#    port = 80
+#    handlers = ['http']
+#    force_https = true
+#
+#  [[services.ports]]
+#    port = 443
+#    handlers = ['tls', 'http']
+#
+#  [services.concurrency]
+#    type = 'connections'
+#    hard_limit = 25
+#    soft_limit = 20
+#
+#  [[services.tcp_checks]]
+#    interval = '15s'
+#    timeout = '2s'
+#    grace_period = '1s'
+#
+#[[vm]]
+#  memory = '1gb'
+#  cpus = 1
+#  memory_mb = 1024
+#
+#[[statics]]
+#  guest_path = "/data/media"
+#  url_prefix = "/media"
+#
+#[processes]
+#app = "gunicorn --bind :8000 --workers 2 django_project.wsgi"
 
+# fly.toml app configuration file for ex-libris-latti
 app = 'ex-libris-latti'
-primary_region = 'dfw'
+primary_region = 'ord'
 kill_signal = 'SIGINT'
 kill_timeout = '5s'
 console_command = '/code/manage.py shell'
@@ -19,18 +86,18 @@ console_command = '/code/manage.py shell'
 
 [env]
   DJANGO_PRODUCTION = 'True'
-  PORT = '8000'
+  PORT = '8000'  # Fly will override this at runtime
 
 [[mounts]]
   source = 'media_volume'
   destination = '/data/media'
 
 [http_service]
-  internal_port = 8000
+  internal_port = 8000  # still OK, Fly maps $PORT automatically
   force_https = true
   auto_stop_machines = 'suspend'
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1  # keep at least 1 machine live
   processes = ['app']
 
 [[services]]
@@ -65,3 +132,6 @@ console_command = '/code/manage.py shell'
 [[statics]]
   guest_path = "/data/media"
   url_prefix = "/media"
+
+#[processes]
+#app = "gunicorn --bind 0.0.0.0:$PORT --workers 3 django_project.wsgi:application"
