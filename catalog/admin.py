@@ -61,17 +61,12 @@ class AddToCollectionForm(forms.Form):
 
 @admin.register(Work)
 class WorkAdmin(admin.ModelAdmin):
-    # list_display = ['title', 'author']
-    # ordering = ('sort_title',)
-    # search_fields = ('title',)
-    # filter_horizontal = ("collections",)
-    # inlines = [VolumeInline]
     list_display = ['title', 'author']
     ordering = ('sort_title',)
     search_fields = ('title',)
-    filter_horizontal = ("collections", "genre")  # move genre here
-    raw_id_fields = ('author',)  # replace select with ID lookup
+    filter_horizontal = ("collections",)
     inlines = [VolumeInline]
+
 
 
     actions = ["add_to_collection_bulk"]
