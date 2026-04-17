@@ -17,8 +17,15 @@ from catalog.utils.normalization import normalize_sort_title
 from django.db import models
 from django_json_widget.widgets import JSONEditorWidget
 
+# class VolumeInline(admin.TabularInline):
+#     model = Volume.works.through
+#     extra = 1
+#     verbose_name = "Volume"
+#     verbose_name_plural = "Volumes this work appears in"
+
 class VolumeInline(admin.TabularInline):
     model = Volume.works.through
+    autocomplete_fields = ("volume",)
     extra = 1
     verbose_name = "Volume"
     verbose_name_plural = "Volumes this work appears in"
