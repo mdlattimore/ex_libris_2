@@ -13,32 +13,39 @@ def isbn_lookup_view(request):
     form = ISBNSearchForm(request.POST or None)
     volume_form = VolumeForm()
     result = None
+    searched = False
 
     if request.method == "POST" and form.is_valid():
+        searched = True
         isbn = form.cleaned_data["isbn"]
-        result = perform_isbn_lookup(isbn)
-        pprint(result)
-        print(result['result']['cover_url'])
+        # result = perform_isbn_lookup(isbn)
+        try:
+            result = perform_isbn_lookup(isbn)
+        except LookupError:
+            result = None
+        if result:
+            pprint(result)
+            print(result['result']['cover_url'])
 
-        publication_date = parse_published_date(
-            result["result"].get("published_date"))
-        # Prefill form with lookup data
-        initial_data = {
-            "title": result["result"].get("title", ""),
-            # "isbn": isbn,
-            "isbn10": result["result"].get("isbn_10", ""),
-            "isbn13": result["result"].get("isbn_13", ""),
-            "publisher": result["result"].get("publisher", ""),
-            "publication_date": publication_date,
-            "publication_year": publication_date.year,
-            "description": result["result"].get("description", ""),
-            "works": result["work"].id if result["work"] else None,
-            "cover_url": result["result"].get("cover_url", ""),
-            "volume_json": result["result"]
-        }
-        volume_form = VolumeForm(initial=initial_data)
+            publication_date = parse_published_date(
+                result["result"].get("published_date"))
+            # Prefill form with lookup data
+            initial_data = {
+                "title": result["result"].get("title", ""),
+                # "isbn": isbn,
+                "isbn10": result["result"].get("isbn_10", ""),
+                "isbn13": result["result"].get("isbn_13", ""),
+                "publisher": result["result"].get("publisher", ""),
+                "publication_date": publication_date,
+                "publication_year": publication_date.year,
+                "description": result["result"].get("description", ""),
+                "works": result["work"].id if result["work"] else None,
+                "cover_url": result["result"].get("cover_url", ""),
+                "volume_json": result["result"]
+            }
+            volume_form = VolumeForm(initial=initial_data)
 
-    context = {"form": form, "result": result, "volume_form": volume_form}
+    context = {"form": form, "result": result, "volume_form": volume_form, "searched": searched}
 
     if request.htmx:
         return render(request, "partials/lookup_result.html", context)
