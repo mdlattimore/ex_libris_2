@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, UpdateView
 
 from catalog.forms import VolumeForm
@@ -217,7 +219,9 @@ def volume_create_view(request):
     if form.is_valid():
         volume = form.save()
         cache_google_cover_for_volume(volume)
-
+        response = HttpResponse()
+        response["HX-Redirect"] = reverse("volume_detail", args=[volume.pk])
+        return response
         return render(request, "partials/volume_saved.html", {"volume": volume})
     return render(request, "partials/volume_form_errors.html", {"form": form})
 

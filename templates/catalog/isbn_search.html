@@ -13,6 +13,7 @@
               hx-post="{% url 'isbn_lookup' %}"
               hx-target="#lookup-result"
               hx-swap="innerHTML"
+              hx-on:htmx:before-request="document.getElementById('lookup-result').innerHTML = '<p class=\'text-muted\'>Searching...</p>'"
               class="mb-3">
 
             {% csrf_token %}
