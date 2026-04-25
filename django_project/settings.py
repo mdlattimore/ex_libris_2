@@ -139,6 +139,7 @@ DATABASES = {
         default="sqlite:///db.sqlite3",
         conn_max_age=0,          # keep DB connections open
         conn_health_checks=True,   # avoid stale connections
+
     ),
 }
 

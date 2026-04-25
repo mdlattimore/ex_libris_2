@@ -37,7 +37,7 @@
                 <div class="row">
                         <div class="col-sm-4">Collection(s):</div>
                         <div class="col-sm-8">
-                            {% for collection in work.collection.all %}
+                            {% for collection in work.collections.all %}
                                 {{ collection }}{% if not forloop.last %}<br>
                                 {% endif %}
                             {% empty %}
