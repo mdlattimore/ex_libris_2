@@ -206,6 +206,7 @@ class WorkCreateForm(forms.ModelForm):
     class Meta:
         model = Work
         fields = "__all__"
+        exclude = ["slug", "sort_title"]  # let save() handle both
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
