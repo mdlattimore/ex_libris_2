@@ -98,6 +98,8 @@ class AuthorAlias(models.Model):
         return f"{self.alias} = {self.author.full_name}"
 
 
+
+
 # --------- 1.5 Genre ----------------------------------
 class Genre(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -142,10 +144,8 @@ class Work(models.Model):
 
     title = models.CharField(max_length=255)
     sort_title = models.CharField(max_length=255, blank=True, null=True)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE,
-                               related_name='works')
 
-    work_ebook_url = models.URLField(blank=True, null=True, help_text="URL to ")
+
     first_published = models.IntegerField(blank=True, null=True)
     work_type = models.CharField(
         max_length=50,
@@ -162,6 +162,9 @@ class Work(models.Model):
     notes = MarkdownxField(blank=True, null=True)
     text = MarkdownxField(blank=True, null=True)
     slug = models.SlugField(max_length=120, null=True, blank=True)
+    contributors = models.ManyToManyField(Author, blank=True,
+                                          through="Role",
+                                          related_name="contributed_works")
 
     def save(self, *args, **kwargs):
         self.sort_title = normalize_sort_title(self.title)
@@ -199,6 +202,27 @@ class Work(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# ---------- Through model linking Author and Work ___________
+class Role(models.Model):
+    ROLE_TYPE_CHOICES = [
+        ("AU", "Author"),
+        ("ED", "Editor"),
+        ("TR", "Translator"),
+        ("IL", "Illustrator"),
+    ]
+    role_type = models.CharField(
+        max_length=2,
+        choices=ROLE_TYPE_CHOICES,
+    )
+    order = models.IntegerField(blank=True, null=True)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, )
+    work = models.ForeignKey(Work, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['role_type', 'order']
+        unique_together = [["order", "role_type", "work"], ]
 
 
 # -------- 3. BookSet -------------------------------------
